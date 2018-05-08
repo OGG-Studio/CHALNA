@@ -49,7 +49,6 @@ public class CameraView extends JavaCameraView implements PictureCallback {
         mMaxWidth = resolution.width;
         connectCamera(getWidth(), getHeight());
     }
-
     public Size getResolution() {
         return mCamera.getParameters().getPreviewSize();
     }
@@ -82,6 +81,5 @@ public class CameraView extends JavaCameraView implements PictureCallback {
         } catch (java.io.IOException e) {
             Log.e("PictureDemo", "Exception in photoCallback", e);
         }
-
     }
 }
