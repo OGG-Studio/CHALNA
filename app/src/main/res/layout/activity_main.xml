@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <com.example.philip.chalna.CameraView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:id="@+id/activity_surface_view" />
+    <android.support.v7.widget.AppCompatImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:alpha="0.5"
+        android:id="@+id/guidedImageViewer"/>
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="불러오기"
+            android:id="@+id/LoadImageBtn"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="전면/후면"
+            android:id="@+id/changeViewBtn"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="사진찍기"
+            android:id="@+id/Take_Picture"
+            android:onClick="OnTakePicture"/>
+    </GridLayout>
+
+    <com.example.philip.chalna.VerticalSeekbar
+        android:layout_width="30dp"
+        android:layout_height="250dp"
+        android:layout_gravity="left|center"
+        android:id="@+id/seek_bar"
+        android:max="100"
+        android:progress="50">
+    </com.example.philip.chalna.VerticalSeekbar>
+</FrameLayout>
