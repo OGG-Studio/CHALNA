@@ -2,13 +2,8 @@ package com.example.philip.chalna;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -17,32 +12,44 @@ import android.widget.SeekBar;
 
 import com.bumptech.glide.Glide;
 
-import java.io.File;
-
 public class ProjectPreview extends AppCompatActivity {
     Context context;
     private final String TAG = "Project_Preview";
 
     String dir_path;
     GalleryAdapterModel galleryAdapterModel;
-    LinearLayout container;
-    SeekBar seekBar;
 
+    /**
+     *  Data
+     */
+    DBSQLiteModel dbHelpter;
+    ProjectData project_meta;
     /**
      *
      *  UI
      */
+    LinearLayout container;
+    SeekBar seekBar;
+
     Button saveBtn;
     Button takePictureBtn;
+    Button showBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.project_preview);
 
+        Intent intent = getIntent();
+        String project_name = intent.getStringExtra("PROJECT_NAME");
+
         context = this;
-        dir_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + "/Test";
-        galleryAdapterModel = new GalleryAdapterModel(this,dir_path);
+        dbHelpter = DBSQLiteModel.getInstance(context);
+        project_meta = dbHelpter.getDataByName(project_name);
+
+//        dir_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + "/Test";
+        dir_path = project_meta.dir;
+        galleryAdapterModel = new GalleryAdapterModel(this, dir_path);
 
         /***************************************************************************
          *                          UI
@@ -71,9 +78,8 @@ public class ProjectPreview extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 String imageName = galleryAdapterModel.getImageFileNames()[progress];
 
-                ImageView imgView = findViewById(R.id.project_imageView);
+                final ImageView imgView = findViewById(R.id.project_imageView);
                 Glide.with(context).load(dir_path+"/"+imageName).into(imgView);
-
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -87,6 +93,9 @@ public class ProjectPreview extends AppCompatActivity {
             seekBar.setMax(galleryAdapterModel.getCount()-1);
             seekBar.setProgress(galleryAdapterModel.getCount()-1);
         }
+
+        showBtn = findViewById(R.id.project_show);
+
     }
 
 //    @Override

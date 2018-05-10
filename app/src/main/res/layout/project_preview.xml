@@ -79,6 +79,13 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_weight="1"/>
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="10dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="S"
+            android:id="@+id/project_show"/>
         <SeekBar
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

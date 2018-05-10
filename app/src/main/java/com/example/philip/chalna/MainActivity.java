@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,6 +17,10 @@ import android.util.Log;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Main";
 
+    //Test
+    SQLiteDatabase db;
+    DBSQLiteModel dbHelpter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,8 +32,18 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        dbHelpter = DBSQLiteModel.getInstance(this);
+
+        dbHelpter.dbInsert("APACH", 1,0,"Directory/hello/world");
+        dbHelpter.dbInsert("afkjaf", 0,1,"Directory/lkafajf");
+        dbHelpter.dbInsert("afaf", 1,1,"Directory/folder");
+
+        dbHelpter.dbDelete(new String[]{"afaf"});
+
+        dbHelpter.select();
+
         Intent intent = new Intent(this, ProjectPreview.class);
-        startActivity(intent);
+//        startActivity(intent);
     }
     //Permission method
     static final int PERMISSIONS_REQUEST_CODE = 1000;

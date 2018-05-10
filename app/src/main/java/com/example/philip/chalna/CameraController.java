@@ -38,7 +38,7 @@ public class CameraController extends AppCompatActivity
 
     private CameraView mOpenCvCameraView;
 
-    //opencv matrix
+    // Opencv matrix
     private Mat matInput;
     private Mat matResult;
 
@@ -181,12 +181,10 @@ public class CameraController extends AppCompatActivity
 
     @Override
     public void onCameraViewStarted(int width, int height) {
-
     }
 
     @Override
     public void onCameraViewStopped() {
-
     }
 
     @Override
@@ -245,6 +243,7 @@ public class CameraController extends AppCompatActivity
     private void showDialogForPermission(String msg) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder( CameraController.this);
+
         builder.setTitle("알림");
         builder.setMessage(msg);
         builder.setCancelable(false);
