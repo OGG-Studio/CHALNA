@@ -33,7 +33,6 @@ public class CameraModel {
     public void setGuidedImage(Bitmap img){
         switch (guidedMode){
             case StaticInformation.GUIDED_SOBELFILTER:
-
                 img = img.copy(Bitmap.Config.ARGB_8888,true);
                 Mat inputImage = new Mat();
                 Utils.bitmapToMat(img, inputImage);

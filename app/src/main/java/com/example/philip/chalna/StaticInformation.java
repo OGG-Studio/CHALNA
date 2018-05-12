@@ -8,5 +8,11 @@ public class StaticInformation {
     // GUIDED MODE
     public static final int GUIDED_TRANSPARENCY = 0;
     public static final int GUIDED_SOBELFILTER = 1;
-    public static final String DCIM_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString();
+    public static final String DCIM_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath().toString();
+    public static final String CHALNA_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath().toString() +"/CHALNA";
+
+    //REQUEST
+    public static final int REQUEST_CREATE_CONTROL = 1;
+
+
 }

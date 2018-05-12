@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 public class GalleryAdapterModel extends BaseAdapter {
     private static final String TAG = "GalleryAdapterModel";
+    private static GalleryAdapterModel instance;
     private Context context;
 
     private String imagePath;
@@ -29,6 +30,10 @@ public class GalleryAdapterModel extends BaseAdapter {
     private int delay;
     private int sizeWidth;
 
+    public static GalleryAdapterModel getInstance(Context c, String imagePath){
+        if(instance==null) instance = new GalleryAdapterModel(c, imagePath);
+        return instance;
+    }
     public void saveGIF(){
         FileOutputStream outStream = null;
         try{
@@ -67,6 +72,10 @@ public class GalleryAdapterModel extends BaseAdapter {
 
     public String[] getImageFileNames(){
         return imageFileNames;
+    }
+    public void UpdateGallery(){
+        File imagePathAsFile = new File(imagePath);
+        imageFileNames = imagePathAsFile.list(new ImageFileFilter());
     }
     public GalleryAdapterModel(Context context, String imagePath) {
         this.context = context;

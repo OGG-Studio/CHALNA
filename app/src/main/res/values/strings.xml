@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CHALNA</string>
+    <string name="title_activity_project_create_controller">ProjectCreateController</string>
 </resources>

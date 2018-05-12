@@ -7,20 +7,28 @@ import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import java.io.File;
+
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Main";
 
     //Test
-    SQLiteDatabase db;
-    DBSQLiteModel dbHelpter;
 
+    private void folderInit(){
+        Log.d(TAG, "Folder initialization");
+        String chalnaDirectory = StaticInformation.DCIM_PATH + "/CHALNA";
+        File CHALNA_FORDER = new File(chalnaDirectory);
+        CHALNA_FORDER.mkdirs();
+        Log.d(TAG, "Folder initialization Complete");
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,18 +40,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        dbHelpter = DBSQLiteModel.getInstance(this);
+        //mkdir
+        folderInit();
 
-        dbHelpter.dbInsert("APACH", 1,0,"Directory/hello/world");
-        dbHelpter.dbInsert("afkjaf", 0,1,"Directory/lkafajf");
-        dbHelpter.dbInsert("afaf", 1,1,"Directory/folder");
-
-        dbHelpter.dbDelete(new String[]{"afaf"});
-
-        dbHelpter.select();
-
-        Intent intent = new Intent(this, ProjectPreview.class);
-//        startActivity(intent);
+        Intent intent = new Intent(this, ProjectSelectController.class);
+        startActivity(intent);
     }
     //Permission method
     static final int PERMISSIONS_REQUEST_CODE = 1000;

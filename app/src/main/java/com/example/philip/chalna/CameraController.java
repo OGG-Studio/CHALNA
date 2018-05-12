@@ -1,13 +1,16 @@
 package com.example.philip.chalna;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -21,6 +24,10 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
@@ -28,6 +35,7 @@ import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Mat;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -36,6 +44,7 @@ public class CameraController extends AppCompatActivity
         implements CvCameraViewListener2 {
     private static final String TAG = "CameraController";
 
+    Context context = this;
     private CameraView mOpenCvCameraView;
 
     // Opencv matrix
@@ -63,18 +72,22 @@ public class CameraController extends AppCompatActivity
         System.loadLibrary("native-lib");
     }
 
+    // Constant
+    private String path_dir;
+    private GalleryAdapterModel galleryAdapterModel;
+
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {
             switch (status) {
-                case LoaderCallbackInterface.SUCCESS:
-                {
+                case LoaderCallbackInterface.SUCCESS: {
                     mOpenCvCameraView.enableView();
-                } break;
-                default:
-                {
+                }
+                break;
+                default: {
                     super.onManagerConnected(status);
-                } break;
+                }
+                break;
             }
         }
     };
@@ -82,7 +95,7 @@ public class CameraController extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG,"Start Camera Model");
+        Log.d(TAG, "Start Camera Model");
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -91,7 +104,7 @@ public class CameraController extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         btnImageLoad = findViewById(R.id.LoadImageBtn);
-        btnImageLoad.setOnClickListener(new View.OnClickListener(){
+        btnImageLoad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_PICK);
@@ -109,6 +122,11 @@ public class CameraController extends AppCompatActivity
             }
         }
 
+        //INFORMATION
+        Intent intent = getIntent();
+        path_dir = intent.getStringExtra("DIR");
+        galleryAdapterModel = GalleryAdapterModel.getInstance(this, path_dir);
+
         mOpenCvCameraView = findViewById(R.id.activity_surface_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
@@ -124,20 +142,24 @@ public class CameraController extends AppCompatActivity
         //UI Access
         guidedImageView = findViewById(R.id.guidedImageViewer);
         seekBar = findViewById(R.id.seek_bar);
-        seekBar.setProgress((int)(guidedImageView.getAlpha()*100));
+        seekBar.setProgress((int) (guidedImageView.getAlpha() * 100));
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                guidedImageView.setAlpha((float)progress/100);
+                guidedImageView.setAlpha((float) progress / 100);
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-            };
+            }
+
+            ;
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-            };
+            }
+
+            ;
         });
         changeViewBtn = findViewById(R.id.changeViewBtn);
         changeViewBtn.setOnClickListener(new View.OnClickListener() {
@@ -149,18 +171,50 @@ public class CameraController extends AppCompatActivity
                 mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
             }
         });
+
+        // Auto Guided
+        galleryAdapterModel.UpdateGallery();
+        String[] imageNames = galleryAdapterModel.getImageFileNames();
+        int lastIndex = imageNames.length;
+
+        if (imageNames != null && lastIndex > 0) {
+            String fileName = path_dir + "/" + galleryAdapterModel.getImageFileNames()[lastIndex - 1];
+//            Bitmap bm = fileIOModel.getGuidedImageFromRealPath(fileName); Deprecated
+            setGuidedImageToView(fileName);
+        }
     }
+
+    private void setGuidedImageToView(String fileName){
+        Glide.with(context).load(fileName).asBitmap().into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                final Bitmap resourceFinal = resource;
+                Thread readyThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        cameraModel.setGuidedImage(resourceFinal);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                guidedImageView.setImageBitmap(cameraModel.guidedImage);
+                            }
+                        });
+                    }
+                });
+                readyThread.start();
+            }
+        });
+    }
+
     @Override
-    public void onPause()
-    {
+    public void onPause() {
         super.onPause();
         if (mOpenCvCameraView != null)
             mOpenCvCameraView.disableView();
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
 
         if (!OpenCVLoader.initDebug()) {
@@ -170,6 +224,7 @@ public class CameraController extends AppCompatActivity
             Log.d(TAG, "onResume :: OpenCV library found inside package. Using it!");
             mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
         }
+
     }
 
     public void onDestroy() {
@@ -188,6 +243,7 @@ public class CameraController extends AppCompatActivity
     }
 
     @Override
+
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         matInput = inputFrame.rgba();
 
@@ -202,16 +258,16 @@ public class CameraController extends AppCompatActivity
 
     //Permission method
     static final int PERMISSIONS_REQUEST_CODE = 1000;
-    String[] PERMISSIONS  = {"android.permission.CAMERA" , "android.permission.WRITE_EXTERNAL_STORAGE","android.permission.READ_EXTERNAL_STORAGE"};
+    String[] PERMISSIONS = {"android.permission.CAMERA", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.READ_EXTERNAL_STORAGE"};
 
     private boolean hasPermissions(String[] permissions) {
         int result;
 
         //Permision Check
-        for (String perms : permissions){
+        for (String perms : permissions) {
             result = ContextCompat.checkSelfPermission(this, perms);
 
-            if (result == PackageManager.PERMISSION_DENIED){
+            if (result == PackageManager.PERMISSION_DENIED) {
                 //Denide?
                 return false;
             }
@@ -219,14 +275,15 @@ public class CameraController extends AppCompatActivity
         //all permision ok
         return true;
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        Log.d(TAG, grantResults.length +" "+ grantResults[0]+" "+grantResults[1]+" "+grantResults[2]);
+        Log.d(TAG, grantResults.length + " " + grantResults[0] + " " + grantResults[1] + " " + grantResults[2]);
         Log.d(TAG, permissions[0] + " " + permissions[1] + " " + permissions[2]);
-        switch(requestCode){
+        switch (requestCode) {
             case PERMISSIONS_REQUEST_CODE:
                 if (grantResults.length > 0) {
                     boolean cameraPermissionAccepted = grantResults[0]
@@ -242,13 +299,13 @@ public class CameraController extends AppCompatActivity
     @TargetApi(Build.VERSION_CODES.M)
     private void showDialogForPermission(String msg) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder( CameraController.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(CameraController.this);
 
         builder.setTitle("알림");
         builder.setMessage(msg);
         builder.setCancelable(false);
         builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id){
+            public void onClick(DialogInterface dialog, int id) {
                 requestPermissions(PERMISSIONS, PERMISSIONS_REQUEST_CODE);
             }
         });
@@ -262,16 +319,28 @@ public class CameraController extends AppCompatActivity
 
     //Event
     public boolean OnTakePicture(View v) {
-        Log.d(TAG,"onTouch event");
+        Log.d(TAG, "onTouch event");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
         String currentDateandTime = sdf.format(new Date());
-        String fileName = Environment.getExternalStorageDirectory().getPath() +
-                "/DCIM/Test/sample_picture_" + currentDateandTime + ".jpg";
+        String fileName = path_dir + "/" + currentDateandTime + ".jpg";
         mOpenCvCameraView.takePicture(fileName);
         Toast.makeText(this, fileName + " saved", Toast.LENGTH_SHORT).show();
+
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(fileName); //새로고침할 사진경로
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+
+//        galleryAdapterModel.UpdateGallery();
+//        Log.d(TAG, fileName +" : DEBUG_TEST");
+//        Bitmap bm = fileIOModel.getGuidedImageFromRealPath(fileName);
+//        Log.d("DEBUG_TEST", " is ..."+Boolean.toString(bm==null));
+//        cameraModel.setGuidedImage(bm);
+//        guidedImageView.setImageBitmap(cameraModel.guidedImage);
         return false;
     }
-    
+
     // Intent Result Event
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -279,11 +348,12 @@ public class CameraController extends AppCompatActivity
 
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-
                 case StaticInformation.GALLERY_CODE:
-                    Bitmap bm = fileIOModel.getGuidedImageFromRealPath(data.getData()); //갤러리에서 가져오기
-                    cameraModel.setGuidedImage(bm);
-                    guidedImageView.setImageBitmap(cameraModel.guidedImage);
+//                    Bitmap bm = fileIOModel.getGuidedImageFromRealPath(data.getData()); //Deprecated
+//                    cameraModel.setGuidedImage(bm);
+//                    guidedImageView.setImageBitmap(cameraModel.guidedImage);
+                    String imagePath = fileIOModel.getRealPathFromURI(data.getData());
+                    setGuidedImageToView(imagePath);
                     break;
                 default:
                     break;

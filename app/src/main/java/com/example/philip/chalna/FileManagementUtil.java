@@ -19,7 +19,7 @@ public class FileManagementUtil {
     FileManagementUtil(Context c){
         context = c;
     }
-    private String getRealPathFromURI(Uri contentUri) {
+    public String getRealPathFromURI(Uri contentUri) {
         int column_index=0;
         String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
@@ -50,6 +50,22 @@ public class FileManagementUtil {
     }
     public Bitmap getGuidedImageFromRealPath(Uri imgUri) {
         String imagePath = getRealPathFromURI(imgUri);
+        ExifInterface exif = null;
+        try {
+            exif = new ExifInterface(imagePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // image rotation degree
+        int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        int exifDegree = exifOrientationToDegrees(exifOrientation);
+        Log.d(TAG,"Degree Check : " + exifDegree);
+
+        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);// image read using path.
+//        return rotate(bitmap, exifDegree);
+        return bitmap;
+    }
+    public Bitmap getGuidedImageFromRealPath(String imagePath) {
         ExifInterface exif = null;
         try {
             exif = new ExifInterface(imagePath);
