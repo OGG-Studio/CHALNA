@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import org.opencv.core.Mat;
+
 import java.io.IOException;
 
 public class FileManagementUtil {
@@ -39,7 +41,7 @@ public class FileManagementUtil {
         }
         return 0;
     }
-    private Bitmap rotate(Bitmap src, float degree) {
+    public Bitmap rotate(Bitmap src, float degree) {
         // Java graphics Matrix
         Matrix matrix = new Matrix();
         // Rotation Degree Setting

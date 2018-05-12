@@ -1,11 +1,13 @@
 package com.example.philip.chalna;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Surface;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
@@ -33,6 +36,7 @@ import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 
 import java.io.File;
@@ -64,7 +68,11 @@ public class CameraController extends AppCompatActivity
     SeekBar seekBar;
 
     // C++
-    public native void ConvertRGBtoGray(long matAddrInput, long matAddrResult);
+//    public native void ConvertRGBtoGray(long matAddrInput, long matAddrResult);
+
+    //Data
+    DBSQLiteModel myDB;
+    ProjectData currentPorject;
 
     // Library Load
     static {
@@ -103,6 +111,9 @@ public class CameraController extends AppCompatActivity
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
 
+        //UI GET
+        guidedImageView = findViewById(R.id.guidedImageViewer);
+
         btnImageLoad = findViewById(R.id.LoadImageBtn);
         btnImageLoad.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,22 +136,34 @@ public class CameraController extends AppCompatActivity
         //INFORMATION
         Intent intent = getIntent();
         path_dir = intent.getStringExtra("DIR");
+        String project_name = intent.getStringExtra("PROJECT_NAME");
         galleryAdapterModel = GalleryAdapterModel.getInstance(this, path_dir);
+
+        myDB = DBSQLiteModel.getInstance(this);
+        currentPorject = myDB.getDataByName(project_name);
 
         mOpenCvCameraView = findViewById(R.id.activity_surface_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
         mOpenCvCameraView.setFocusable(true);
 
-        mOpenCvCameraView.setCameraIndex(0); // front-camera(1),  back-camera(0)
+        if(currentPorject.mode==0){
+            mOpenCvCameraView.setCameraIndex(0); // front-camera(1),  back-camera(0)
+        }
+        else{
+            mOpenCvCameraView.setCameraIndex(1); // front-camera(1),  back-camera(0)
+        }
+
+        //OPTION SETTING CAMERA
         mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
+        mOpenCvCameraView.setCameraMode(currentPorject.mode);
+        mOpenCvCameraView.cameraController = this;
 
         //Model Initialization
         cameraModel = new CameraModel();
         fileIOModel = new FileManagementUtil(this);
 
         //UI Access
-        guidedImageView = findViewById(R.id.guidedImageViewer);
         seekBar = findViewById(R.id.seek_bar);
         seekBar.setProgress((int) (guidedImageView.getAlpha() * 100));
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -158,8 +181,6 @@ public class CameraController extends AppCompatActivity
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
-
-            ;
         });
         changeViewBtn = findViewById(R.id.changeViewBtn);
         changeViewBtn.setOnClickListener(new View.OnClickListener() {
@@ -172,27 +193,36 @@ public class CameraController extends AppCompatActivity
             }
         });
 
-        // Auto Guided
-        galleryAdapterModel.UpdateGallery();
-        String[] imageNames = galleryAdapterModel.getImageFileNames();
-        int lastIndex = imageNames.length;
-
-        if (imageNames != null && lastIndex > 0) {
-            String fileName = path_dir + "/" + galleryAdapterModel.getImageFileNames()[lastIndex - 1];
-//            Bitmap bm = fileIOModel.getGuidedImageFromRealPath(fileName); Deprecated
-            setGuidedImageToView(fileName);
-        }
     }
 
-    private void setGuidedImageToView(String fileName){
-        Glide.with(context).load(fileName).asBitmap().into(new SimpleTarget<Bitmap>() {
+    boolean firstCreate = false;
+    public void onWindowFocusChanged(boolean hasFocus){
+        super.onWindowFocusChanged(hasFocus);
+        // do Something
+        if(hasFocus && !firstCreate){
+            // Auto Guided
+            firstCreate = true;
+            galleryAdapterModel.UpdateGallery();
+            String[] imageNames = galleryAdapterModel.getImageFileNames();
+            int lastIndex = imageNames.length;
+
+            if (imageNames != null && lastIndex > 0) {
+                String fileName = path_dir + "/" + galleryAdapterModel.getImageFileNames()[lastIndex - 1];
+//            Bitmap bm = fileIOModel.getGuidedImageFromRealPath(fileName); Deprecated
+                setGuidedImageToView(fileName);
+            }
+        }
+    }
+    public void setGuidedImageToView(String fileName){
+        Log.d(TAG, "View Size " + guidedImageView.getWidth() + " " + guidedImageView.getHeight());
+        Glide.with(context).load(fileName).asBitmap().override(guidedImageView.getWidth(), guidedImageView.getHeight()).into(new SimpleTarget<Bitmap>() {
             @Override
-            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                final Bitmap resourceFinal = resource;
+            public void onResourceReady(final Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                 Thread readyThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        cameraModel.setGuidedImage(resourceFinal);
+                        Log.d(TAG, "image Size " + resource.getWidth() + " " + resource.getHeight());
+                        cameraModel.setGuidedImage(resource);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -247,14 +277,13 @@ public class CameraController extends AppCompatActivity
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         matInput = inputFrame.rgba();
 
-//        if ( matResult != null ) matResult.release();
-//        matResult = new Mat(matInput.rows(), matInput.cols(), matInput.type());
-//
-//        ConvertRGBtoGray(matInput.getNativeObjAddr(), matResult.getNativeObjAddr());
+        Log.d(TAG,"DEBUG_TEST " + currentPorject.mode);
+        if(currentPorject.mode==1){
+            Core.flip(matInput, matInput, 1);
 
-        return inputFrame.rgba();
+        }
+        return matInput;
     }
-
 
     //Permission method
     static final int PERMISSIONS_REQUEST_CODE = 1000;
@@ -332,12 +361,6 @@ public class CameraController extends AppCompatActivity
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
 
-//        galleryAdapterModel.UpdateGallery();
-//        Log.d(TAG, fileName +" : DEBUG_TEST");
-//        Bitmap bm = fileIOModel.getGuidedImageFromRealPath(fileName);
-//        Log.d("DEBUG_TEST", " is ..."+Boolean.toString(bm==null));
-//        cameraModel.setGuidedImage(bm);
-//        guidedImageView.setImageBitmap(cameraModel.guidedImage);
         return false;
     }
 

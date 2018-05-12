@@ -42,7 +42,7 @@ public class ProjectPreviewController extends AppCompatActivity {
         setContentView(R.layout.project_preview);
 
         Intent intent = getIntent();
-        String project_name = intent.getStringExtra("PROJECT_NAME");
+        final String project_name = intent.getStringExtra("PROJECT_NAME");
 
         context = this;
         myDB = DBSQLiteModel.getInstance(context);
@@ -70,6 +70,7 @@ public class ProjectPreviewController extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), CameraController.class);
                 intent.putExtra("DIR", dir_path);
+                intent.putExtra("PROJECT_NAME", project_name);
                 startActivity(intent);
             }
         });
