@@ -25,9 +25,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity
-            android:name=".MainActivity">
+        android:screenOrientation="portrait"
+        android:theme="@style/AppCamera">
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -38,11 +39,10 @@
             android:name=".CameraController"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="landscape"
-            android:theme="@style/AppCamera">
-        </activity>
-
-        <activity android:name=".ProjectPreview">
-        </activity>
+            android:theme="@style/AppCamera" />
+        <activity android:name=".ProjectPreviewController" />
+        <activity android:name=".ProjectSelectController" />
+        <activity android:name=".ProjectCreateController"></activity>
     </application>
 
 </manifest>

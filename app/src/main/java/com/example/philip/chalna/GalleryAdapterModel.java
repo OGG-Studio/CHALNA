@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 public class GalleryAdapterModel extends BaseAdapter {
     private static final String TAG = "GalleryAdapterModel";
+    private static GalleryAdapterModel instance;
     private Context context;
 
     private String imagePath;
@@ -29,7 +30,11 @@ public class GalleryAdapterModel extends BaseAdapter {
     private int delay;
     private int sizeWidth;
 
-    public void saveGIF(){
+    public static GalleryAdapterModel getInstance(Context c, String imagePath){
+        if(instance==null) instance = new GalleryAdapterModel(c, imagePath);
+        return instance;
+    }
+    public boolean saveGIF(){
         FileOutputStream outStream = null;
         try{
             outStream = new FileOutputStream(imagePath+"/result.gif");
@@ -37,7 +42,9 @@ public class GalleryAdapterModel extends BaseAdapter {
             outStream.close();
         }catch(Exception e){
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
     static public Bitmap resizeBitmap(Bitmap original, int resizeWidth) {
         double aspectRatio = (double) original.getHeight() / (double) original.getWidth();
@@ -68,6 +75,10 @@ public class GalleryAdapterModel extends BaseAdapter {
     public String[] getImageFileNames(){
         return imageFileNames;
     }
+    public void UpdateGallery(){
+        File imagePathAsFile = new File(imagePath);
+        imageFileNames = imagePathAsFile.list(new ImageFileFilter());
+    }
     public GalleryAdapterModel(Context context, String imagePath) {
         this.context = context;
         this.imagePath = imagePath;
@@ -75,7 +86,7 @@ public class GalleryAdapterModel extends BaseAdapter {
         File imagePathAsFile = new File(imagePath);
         imageFileNames = imagePathAsFile.list(new ImageFileFilter());
 
-        this.sizeWidth = 256;
+        this.sizeWidth = 512;
         this.delay = 100;
     }
 
