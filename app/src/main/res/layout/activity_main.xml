@@ -11,9 +11,10 @@
     <android.support.v7.widget.AppCompatImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitXY"
+        android:scaleType="fitCenter"
         android:alpha="0.5"
-        android:id="@+id/guidedImageViewer"/>
+        android:id="@+id/guidedImageViewer"
+        android:layout_gravity="center"/>
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -36,6 +37,12 @@
             android:text="사진찍기"
             android:id="@+id/Take_Picture"
             android:onClick="OnTakePicture"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="채인지_가이디드"
+            android:id="@+id/changeGuidedModeBtn" />
     </GridLayout>
 
     <com.example.philip.chalna.VerticalSeekbar

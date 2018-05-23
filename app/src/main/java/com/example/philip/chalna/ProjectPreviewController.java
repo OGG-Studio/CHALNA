@@ -1,8 +1,11 @@
 package com.example.philip.chalna;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -13,8 +16,11 @@ import android.widget.SeekBar;
 import com.bumptech.glide.Glide;
 
 public class ProjectPreviewController extends AppCompatActivity {
-    Context context;
+    Context context = this;
+    Activity activity = this;
     private final String TAG = "Project_Preview";
+
+    Handler handler = new Handler();
 
     String dir_path;
     GalleryAdapterModel galleryAdapterModel;
@@ -25,6 +31,7 @@ public class ProjectPreviewController extends AppCompatActivity {
     DBSQLiteModel myDB;
     ProjectData project_meta;
 
+    LoadingClass loading;
     /**
      *
      *  UI
@@ -56,12 +63,27 @@ public class ProjectPreviewController extends AppCompatActivity {
         /***************************************************************************
          *                          UI
          ***************************************************************************/
+        loading = new LoadingClass();
+
         //Btn
         saveBtn = findViewById(R.id.project_save_btn);
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                galleryAdapterModel.saveGIF();
+                loading.loadingOn(activity, "loading...");
+                new Thread(){
+                    @Override
+                    public void run(){
+                        if(galleryAdapterModel.saveGIF()) {
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    loading.loadingOff();
+                                }
+                            });
+                        };
+                    }
+                }.start();
             }
         });
         takePictureBtn = findViewById(R.id.project_takePicture_btn);

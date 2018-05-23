@@ -9,10 +9,13 @@ public class CameraModel {
     public Bitmap guidedImage = null;
 
     //Option
-    int guidedMode = 1;
+    int guidedMode = StaticInformation.GUIDED_SOBELFILTER;
 
     // OPEN_CV
     public native void sobel_filter(long matAddrInput, long matAddrResult);
+
+    public void setGuidedMode(int i){ guidedMode = i; }
+    public int getGuidedMode(){return guidedMode;}
 
     public void setGuidedImage(Mat img){
         // convert to bitmap:

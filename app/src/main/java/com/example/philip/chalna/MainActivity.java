@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.WindowManager;
 
 import java.io.File;
 
@@ -32,19 +33,36 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            //Permision check
-            if (!hasPermissions(PERMISSIONS)) {
-                //Request
-                requestPermissions(PERMISSIONS, PERMISSIONS_REQUEST_CODE);
+        setContentView(R.layout.opening);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        new Thread(){
+            @Override
+            public void run(){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    //Permision check
+                    if (!hasPermissions(PERMISSIONS)) {
+                        //Request
+                        requestPermissions(PERMISSIONS, PERMISSIONS_REQUEST_CODE);
+                    }else{
+                        try {
+                            Thread.sleep(1500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        //mkdir
+                        folderInit();
+
+                        Intent intent = new Intent(getApplicationContext(), ProjectSelectController.class);
+                        startActivity(intent);
+                    }
+                }
             }
-        }
-
-        //mkdir
-        folderInit();
-
-        Intent intent = new Intent(this, ProjectSelectController.class);
-        startActivity(intent);
+        }.start();
     }
     //Permission method
     static final int PERMISSIONS_REQUEST_CODE = 1000;
@@ -75,11 +93,19 @@ public class MainActivity extends AppCompatActivity {
         switch(requestCode){
             case PERMISSIONS_REQUEST_CODE:
                 if (grantResults.length > 0) {
-                    boolean cameraPermissionAccepted = grantResults[0]
-                            == PackageManager.PERMISSION_GRANTED;
+                    boolean cameraPermissionAccepted =
+                                    grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                                    grantResults[1] == PackageManager.PERMISSION_GRANTED &&
+                                    grantResults[2] == PackageManager.PERMISSION_GRANTED;
 
                     if (!cameraPermissionAccepted)
                         showDialogForPermission("앱을 실행하려면 퍼미션을 허가하셔야합니다.");
+                    else{
+                        folderInit();
+                        Intent intent = new Intent(this, ProjectSelectController.class);
+                        startActivity(intent);
+                    }
+
                 }
                 break;
         }

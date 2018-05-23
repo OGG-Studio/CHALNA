@@ -34,7 +34,7 @@ public class GalleryAdapterModel extends BaseAdapter {
         if(instance==null) instance = new GalleryAdapterModel(c, imagePath);
         return instance;
     }
-    public void saveGIF(){
+    public boolean saveGIF(){
         FileOutputStream outStream = null;
         try{
             outStream = new FileOutputStream(imagePath+"/result.gif");
@@ -42,7 +42,9 @@ public class GalleryAdapterModel extends BaseAdapter {
             outStream.close();
         }catch(Exception e){
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
     static public Bitmap resizeBitmap(Bitmap original, int resizeWidth) {
         double aspectRatio = (double) original.getHeight() / (double) original.getWidth();
@@ -84,7 +86,7 @@ public class GalleryAdapterModel extends BaseAdapter {
         File imagePathAsFile = new File(imagePath);
         imageFileNames = imagePathAsFile.list(new ImageFileFilter());
 
-        this.sizeWidth = 256;
+        this.sizeWidth = 512;
         this.delay = 100;
     }
 

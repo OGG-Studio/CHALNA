@@ -5,12 +5,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Environment;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -18,6 +20,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceView;
 import android.view.View;
@@ -62,6 +65,7 @@ public class CameraController extends AppCompatActivity
     // Button
     Button btnImageLoad;
     Button changeViewBtn;
+    Button changeGuidedModeBtn;
 
     // UI
     ImageView guidedImageView;
@@ -111,8 +115,20 @@ public class CameraController extends AppCompatActivity
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
 
+
+        //Model Initialization
+        cameraModel = new CameraModel();
+        fileIOModel = new FileManagementUtil(this);
+
+
         //UI GET
         guidedImageView = findViewById(R.id.guidedImageViewer);
+        guidedImageView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return mOpenCvCameraView.onTouchEvent(event);
+            }
+        });
 
         btnImageLoad = findViewById(R.id.LoadImageBtn);
         btnImageLoad.setOnClickListener(new View.OnClickListener() {
@@ -122,6 +138,24 @@ public class CameraController extends AppCompatActivity
                 intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 intent.setType("image/*");
                 startActivityForResult(intent, StaticInformation.GALLERY_CODE);
+            }
+        });
+
+        changeGuidedModeBtn = findViewById(R.id.changeGuidedModeBtn);
+        changeGuidedModeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(cameraModel.getGuidedMode()==StaticInformation.GUIDED_SOBELFILTER)
+                    cameraModel.setGuidedMode(StaticInformation.GUIDED_TRANSPARENCY);
+                else
+                    cameraModel.setGuidedMode(StaticInformation.GUIDED_SOBELFILTER);
+
+                Log.e("TEST_DEBUG", ""+cameraModel.getGuidedMode());
+                final String img_path = mOpenCvCameraView.getmPictureFileName();
+                if(img_path!=null){
+                    setGuidedImageToView(img_path);
+                }
+
             }
         });
 
@@ -142,6 +176,15 @@ public class CameraController extends AppCompatActivity
         myDB = DBSQLiteModel.getInstance(this);
         currentPorject = myDB.getDataByName(project_name);
 
+        // WIDE MODE
+        if(currentPorject.wide==0){
+            //Vertical
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }else{
+            //Horizontal
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+
         mOpenCvCameraView = findViewById(R.id.activity_surface_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
@@ -159,10 +202,6 @@ public class CameraController extends AppCompatActivity
         mOpenCvCameraView.setCameraMode(currentPorject.mode);
         mOpenCvCameraView.cameraController = this;
 
-        //Model Initialization
-        cameraModel = new CameraModel();
-        fileIOModel = new FileManagementUtil(this);
-
         //UI Access
         seekBar = findViewById(R.id.seek_bar);
         seekBar.setProgress((int) (guidedImageView.getAlpha() * 100));
@@ -171,13 +210,9 @@ public class CameraController extends AppCompatActivity
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 guidedImageView.setAlpha((float) progress / 100);
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
-
-            ;
-
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
@@ -192,7 +227,6 @@ public class CameraController extends AppCompatActivity
                 mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
             }
         });
-
     }
 
     boolean firstCreate = false;
@@ -200,17 +234,26 @@ public class CameraController extends AppCompatActivity
         super.onWindowFocusChanged(hasFocus);
         // do Something
         if(hasFocus && !firstCreate){
+            Camera.Size mCameraSize = mOpenCvCameraView.getResolution();
+
+            mOpenCvCameraView.setPictureSize(mCameraSize.width, mCameraSize.height);
+
             // Auto Guided
-            firstCreate = true;
             galleryAdapterModel.UpdateGallery();
             String[] imageNames = galleryAdapterModel.getImageFileNames();
             int lastIndex = imageNames.length;
 
             if (imageNames != null && lastIndex > 0) {
                 String fileName = path_dir + "/" + galleryAdapterModel.getImageFileNames()[lastIndex - 1];
-//            Bitmap bm = fileIOModel.getGuidedImageFromRealPath(fileName); Deprecated
+                mOpenCvCameraView.setmPictureFileName(fileName);
                 setGuidedImageToView(fileName);
             }
+
+            Log.d("DEBUG_TEST","GUIDED_SIZE = " +guidedImageView.getWidth() + " " + guidedImageView.getHeight());
+            Log.d("DEBUG_TEST","CameraView = " +mOpenCvCameraView.getWidth() + " " + mOpenCvCameraView.getHeight());
+            Log.d("DEBUG_TEST","Res = " +mOpenCvCameraView.getResolution().width + " " + mOpenCvCameraView.getResolution().height);
+
+            firstCreate = true;
         }
     }
     public void setGuidedImageToView(String fileName){
@@ -277,10 +320,8 @@ public class CameraController extends AppCompatActivity
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         matInput = inputFrame.rgba();
 
-        Log.d(TAG,"DEBUG_TEST " + currentPorject.mode);
         if(currentPorject.mode==1){
             Core.flip(matInput, matInput, 1);
-
         }
         return matInput;
     }
@@ -376,6 +417,7 @@ public class CameraController extends AppCompatActivity
 //                    cameraModel.setGuidedImage(bm);
 //                    guidedImageView.setImageBitmap(cameraModel.guidedImage);
                     String imagePath = fileIOModel.getRealPathFromURI(data.getData());
+                    mOpenCvCameraView.setmPictureFileName(imagePath);
                     setGuidedImageToView(imagePath);
                     break;
                 default:
