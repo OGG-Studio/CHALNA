@@ -1,13 +1,23 @@
 package com.example.philip.chalna;
 
+import android.content.Context;
 import android.graphics.Bitmap;
-import android.view.OrientationEventListener;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
+import android.nfc.Tag;
+import android.os.Debug;
+import android.util.Log;
+import android.widget.Toast;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 
+import java.io.IOException;
+
 public class CameraModel {
+    Context context;
     public Bitmap guidedImage = null;
+
 
     //Option
     int guidedMode = StaticInformation.GUIDED_SOBELFILTER;
@@ -35,7 +45,25 @@ public class CameraModel {
         }
         guidedImage = bm;
     }
-    public void setGuidedImage(Bitmap img){
+    public Bitmap imageExifRotation(Bitmap img, final String filePath){
+        try {
+            ExifInterface exif = new ExifInterface(filePath);
+            int exifOrientation = exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL
+            );
+
+            int exifDegree = exifOrientationToDegrees(exifOrientation);
+
+            Log.e("[imageExifRotation","current Phone = " + exifOrientation +" change Dgree = " + exifDegree);
+            img = rotate(img,exifDegree);
+        } catch (IOException e) {
+            Toast.makeText(context,"File Path Error! Sorry..", Toast.LENGTH_SHORT);
+            return img;
+        }
+        return img;
+    }
+    public void setGuidedImage(Bitmap img, final String filePath){
+        img = imageExifRotation(img, filePath);
         switch (guidedMode){
             case StaticInformation.GUIDED_SOBELFILTER:
                 img = img.copy(Bitmap.Config.ARGB_8888,true);
@@ -53,5 +81,46 @@ public class CameraModel {
                 guidedImage = img;
                 break;
         }
+    }
+    public int exifOrientationToDegrees(int exifOrientation)
+    {
+        if(exifOrientation == ExifInterface.ORIENTATION_ROTATE_90)
+        {
+            return 90;
+        }
+        else if(exifOrientation == ExifInterface.ORIENTATION_ROTATE_180)
+        {
+            return 180;
+        }
+        else if(exifOrientation == ExifInterface.ORIENTATION_ROTATE_270)
+        {
+            return 270;
+        }
+        return 0;
+    }
+    public Bitmap rotate(Bitmap bitmap, int degrees)
+    {
+        if(degrees != 0 && bitmap != null)
+        {
+            Matrix m = new Matrix();
+            m.setRotate(degrees, (float) bitmap.getWidth() / 2,
+                    (float) bitmap.getHeight() / 2);
+
+            try
+            {
+                Bitmap converted = Bitmap.createBitmap(bitmap, 0, 0,
+                        bitmap.getWidth(), bitmap.getHeight(), m, true);
+                if(bitmap != converted)
+                {
+                    bitmap.recycle();
+                    bitmap = converted;
+                }
+            }
+            catch(OutOfMemoryError ex)
+            {
+                // 메모리가 부족하여 회전을 시키지 못할 경우 그냥 원본을 반환합니다.
+            }
+        }
+        return bitmap;
     }
 }

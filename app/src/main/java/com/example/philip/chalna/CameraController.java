@@ -9,6 +9,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -182,15 +183,6 @@ public class CameraController extends AppCompatActivity
         myDB = DBSQLiteModel.getInstance(this);
         currentPorject = myDB.getDataByName(project_name);
 
-        // WIDE MODE
-        if(currentPorject.wide==0){
-            //Vertical
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }else{
-            //Horizontal
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        }
-
         mOpenCvCameraView = findViewById(R.id.activity_surface_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
@@ -265,7 +257,7 @@ public class CameraController extends AppCompatActivity
             firstCreate = true;
         }
     }
-    public void setGuidedImageToView(String fileName){
+    public void setGuidedImageToView(final String fileName){
         Log.d(TAG, "View Size " + guidedImageView.getWidth() + " " + guidedImageView.getHeight());
         Glide.with(context).load(fileName).asBitmap().override(guidedImageView.getWidth(), guidedImageView.getHeight()).into(new SimpleTarget<Bitmap>() {
             @Override
@@ -273,8 +265,7 @@ public class CameraController extends AppCompatActivity
                 Thread readyThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d(TAG, "image Size " + resource.getWidth() + " " + resource.getHeight());
-                        cameraModel.setGuidedImage(resource);
+                        cameraModel.setGuidedImage(resource, fileName);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

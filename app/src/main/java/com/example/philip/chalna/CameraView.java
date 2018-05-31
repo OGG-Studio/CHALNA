@@ -9,6 +9,7 @@ import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
+import android.media.ExifInterface;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -27,7 +28,7 @@ public class CameraView extends JavaCameraView implements PictureCallback {
 
     private static final String TAG = "myCameraView";
     private String mPictureFileName = null;
-    private int camera_mode = 0;
+    private int camera_mode = StaticInformation.CAMERA_REAR;
     public CameraController cameraController;
     Context context;
 
@@ -104,6 +105,7 @@ public class CameraView extends JavaCameraView implements PictureCallback {
         mCamera.takePicture(null, null, this);
     }
 
+
     @Override
     public void onPictureTaken(byte[] data, Camera camera) {
         Log.i(TAG, "Saving a bitmap to file");
@@ -115,20 +117,29 @@ public class CameraView extends JavaCameraView implements PictureCallback {
         try {
             FileOutputStream fos = new FileOutputStream(mPictureFileName);
 
-            if(camera_mode==1){
+            Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+            Matrix m = new Matrix();
+//                m.postRotate(0);
+
+            if(camera_mode==StaticInformation.CAMERA_FRONT){
                 Log.i(TAG, "Rotation CAMERA");
 
-                Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-                Matrix m = new Matrix();
-//                m.postRotate(0);
                 m.postScale(-1, 1);
 
                 Bitmap rotateBitmap = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), m, false);
                 bmp.recycle();
 
                 data = ImageProcessingIO.bitmapToByteArray(rotateBitmap);
+            }else if(camera_mode==StaticInformation.CAMERA_REAR && cameraController.currentOrientation!=StaticInformation.CAMERA_ORIENTATION_LEFT){
+                if(cameraController.currentOrientation==StaticInformation.CAMERA_ORIENTATION_PORTARATE){
+                    m.postRotate(90);
+                }else if(cameraController.currentOrientation==StaticInformation.CAMERA_ORIENTATION_RIGHT){
+                    m.postRotate(180);
+                }
+                Bitmap rotateBitmap = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), m, false);
+                bmp.recycle();
+                data = ImageProcessingIO.bitmapToByteArray(rotateBitmap);
             }
-
             fos.write(data);
             fos.close();
 
