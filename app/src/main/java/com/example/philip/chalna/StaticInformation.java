@@ -14,5 +14,8 @@ public class StaticInformation {
     //REQUEST
     public static final int REQUEST_CREATE_CONTROL = 1;
 
-
+    //Caemra
+    public static final int CAMERA_ORIENTATION_RIGHT = 1;
+    public static final int CAMERA_ORIENTATION_LEFT = 2;
+    public static final int CAMERA_ORIENTATION_PORTARATE = 3;
 }

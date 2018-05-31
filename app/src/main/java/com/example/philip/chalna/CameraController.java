@@ -21,6 +21,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.OrientationEventListener;
 import android.view.Surface;
 import android.view.SurfaceView;
 import android.view.View;
@@ -44,13 +45,16 @@ import org.opencv.core.Mat;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 public class CameraController extends AppCompatActivity
         implements CvCameraViewListener2 {
     private static final String TAG = "CameraController";
 
+    Activity activity = this;
     Context context = this;
     private CameraView mOpenCvCameraView;
 
@@ -77,6 +81,10 @@ public class CameraController extends AppCompatActivity
     //Data
     DBSQLiteModel myDB;
     ProjectData currentPorject;
+
+    //Camera Listener
+    public OrientationEventListener mOrientationEventListener;
+    public int currentOrientation= 0;
 
     // Library Load
     static {
@@ -115,11 +123,9 @@ public class CameraController extends AppCompatActivity
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
 
-
         //Model Initialization
         cameraModel = new CameraModel();
         fileIOModel = new FileManagementUtil(this);
-
 
         //UI GET
         guidedImageView = findViewById(R.id.guidedImageViewer);
@@ -227,6 +233,9 @@ public class CameraController extends AppCompatActivity
                 mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
             }
         });
+
+        // Camera Callback initialization
+        setupOrientationEventListener();
     }
 
     boolean firstCreate = false;
@@ -282,6 +291,8 @@ public class CameraController extends AppCompatActivity
     @Override
     public void onPause() {
         super.onPause();
+        mOrientationEventListener.disable();
+
         if (mOpenCvCameraView != null)
             mOpenCvCameraView.disableView();
     }
@@ -289,6 +300,8 @@ public class CameraController extends AppCompatActivity
     @Override
     public void onResume() {
         super.onResume();
+
+        mOrientationEventListener.enable();
 
         if (!OpenCVLoader.initDebug()) {
             Log.d(TAG, "onResume :: Internal OpenCV library not found.");
@@ -423,6 +436,61 @@ public class CameraController extends AppCompatActivity
                 default:
                     break;
             }
+        }
+    }
+
+    /***
+     *          CALL BACK
+     */
+
+    public void setupOrientationEventListener() {
+        mOrientationEventListener = new OrientationEventListener(this){
+            @Override
+            public void onOrientationChanged(int orientation) {
+                Log.d("Orientation_Test", "Current " + orientation);
+                if(activity.isFinishing()){
+                    mOrientationEventListener.disable();
+                    return;
+                }
+
+                int newOrientation;
+                if(orientation >=75 && orientation < 134){
+                    newOrientation = StaticInformation.CAMERA_ORIENTATION_RIGHT;
+                }else if(orientation >= 225 && orientation <289){
+                    newOrientation = StaticInformation.CAMERA_ORIENTATION_LEFT;
+                }else{
+                    newOrientation = StaticInformation.CAMERA_ORIENTATION_PORTARATE;
+                }
+
+                if(newOrientation!=currentOrientation){
+                    int degree = 0;
+
+                    if(newOrientation==StaticInformation.CAMERA_ORIENTATION_RIGHT){
+                        degree = -180;
+                    }else if(newOrientation==StaticInformation.CAMERA_ORIENTATION_LEFT){
+                        degree = 0;
+                    }else{
+                        degree = -90;
+                    }
+
+                    animateViews(degree);
+                    currentOrientation = newOrientation;
+                }
+            }
+        };
+        mOrientationEventListener.enable();
+    }
+
+    private  void animateViews(int degrees) {
+        List<View> views = new ArrayList<View>(){
+            {
+                add(btnImageLoad);
+                add(changeGuidedModeBtn);
+                add(changeViewBtn);
+            }
+        };
+        for (View view : views) {
+            view.animate().rotation(Float.valueOf(degrees)).start();
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.philip.chalna;
 
 import android.graphics.Bitmap;
+import android.view.OrientationEventListener;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
@@ -10,6 +11,7 @@ public class CameraModel {
 
     //Option
     int guidedMode = StaticInformation.GUIDED_SOBELFILTER;
+
 
     // OPEN_CV
     public native void sobel_filter(long matAddrInput, long matAddrResult);
