@@ -157,7 +157,6 @@ public class CameraController extends AppCompatActivity
                 else
                     cameraModel.setGuidedMode(StaticInformation.GUIDED_SOBELFILTER);
 
-                Log.e("TEST_DEBUG", ""+cameraModel.getGuidedMode());
                 final String img_path = mOpenCvCameraView.getmPictureFileName();
                 if(img_path!=null){
                     setGuidedImageToView(img_path);
@@ -265,7 +264,7 @@ public class CameraController extends AppCompatActivity
                 Thread readyThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        cameraModel.setGuidedImage(resource, fileName);
+                        cameraModel.setGuidedImage(resource, currentOrientation);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

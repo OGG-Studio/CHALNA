@@ -26,14 +26,19 @@ public class CameraModel {
     // OPEN_CV
     public native void sobel_filter(long matAddrInput, long matAddrResult);
 
-    public void setGuidedMode(int i){ guidedMode = i; }
-    public int getGuidedMode(){return guidedMode;}
+    public void setGuidedMode(int i) {
+        guidedMode = i;
+    }
 
-    public void setGuidedImage(Mat img){
+    public int getGuidedMode() {
+        return guidedMode;
+    }
+
+    public void setGuidedImage(Mat img) {
         // convert to bitmap:
-        Bitmap bm = Bitmap.createBitmap(img.cols(), img.rows(),Bitmap.Config.ARGB_8888);
+        Bitmap bm = Bitmap.createBitmap(img.cols(), img.rows(), Bitmap.Config.ARGB_8888);
 
-        switch (guidedMode){
+        switch (guidedMode) {
             case StaticInformation.GUIDED_SOBELFILTER:
                 Mat matResult = new Mat(img.rows(), img.cols(), img.type());
                 sobel_filter(img.getNativeObjAddr(), matResult.getNativeObjAddr());
@@ -45,7 +50,8 @@ public class CameraModel {
         }
         guidedImage = bm;
     }
-    public Bitmap imageExifRotation(Bitmap img, final String filePath){
+
+    public Bitmap imageExifRotation(Bitmap img, final String filePath) {
         try {
             ExifInterface exif = new ExifInterface(filePath);
             int exifOrientation = exif.getAttributeInt(
@@ -54,25 +60,36 @@ public class CameraModel {
 
             int exifDegree = exifOrientationToDegrees(exifOrientation);
 
-            Log.e("[imageExifRotation","current Phone = " + exifOrientation +" change Dgree = " + exifDegree);
-            img = rotate(img,exifDegree);
+            Log.e("[imageExifRotation", "current Phone = " + exifOrientation + " change Dgree = " + exifDegree);
+            img = rotate(img, exifDegree);
         } catch (IOException e) {
-            Toast.makeText(context,"File Path Error! Sorry..", Toast.LENGTH_SHORT);
+            Toast.makeText(context, "File Path Error! Sorry..", Toast.LENGTH_SHORT);
             return img;
         }
         return img;
     }
-    public void setGuidedImage(Bitmap img, final String filePath){
-        img = imageExifRotation(img, filePath);
-        switch (guidedMode){
+
+    public Bitmap rotateLandScape(Bitmap img, int display_mode){
+        if(display_mode==StaticInformation.CAMERA_ORIENTATION_LEFT){
+            return img;
+        }else if(display_mode==StaticInformation.CAMERA_ORIENTATION_PORTARATE){
+            return rotate(img,-90);
+        }else{
+            return rotate(img,-180);
+        }
+
+    }
+    public void setGuidedImage(Bitmap img, int display_mode) {
+        img = rotateLandScape(img, display_mode);
+        switch (guidedMode) {
             case StaticInformation.GUIDED_SOBELFILTER:
-                img = img.copy(Bitmap.Config.ARGB_8888,true);
+                img = img.copy(Bitmap.Config.ARGB_8888, true);
                 Mat inputImage = new Mat();
                 Utils.bitmapToMat(img, inputImage);
                 Mat matResult = new Mat(inputImage.rows(), inputImage.cols(), inputImage.type());
                 sobel_filter(inputImage.getNativeObjAddr(), matResult.getNativeObjAddr());
 
-                Bitmap bm = Bitmap.createBitmap(inputImage.cols(), inputImage.rows(),Bitmap.Config.ARGB_8888);
+                Bitmap bm = Bitmap.createBitmap(inputImage.cols(), inputImage.rows(), Bitmap.Config.ARGB_8888);
                 Utils.matToBitmap(matResult, bm);
 
                 guidedImage = bm;
@@ -82,43 +99,32 @@ public class CameraModel {
                 break;
         }
     }
-    public int exifOrientationToDegrees(int exifOrientation)
-    {
-        if(exifOrientation == ExifInterface.ORIENTATION_ROTATE_90)
-        {
+
+    public int exifOrientationToDegrees(int exifOrientation) {
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
             return 90;
-        }
-        else if(exifOrientation == ExifInterface.ORIENTATION_ROTATE_180)
-        {
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
             return 180;
-        }
-        else if(exifOrientation == ExifInterface.ORIENTATION_ROTATE_270)
-        {
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
             return 270;
         }
         return 0;
     }
-    public Bitmap rotate(Bitmap bitmap, int degrees)
-    {
-        if(degrees != 0 && bitmap != null)
-        {
+
+    public Bitmap rotate(Bitmap bitmap, int degrees) {
+        if (degrees != 0 && bitmap != null) {
             Matrix m = new Matrix();
             m.setRotate(degrees, (float) bitmap.getWidth() / 2,
                     (float) bitmap.getHeight() / 2);
 
-            try
-            {
+            try {
                 Bitmap converted = Bitmap.createBitmap(bitmap, 0, 0,
                         bitmap.getWidth(), bitmap.getHeight(), m, true);
-                if(bitmap != converted)
-                {
+                if (bitmap != converted) {
                     bitmap.recycle();
                     bitmap = converted;
                 }
-            }
-            catch(OutOfMemoryError ex)
-            {
-                // 메모리가 부족하여 회전을 시키지 못할 경우 그냥 원본을 반환합니다.
+            } catch (OutOfMemoryError ex) {
             }
         }
         return bitmap;
