@@ -32,6 +32,8 @@ public class CameraView extends JavaCameraView implements PictureCallback {
     public CameraController cameraController;
     Context context;
 
+    int zoom_factor;
+
     public void setmPictureFileName(String mPictureFileName) {
         this.mPictureFileName = mPictureFileName;
     }
@@ -60,6 +62,11 @@ public class CameraView extends JavaCameraView implements PictureCallback {
         return true;
     }
 
+    public void setZoomFactor(int alpha){
+        Camera.Parameters params = mCamera.getParameters();
+        params.setZoom(alpha);
+        mCamera.setParameters(params);
+    }
     public void setCameraMode(int mode){
         camera_mode = mode;
     }
@@ -123,7 +130,11 @@ public class CameraView extends JavaCameraView implements PictureCallback {
 
             if(camera_mode==StaticInformation.CAMERA_FRONT){
                 Log.i(TAG, "Rotation CAMERA");
-
+                if(cameraController.currentOrientation==StaticInformation.CAMERA_ORIENTATION_PORTARATE){
+                    m.postRotate(-90);
+                }else if(cameraController.currentOrientation==StaticInformation.CAMERA_ORIENTATION_RIGHT){
+                    m.postRotate(-180);
+                }
                 m.postScale(-1, 1);
 
                 Bitmap rotateBitmap = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), m, false);

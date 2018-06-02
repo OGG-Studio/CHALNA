@@ -13,7 +13,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class LoadingClass extends Thread{
+public class LoadingClass {
     AppCompatDialog progressDialog;
 
     public void loadingOn(Activity activity, String message){
@@ -33,8 +33,8 @@ public class LoadingClass extends Thread{
 
         // Animation
         final ImageView img_loading_frame = progressDialog.findViewById(R.id.iv_frame_loading);
-        final Animation animation = AnimationUtils.loadAnimation(activity.getApplicationContext(), R.anim.rotation_anim);
-        img_loading_frame.post(new Runnable() { @Override public void run() { img_loading_frame.startAnimation(animation); } });
+        final AnimationDrawable frameAnimation = (AnimationDrawable) img_loading_frame.getBackground();
+        img_loading_frame.post(new Runnable() { @Override public void run() { frameAnimation.start(); } });
 
         TextView tv_progress_message = (TextView) progressDialog.findViewById(R.id.tv_progress_message);
         if (!TextUtils.isEmpty(message)) {

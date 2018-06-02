@@ -69,18 +69,18 @@ public class CameraModel {
         return img;
     }
 
-    public Bitmap rotateLandScape(Bitmap img, int display_mode){
-        if(display_mode==StaticInformation.CAMERA_ORIENTATION_LEFT){
+    public Bitmap rotateLandScape(Bitmap img, int display_orientation, int camera_mode) {
+        if (display_orientation == StaticInformation.CAMERA_ORIENTATION_LEFT) {
             return img;
-        }else if(display_mode==StaticInformation.CAMERA_ORIENTATION_PORTARATE){
-            return rotate(img,-90);
-        }else{
-            return rotate(img,-180);
+        } else if (display_orientation == StaticInformation.CAMERA_ORIENTATION_PORTARATE) {
+            return rotate(img, -90);
+        } else {
+            return rotate(img, -180);
         }
-
     }
-    public void setGuidedImage(Bitmap img, int display_mode) {
-        img = rotateLandScape(img, display_mode);
+
+    public void setGuidedImage(Bitmap img, int display_orientation, int camera_mode) {
+        img = rotateLandScape(img, display_orientation, camera_mode);
         switch (guidedMode) {
             case StaticInformation.GUIDED_SOBELFILTER:
                 img = img.copy(Bitmap.Config.ARGB_8888, true);

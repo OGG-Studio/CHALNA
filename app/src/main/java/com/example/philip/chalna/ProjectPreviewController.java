@@ -3,10 +3,11 @@ package com.example.philip.chalna;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.AnimationDrawable;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -14,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 public class ProjectPreviewController extends AppCompatActivity {
     Context context = this;
@@ -31,7 +33,11 @@ public class ProjectPreviewController extends AppCompatActivity {
     DBSQLiteModel myDB;
     ProjectData project_meta;
 
+    boolean isOnResume;
+
+    // Dialog
     LoadingClass loading;
+    PreviewDialog previewDialog;
     /**
      *
      *  UI
@@ -42,7 +48,11 @@ public class ProjectPreviewController extends AppCompatActivity {
     Button saveBtn;
     Button takePictureBtn;
     Button showBtn;
+    Button previewBtn;
 
+    /**
+       Animation test
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +63,7 @@ public class ProjectPreviewController extends AppCompatActivity {
 
         context = this;
         myDB = DBSQLiteModel.getInstance(context);
-        project_meta = myDB.getDataByName(project_name);
+        project_meta = myDB.getDataByNameFromPROJECT(project_name);
 
 //        dir_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + "/Test";
         dir_path = project_meta.dir;
@@ -64,6 +74,7 @@ public class ProjectPreviewController extends AppCompatActivity {
          *                          UI
          ***************************************************************************/
         loading = new LoadingClass();
+        previewDialog = new PreviewDialog(this);
 
         //Btn
         saveBtn = findViewById(R.id.project_save_btn);
@@ -94,6 +105,8 @@ public class ProjectPreviewController extends AppCompatActivity {
                 intent.putExtra("DIR", dir_path);
                 intent.putExtra("PROJECT_NAME", project_name);
                 startActivity(intent);
+                isOnResume = false;
+                onWindowFocusChanged(true);
             }
         });
 
@@ -105,7 +118,13 @@ public class ProjectPreviewController extends AppCompatActivity {
                 String imageName = galleryAdapterModel.getImageFileNames()[progress];
 
                 final ImageView imgView = findViewById(R.id.project_imageView);
-                Glide.with(context).load(dir_path+"/"+imageName).into(imgView);
+
+                int width = imgView.getWidth();
+                int height = imgView.getHeight();
+
+                //Optimization ..
+                Log.d(TAG, "image View size : "+width+" "+height);
+                Glide.with(context).load(dir_path+"/"+imageName).override(width,height).into(imgView);
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -116,40 +135,52 @@ public class ProjectPreviewController extends AppCompatActivity {
             }
         });
         showBtn = findViewById(R.id.project_show);
+        showBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loading.loadingOn(activity, "Preview Ready...");
+                new Thread(){
+                    @Override
+                    public void run(){
+                        final byte[] anim = galleryAdapterModel.generateGIF();
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                loading.loadingOff();
+                                previewDialog.previewOn(activity, anim);
+                            }
+                        });
+
+                    }
+                }.start();
+
+            }
+        });
     }
     @Override
     public void onResume() {
         super.onResume();
-        galleryAdapterModel = GalleryAdapterModel.getInstance(this, dir_path);
-        galleryAdapterModel.UpdateGallery();
-        if(galleryAdapterModel.getCount()>0){
-            seekBar.setMax(galleryAdapterModel.getCount()-1);
-            seekBar.setProgress(galleryAdapterModel.getCount()-1);
+        isOnResume = false;
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        isOnResume = false;
+    }
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus){
+        super.onWindowFocusChanged(hasFocus);
+        Log.d("onWindowFocusChanged", "Change : " + isOnResume);
+        // do Something
+        if(isOnResume==false){
+            isOnResume = true;
+            galleryAdapterModel = GalleryAdapterModel.getInstance(this, dir_path);
+            galleryAdapterModel.UpdateGallery();
+            Log.d("onWindowFocusChanged", "GALALY UPDATE : " + galleryAdapterModel.getCount());
+            if(galleryAdapterModel.getCount()>0){
+                seekBar.setMax(galleryAdapterModel.getCount()-1);
+                seekBar.setProgress(galleryAdapterModel.getCount()-1);
+            }
         }
     }
-
-//    @Override
-//    private void updatePreview(){
-//        String[] imagePaths = galleryAdapterModel.getImageFileNames();
-//        for(String imgPath : imagePaths){
-//            File imgFile = new File(dir_path+"/"+imgPath);
-//            if(imgFile.exists()){
-//                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-//                int h = 200;
-//                int height = myBitmap.getHeight();
-//                int width = myBitmap.getWidth();
-//                Log.d("PROJECT_PREVIEW", " " + h + " " + height + " " + width);
-//                Bitmap resized = null;
-//                while (height > h) {
-//                    resized = Bitmap.createScaledBitmap(myBitmap, (width * h) / height, h, true);
-//                    height = resized.getHeight();
-//                    width = resized.getWidth();
-//                }
-//                ImageView imgView = new ImageView(this);
-//                imgView.setImageBitmap(resized);
-//                imgView.setScaleType(ImageView.ScaleType.FIT_START);
-//                container.addView(imgView);
-//            }
-//        }
-//    }
 }

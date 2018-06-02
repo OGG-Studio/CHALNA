@@ -69,7 +69,7 @@ public class ProjectSelectController extends AppCompatActivity {
 
     void drawCurrentProject(){
         myDB.projectSanityCheck();
-        ArrayList<ProjectData> pList = myDB.selectAll();
+        ArrayList<ProjectData> pList = myDB.selectAllFromPROJECT();
         for(final ProjectData project : pList){
             Button tempButton = new Button(this);
             tempButton.setText(project.name);

@@ -1,6 +1,5 @@
 package com.example.philip.chalna;
 
-import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -61,7 +60,7 @@ public class ProjectCreateController extends AppCompatActivity {
                         Log.d("DEBUG_TEST", StaticInformation.CHALNA_PATH+"/"+name  + " Success");
                     }
                 }
-                myDB.dbInsert(name,wide,mode,StaticInformation.CHALNA_PATH+"/"+name,0);
+                myDB.dbInsertionIntoPROJECT(name,wide,mode,StaticInformation.CHALNA_PATH+"/"+name,0);
                 setResult(RESULT_OK);
                 finish();
             }

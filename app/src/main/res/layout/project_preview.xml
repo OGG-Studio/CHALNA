@@ -99,12 +99,23 @@
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="wrap_content" />
-    <Button
-        android:layout_height="wrap_content"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_gravity="center"
-        android:text="저장하기"
-        android:id="@+id/project_save_btn"/>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:text="저장하기"
+            android:id="@+id/project_save_btn"/>
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:text="미리보기"
+            android:id="@+id/project_preview_btn"/>
+    </LinearLayout>
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="wrap_content" />

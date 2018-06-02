@@ -5,17 +5,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Debug;
-import android.os.Environment;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -23,7 +18,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
-import android.view.Surface;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
@@ -180,18 +174,18 @@ public class CameraController extends AppCompatActivity
         galleryAdapterModel = GalleryAdapterModel.getInstance(this, path_dir);
 
         myDB = DBSQLiteModel.getInstance(this);
-        currentPorject = myDB.getDataByName(project_name);
+        currentPorject = myDB.getDataByNameFromPROJECT(project_name);
 
         mOpenCvCameraView = findViewById(R.id.activity_surface_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
         mOpenCvCameraView.setFocusable(true);
 
-        if(currentPorject.mode==0){
-            mOpenCvCameraView.setCameraIndex(0); // front-camera(1),  back-camera(0)
+        if(currentPorject.mode==StaticInformation.CAMERA_FRONT){
+            mOpenCvCameraView.setCameraIndex(StaticInformation.CAMERA_FRONT); // front-camera(1),  back-camera(0)
         }
         else{
-            mOpenCvCameraView.setCameraIndex(1); // front-camera(1),  back-camera(0)
+            mOpenCvCameraView.setCameraIndex(StaticInformation.CAMERA_REAR); // front-camera(1),  back-camera(0)
         }
 
         //OPTION SETTING CAMERA
@@ -220,7 +214,15 @@ public class CameraController extends AppCompatActivity
             public void onClick(View v) {
                 Log.d(TAG, "myCheck Camera Change");
                 mOpenCvCameraView.disableView();
-                mOpenCvCameraView.setCameraIndex(1); // front-camera(1),  back-camera(0)
+                if(currentPorject.mode == StaticInformation.CAMERA_REAR){
+                    currentPorject.mode = StaticInformation.CAMERA_FRONT;
+                }else{
+                    currentPorject.mode = StaticInformation.CAMERA_REAR;
+                }
+                 // front-camera(1),  back-camera(0)
+                mOpenCvCameraView.setCameraIndex(currentPorject.mode);
+                mOpenCvCameraView.setCameraMode(currentPorject.mode);
+                myDB.syncProjectData(currentPorject);
                 mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
             }
         });
@@ -264,7 +266,7 @@ public class CameraController extends AppCompatActivity
                 Thread readyThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        cameraModel.setGuidedImage(resource, currentOrientation);
+                        cameraModel.setGuidedImage(resource, currentOrientation, currentPorject.mode);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

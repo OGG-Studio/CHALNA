@@ -22,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Main";
 
     //Test
-
     private void folderInit(){
         Log.d(TAG, "Folder initialization");
         String chalnaDirectory = StaticInformation.DCIM_PATH + "/CHALNA";
@@ -30,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         CHALNA_FORDER.mkdirs();
         Log.d(TAG, "Folder initialization Complete");
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
                         Intent intent = new Intent(getApplicationContext(), ProjectSelectController.class);
                         startActivity(intent);
+                        finish();
                     }
                 }
             }
