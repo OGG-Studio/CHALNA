@@ -17,8 +17,12 @@ public class StaticInformation {
     //Caemra
     public static final int CAMERA_ORIENTATION_RIGHT = 1;
     public static final int CAMERA_ORIENTATION_LEFT = 2;
-    public static final int CAMERA_ORIENTATION_PORTARATE = 3;
+    public static final int CAMERA_ORIENTATION_PORTRAIT = 3;
 
     public static final int CAMERA_REAR = 0;
     public static final int CAMERA_FRONT = 1;
+
+    public static final int DISPLAY_ORIENTATION_DEFAULT = 0;
+    public static final int DISPLAY_ORIENTATION_PORTRAIT = 1;
+    public static final int DISPLAY_ORIENTATION_LANDSCAPE = 2;
 }

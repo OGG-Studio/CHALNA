@@ -1,26 +1,19 @@
 package com.example.philip.chalna;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
-import android.media.ExifInterface;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.Surface;
-import android.view.SurfaceHolder;
-import android.view.View;
 import android.widget.Toast;
 
 import org.opencv.android.JavaCameraView;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.util.List;
 
@@ -32,7 +25,14 @@ public class CameraView extends JavaCameraView implements PictureCallback {
     public CameraController cameraController;
     Context context;
 
+    //FOR ZOOM
     int zoom_factor;
+    int max_camera_zoom;
+    double base_distance=0;
+    int base_zoom=0;
+
+    boolean double_touch_start;
+
 
     public void setmPictureFileName(String mPictureFileName) {
         this.mPictureFileName = mPictureFileName;
@@ -54,16 +54,61 @@ public class CameraView extends JavaCameraView implements PictureCallback {
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent){
-//        mCamera.autoFocus (new Camera.AutoFocusCallback() {
-//            public void onAutoFocus(boolean success, Camera camera) {
-//
-//            }
-//        });
+
+        int pointer_count = motionEvent.getPointerCount();
+        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK){
+
+            case MotionEvent.ACTION_POINTER_DOWN:
+                if(camera_mode==StaticInformation.CAMERA_FRONT){
+                    Toast.makeText(context, "전면 카메라에서는 지원하지 않습니다.", Toast.LENGTH_SHORT);
+                }else{
+                    double_touch_start = true;
+                    base_distance = getDistanceTwoHand(motionEvent);
+                    base_zoom = zoom_factor;
+                }
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                double_touch_start = false;
+                // UPDATE
+                cameraController.currentPorject.zoom_factor = zoom_factor;
+                cameraController.myDB.syncProjectData(cameraController.currentPorject);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if(pointer_count==2 && double_touch_start == true){
+                    double alpha = 50*(getDistanceTwoHand(motionEvent)-base_distance)/base_distance;
+                    zoom_factor = base_zoom + (int)alpha;
+                    zoom_factor = clip(zoom_factor);
+                }
+                setZoomFactor(zoom_factor);
+                break;
+        }
         return true;
     }
 
+    public double getDistanceTwoHand(MotionEvent event){
+        return Math.sqrt(Math.pow(event.getX(0)-event.getX(1),2)+Math.pow(event.getY(0)-event.getY(1),2));
+    }
+    public int clip(int zoom){
+        if(zoom<=0){
+            return 0;
+        }else if(zoom < max_camera_zoom){
+            return zoom;
+        }else{
+            return max_camera_zoom;
+        }
+    }
+    public void setCameraZoomSetting(){
+        Camera.Parameters params = mCamera.getParameters();
+        zoom_factor = cameraController.currentPorject.zoom_factor;
+
+        Log.d(TAG, "MAX ZOOM : "+params.getMaxZoom());
+        max_camera_zoom = params.getMaxZoom();
+        setZoomFactor(zoom_factor);
+    }
     public void setZoomFactor(int alpha){
         Camera.Parameters params = mCamera.getParameters();
+        Log.d(TAG, "MAX ZOOM : "+params.getMaxZoom());
+
         params.setZoom(alpha);
         mCamera.setParameters(params);
     }
@@ -130,7 +175,7 @@ public class CameraView extends JavaCameraView implements PictureCallback {
 
             if(camera_mode==StaticInformation.CAMERA_FRONT){
                 Log.i(TAG, "Rotation CAMERA");
-                if(cameraController.currentOrientation==StaticInformation.CAMERA_ORIENTATION_PORTARATE){
+                if(cameraController.currentOrientation==StaticInformation.CAMERA_ORIENTATION_PORTRAIT){
                     m.postRotate(-90);
                 }else if(cameraController.currentOrientation==StaticInformation.CAMERA_ORIENTATION_RIGHT){
                     m.postRotate(-180);
@@ -142,7 +187,7 @@ public class CameraView extends JavaCameraView implements PictureCallback {
 
                 data = ImageProcessingIO.bitmapToByteArray(rotateBitmap);
             }else if(camera_mode==StaticInformation.CAMERA_REAR && cameraController.currentOrientation!=StaticInformation.CAMERA_ORIENTATION_LEFT){
-                if(cameraController.currentOrientation==StaticInformation.CAMERA_ORIENTATION_PORTARATE){
+                if(cameraController.currentOrientation==StaticInformation.CAMERA_ORIENTATION_PORTRAIT){
                     m.postRotate(90);
                 }else if(cameraController.currentOrientation==StaticInformation.CAMERA_ORIENTATION_RIGHT){
                     m.postRotate(180);

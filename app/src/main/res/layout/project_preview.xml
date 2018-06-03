@@ -18,22 +18,26 @@
             android:layout_height="wrap_content"
             android:layout_weight="1">
         </TextView>
-        <Button
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:id="@+id/project_fetch_btn"
-            android:text="가져오기"/>
+            android:padding="0dp"
+            android:background="#00000000"
+            android:src="@drawable/project_select_fecth"
+            android:id="@+id/project_fetch_btn"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="4">
         </TextView>
-        <Button
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="새로찍기"
+            android:padding="0dp"
+            android:background="#00000000"
+            android:src="@drawable/project_select_takepicture"
             android:id="@+id/project_takePicture_btn"/>
         <TextView
             android:layout_width="wrap_content"
@@ -60,8 +64,7 @@
             android:layout_weight="4"
             android:scaleType="fitXY"
             android:src="@drawable/ic_launcher_background"
-            android:id="@+id/project_imageView"
-            />
+            android:id="@+id/project_imageView"/>
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"

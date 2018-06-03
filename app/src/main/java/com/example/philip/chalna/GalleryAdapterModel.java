@@ -115,6 +115,9 @@ public class GalleryAdapterModel extends BaseAdapter {
     private class ImageFileFilter implements FilenameFilter {
         @Override
         public boolean accept(File dir, String filename) {
+            if(!filename.startsWith("CHALNA")){
+                return false;
+            }
             if (filename.endsWith(".jpg"))
                 return true;
             else if (filename.endsWith(".JPG"))

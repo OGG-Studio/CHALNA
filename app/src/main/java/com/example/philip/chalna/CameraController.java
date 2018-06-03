@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -62,9 +63,10 @@ public class CameraController extends AppCompatActivity
     FileManagementUtil fileIOModel;
 
     // Button
-    Button btnImageLoad;
-    Button changeViewBtn;
-    Button changeGuidedModeBtn;
+    ImageView btnImageLoad;
+    ImageView changeViewBtn;
+    ImageView changeGuidedModeBtn;
+    ImageView takePictureBtn;
 
     // UI
     ImageView guidedImageView;
@@ -72,6 +74,7 @@ public class CameraController extends AppCompatActivity
 
     // C++
 //    public native void ConvertRGBtoGray(long matAddrInput, long matAddrResult);
+
 
     //Data
     DBSQLiteModel myDB;
@@ -155,17 +158,8 @@ public class CameraController extends AppCompatActivity
                 if(img_path!=null){
                     setGuidedImageToView(img_path);
                 }
-
             }
         });
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            //Permision check
-            if (!hasPermissions(PERMISSIONS)) {
-                //Request
-                requestPermissions(PERMISSIONS, PERMISSIONS_REQUEST_CODE);
-            }
-        }
 
         //INFORMATION
         Intent intent = getIntent();
@@ -235,9 +229,13 @@ public class CameraController extends AppCompatActivity
     public void onWindowFocusChanged(boolean hasFocus){
         super.onWindowFocusChanged(hasFocus);
         // do Something
-        if(hasFocus && !firstCreate){
-            Camera.Size mCameraSize = mOpenCvCameraView.getResolution();
+        if(hasFocus && firstCreate==false){
+            firstCreate = true;
 
+            // CAMERA SETTING
+            mOpenCvCameraView.setCameraZoomSetting();
+
+            Camera.Size mCameraSize = mOpenCvCameraView.getResolution();
             mOpenCvCameraView.setPictureSize(mCameraSize.width, mCameraSize.height);
 
             // Auto Guided
@@ -254,19 +252,32 @@ public class CameraController extends AppCompatActivity
             Log.d("DEBUG_TEST","GUIDED_SIZE = " +guidedImageView.getWidth() + " " + guidedImageView.getHeight());
             Log.d("DEBUG_TEST","CameraView = " +mOpenCvCameraView.getWidth() + " " + mOpenCvCameraView.getHeight());
             Log.d("DEBUG_TEST","Res = " +mOpenCvCameraView.getResolution().width + " " + mOpenCvCameraView.getResolution().height);
-
-            firstCreate = true;
         }
     }
     public void setGuidedImageToView(final String fileName){
         Log.d(TAG, "View Size " + guidedImageView.getWidth() + " " + guidedImageView.getHeight());
+        Log.d(TAG, "GUIDED POSITION TEST current_wide : " + currentPorject.wide);
+        Log.d(TAG, "GUIDED ORIENTATION : " + currentOrientation);
         Glide.with(context).load(fileName).asBitmap().override(guidedImageView.getWidth(), guidedImageView.getHeight()).into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(final Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                 Thread readyThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        cameraModel.setGuidedImage(resource, currentOrientation, currentPorject.mode);
+                        int disp_orientation = currentOrientation;
+                        switch (currentPorject.wide){
+                            case StaticInformation.DISPLAY_ORIENTATION_LANDSCAPE:
+                                if(currentOrientation==StaticInformation.CAMERA_ORIENTATION_PORTRAIT){
+                                    disp_orientation = StaticInformation.CAMERA_ORIENTATION_LEFT;
+                                }
+                                break;
+                            case StaticInformation.DISPLAY_ORIENTATION_PORTRAIT:
+                                if(currentOrientation!=StaticInformation.CAMERA_ORIENTATION_PORTRAIT){
+                                    disp_orientation = StaticInformation.CAMERA_ORIENTATION_PORTRAIT;
+                                }
+                                break;
+                        }
+                        cameraModel.setGuidedImage(resource, disp_orientation, currentPorject.mode);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -373,7 +384,6 @@ public class CameraController extends AppCompatActivity
 
     @TargetApi(Build.VERSION_CODES.M)
     private void showDialogForPermission(String msg) {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(CameraController.this);
 
         builder.setTitle("알림");
@@ -397,7 +407,7 @@ public class CameraController extends AppCompatActivity
         Log.d(TAG, "onTouch event");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
         String currentDateandTime = sdf.format(new Date());
-        String fileName = path_dir + "/" + currentDateandTime + ".jpg";
+        String fileName = path_dir + "/CHALNA_" + currentDateandTime + ".jpg";
         mOpenCvCameraView.takePicture(fileName);
         Toast.makeText(this, fileName + " saved", Toast.LENGTH_SHORT).show();
 
@@ -407,6 +417,17 @@ public class CameraController extends AppCompatActivity
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
 
+        if(currentPorject.wide == StaticInformation.DISPLAY_ORIENTATION_DEFAULT){
+            currentPorject.wide = currentOrientation==StaticInformation.CAMERA_ORIENTATION_PORTRAIT?
+                    StaticInformation.DISPLAY_ORIENTATION_PORTRAIT:
+                    StaticInformation.DISPLAY_ORIENTATION_LANDSCAPE;
+            myDB.syncProjectData(currentPorject);
+        }
+
+        //UPDATE MODIFICATION DATE
+        Date currentTime = new Date();
+        currentPorject.modificationDate = currentTime.getTime();
+        myDB.syncProjectData(currentPorject);
         return false;
     }
 
@@ -451,7 +472,7 @@ public class CameraController extends AppCompatActivity
                 }else if(orientation >= 225 && orientation <289){
                     newOrientation = StaticInformation.CAMERA_ORIENTATION_LEFT;
                 }else{
-                    newOrientation = StaticInformation.CAMERA_ORIENTATION_PORTARATE;
+                    newOrientation = StaticInformation.CAMERA_ORIENTATION_PORTRAIT;
                 }
 
                 if(newOrientation!=currentOrientation){

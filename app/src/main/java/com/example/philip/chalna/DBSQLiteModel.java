@@ -16,7 +16,7 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
     private static final String TAG = "DB_HELPER" ;
 
     private static final String DB_FILE_NAME = "projects.db" ;
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 6;
 
     public static DBSQLiteModel instance = null;
     public static SQLiteDatabase db;
@@ -31,7 +31,11 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
     public static final String PROJECT_MODE = "Project_Mode";
     public static final String PROJECT_DIR = "Project_dir";
     public static final String PROJECT_LEVEL = "Project_Level";
+    public static final String PROJECT_ZOOM_FACTOR = "Project_Zoom_Factor";
 
+    public static final String PROJECT_DESCRIPTION = "Project_Description";
+    public static final String PROJECT_MODIFICATION_DATE = "Project_ModDate";
+    public static final String PROJECT_START_DATE = "Project_StartDate";
     //ALRAM
     public static final String ALARM_ID = "Alarm_id";
     public static final String ALARM_TIME = "Alarm_Time";
@@ -60,7 +64,7 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
         // Project Mode = camera rear or front
         // Project_dir = dicrectory
         // Project_level = step ( 0 -> create 1 -> Complete )
-        String sql = String.format("create table "+ PROJECT +" ("+PROJECT_ID+" integer primary key autoincrement, Project_Name text, Project_Wide integer, Project_Mode integer, Project_dir text, Project_Level integer);");
+        String sql = String.format("create table "+ PROJECT +" ("+PROJECT_ID+" integer primary key autoincrement, Project_Name text, Project_Wide integer, Project_Mode integer, Project_dir text, Project_Level integer, "+PROJECT_ZOOM_FACTOR+" integer, "+PROJECT_DESCRIPTION+" text, "+PROJECT_MODIFICATION_DATE+" integer, "+PROJECT_START_DATE+" integer);");
         db.execSQL(sql);
 
         // alarm
@@ -70,7 +74,7 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
         // alarm_TIME
         // alarm_CYCLE
         // alarm_NEXT_TIME
-        sql = String.format("create table "+ ALARM +" ("+ALARM_ID+" integer primary key autoincrement, "+PROJECT_ID+" text, "+ALARM_TIME+" text, "+ALARM_CYCLE+" integer, "+ALARM_NEXT_TIME+" text);");
+        sql = String.format("create table "+ ALARM +" ("+ALARM_ID+" integer primary key autoincrement, "+PROJECT_ID+" integer, "+ALARM_TIME+" integer, "+ALARM_CYCLE+" integer, "+ALARM_NEXT_TIME+" integer);");
         db.execSQL(sql);
     }
     @Override
@@ -78,7 +82,7 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
         String sql = "drop table if exists PROJECT";
         Log.d(TAG, "UPDATE DB");
         db.execSQL(sql);
-        sql = "drop table if exists PROJECT";
+        sql = "drop table if exists "+ ALARM;
         db.execSQL(sql);
 
         onCreate(db);
@@ -96,7 +100,12 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
             int camera_mode = c.getInt(c.getColumnIndex(PROJECT_MODE));
             String dir = c.getString(c.getColumnIndex(PROJECT_DIR));
             int level = c.getInt(c.getColumnIndex(PROJECT_LEVEL));
-            result = new ProjectData(_id, name,camera_mode, camera_wide, dir, level);
+            int zoom = c.getInt(c.getColumnIndex(PROJECT_ZOOM_FACTOR));
+
+            String description = c.getString(c.getColumnIndex(PROJECT_DESCRIPTION));
+            long modificationDate = c.getLong(c.getColumnIndex(PROJECT_MODIFICATION_DATE));
+            long startDate = c.getLong(c.getColumnIndex(PROJECT_START_DATE));
+            result = new ProjectData(_id, name,camera_mode, camera_wide, dir, level, zoom,description,modificationDate,startDate);
         }else{
             Log.d(TAG,"Search Faile Error");
         }
@@ -109,6 +118,11 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
         updateValues.put(PROJECT_LEVEL, p.project_level);
         updateValues.put(PROJECT_DIR, p.dir);
         updateValues.put(PROJECT_WIDE, p.wide);
+        updateValues.put(PROJECT_ZOOM_FACTOR, p.zoom_factor);
+
+        updateValues.put(PROJECT_DESCRIPTION, p.description);
+        updateValues.put(PROJECT_MODIFICATION_DATE, p.modificationDate);
+        updateValues.put(PROJECT_START_DATE, p.startDate);
         return db.update(PROJECT, updateValues, PROJECT_ID + "=?", new String[]{String.valueOf(p.id)});
     }
     public AlarmData getDataByNameFromALARM(String _alarm_id){
@@ -120,9 +134,9 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
         if(c.moveToFirst()){
             int alarm_id = c.getInt(c.getColumnIndex(ALARM_ID));
             int new_project_id = c.getInt(c.getColumnIndex(PROJECT_ID));
-            String alarm_time = c.getString(c.getColumnIndex(ALARM_TIME));
+            long alarm_time = c.getLong(c.getColumnIndex(ALARM_TIME));
             int alarm_cycle = c.getInt(c.getColumnIndex(ALARM_CYCLE));
-            String alarm_next_time = c.getString(c.getColumnIndex(ALARM_NEXT_TIME));
+            long alarm_next_time = c.getLong(c.getColumnIndex(ALARM_NEXT_TIME));
 
             result = new AlarmData(alarm_id,new_project_id, alarm_time, alarm_cycle, alarm_next_time);
         }else{
@@ -134,16 +148,20 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
         String sql = "drop table if exists PROJECT";
         db.execSQL(sql);
     }
-    public void dbInsertionIntoPROJECT(String Project_Name, int Project_Wide, int Project_Camera_Mode, String Project_dir, int Project_Level) {
+    public void dbInsertionIntoPROJECT(ProjectData p) {
         ContentValues values = new ContentValues();
-        values.put("Project_Name", Project_Name);
-        values.put("Project_Wide", Project_Wide);
-        values.put("Project_Mode", Project_Camera_Mode);
-        values.put("Project_dir", Project_dir);
-        values.put("Project_Level", Project_Level);
+        values.put(PROJECT_NAME, p.name);
+        values.put(PROJECT_WIDE, p.wide);
+        values.put(PROJECT_MODE, p.mode);
+        values.put(PROJECT_DIR, p.dir);
+        values.put(PROJECT_LEVEL, p.project_level);
+        values.put(PROJECT_ZOOM_FACTOR, p.zoom_factor);
+        values.put(PROJECT_DESCRIPTION, p.description);
+        values.put(PROJECT_START_DATE, p.startDate);
+        values.put(PROJECT_MODIFICATION_DATE, p.modificationDate);
         db.insert(PROJECT, null, values);
     }
-    public void dbInsertionIntoALARM(int project_id, String alarm_time, int alarm_cycle, String alarm_next_time) {
+    public void dbInsertionIntoALARM(int project_id, long alarm_time, int alarm_cycle, long alarm_next_time) {
         ContentValues values = new ContentValues();
         values.put(PROJECT_ID, project_id);
         values.put(ALARM_TIME, alarm_time);
@@ -172,9 +190,9 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
         while(c.moveToNext()){
             int alarm_id = c.getInt(c.getColumnIndex(ALARM_ID));
             int new_project_id = c.getInt(c.getColumnIndex(PROJECT_ID));
-            String alarm_time = c.getString(c.getColumnIndex(ALARM_TIME));
+            long alarm_time = c.getLong(c.getColumnIndex(ALARM_TIME));
             int alarm_cycle = c.getInt(c.getColumnIndex(ALARM_CYCLE));
-            String alarm_next_time = c.getString(c.getColumnIndex(ALARM_NEXT_TIME));
+            long alarm_next_time = c.getLong(c.getColumnIndex(ALARM_NEXT_TIME));
 
             list.add(new AlarmData(alarm_id,new_project_id, alarm_time, alarm_cycle, alarm_next_time));
         }
@@ -192,8 +210,13 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
             int camera_mode = c.getInt(c.getColumnIndex("Project_Mode"));
             String dir = c.getString(c.getColumnIndex("Project_dir"));
             int level = c.getInt(c.getColumnIndex("Project_Level"));
+            int zoom = c.getInt(c.getColumnIndex(PROJECT_ZOOM_FACTOR));
 
-            list.add(new ProjectData(_id, name,camera_mode, camera_wide, dir, level));
+            String description = c.getString(c.getColumnIndex(PROJECT_DESCRIPTION));
+            long modificationDate = c.getLong(c.getColumnIndex(PROJECT_MODIFICATION_DATE));
+            long startDate = c.getLong(c.getColumnIndex(PROJECT_START_DATE));
+
+            list.add(new ProjectData(_id, name,camera_mode, camera_wide, dir, level, zoom,description,modificationDate,startDate));
         }
         return list;
     }
