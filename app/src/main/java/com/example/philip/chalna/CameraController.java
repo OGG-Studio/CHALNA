@@ -161,6 +161,36 @@ public class CameraController extends AppCompatActivity
             }
         });
 
+        takePictureBtn = findViewById(R.id.takePictureBtn);
+        takePictureBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onTouch event");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+                String currentDateandTime = sdf.format(new Date());
+                String fileName = path_dir + "/CHALNA_" + currentDateandTime + ".jpg";
+                mOpenCvCameraView.takePicture(fileName);
+                Toast.makeText(context, fileName + " saved", Toast.LENGTH_SHORT).show();
+
+                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                File f = new File(fileName); //새로고침할 사진경로
+                Uri contentUri = Uri.fromFile(f);
+                mediaScanIntent.setData(contentUri);
+                context.sendBroadcast(mediaScanIntent);
+
+                if(currentPorject.wide == StaticInformation.DISPLAY_ORIENTATION_DEFAULT){
+                    currentPorject.wide = currentOrientation==StaticInformation.CAMERA_ORIENTATION_PORTRAIT?
+                            StaticInformation.DISPLAY_ORIENTATION_PORTRAIT:
+                            StaticInformation.DISPLAY_ORIENTATION_LANDSCAPE;
+                    myDB.syncProjectData(currentPorject);
+                }
+
+                //UPDATE MODIFICATION DATE
+                Date currentTime = new Date();
+                currentPorject.modificationDate = currentTime.getTime();
+                myDB.syncProjectData(currentPorject);
+            }
+        });
         //INFORMATION
         Intent intent = getIntent();
         path_dir = intent.getStringExtra("DIR");
@@ -402,35 +432,6 @@ public class CameraController extends AppCompatActivity
         builder.create().show();
     }
 
-    //Event
-    public boolean OnTakePicture(View v) {
-        Log.d(TAG, "onTouch event");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-        String currentDateandTime = sdf.format(new Date());
-        String fileName = path_dir + "/CHALNA_" + currentDateandTime + ".jpg";
-        mOpenCvCameraView.takePicture(fileName);
-        Toast.makeText(this, fileName + " saved", Toast.LENGTH_SHORT).show();
-
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(fileName); //새로고침할 사진경로
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        this.sendBroadcast(mediaScanIntent);
-
-        if(currentPorject.wide == StaticInformation.DISPLAY_ORIENTATION_DEFAULT){
-            currentPorject.wide = currentOrientation==StaticInformation.CAMERA_ORIENTATION_PORTRAIT?
-                    StaticInformation.DISPLAY_ORIENTATION_PORTRAIT:
-                    StaticInformation.DISPLAY_ORIENTATION_LANDSCAPE;
-            myDB.syncProjectData(currentPorject);
-        }
-
-        //UPDATE MODIFICATION DATE
-        Date currentTime = new Date();
-        currentPorject.modificationDate = currentTime.getTime();
-        myDB.syncProjectData(currentPorject);
-        return false;
-    }
-
     // Intent Result Event
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -500,6 +501,8 @@ public class CameraController extends AppCompatActivity
                 add(btnImageLoad);
                 add(changeGuidedModeBtn);
                 add(changeViewBtn);
+                add(btnImageLoad);
+                add(takePictureBtn);
             }
         };
         for (View view : views) {

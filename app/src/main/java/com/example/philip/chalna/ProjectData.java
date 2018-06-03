@@ -28,6 +28,5 @@ public class ProjectData {
         modificationDate = _modificationDate;
         startDate = _startDate;
     }
-    public ProjectData(){
-    }
+
 }

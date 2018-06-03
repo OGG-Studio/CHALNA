@@ -5,17 +5,17 @@
     android:layout_height="60dp"
     android:background="@drawable/round_view"
     android:orientation="horizontal"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
-    android:layout_marginTop="5dp"
-    android:layout_marginBottom="5dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginTop="3dp"
+    android:layout_marginBottom="3dp"
     android:id="@+id/project_item_container">
     <ImageView
         android:layout_margin="5dp"
         android:layout_width="60dp"
         android:layout_height="match_parent"
         android:background="#fff"
-        android:src="@drawable/ic_launcher_background"
+        android:src="@drawable/default_preview"
         android:scaleType="fitXY"
         android:id="@+id/project_item_preview"/>
     <LinearLayout
@@ -31,10 +31,12 @@
             android:text="하눌신폭"
             android:textStyle="bold"
             android:layout_weight="1"
+            android:textColor="#F2F2EF"
             android:id="@+id/project_item_name"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="#EBE4E5"
             android:textSize="10dp"
             android:text="DESCRIPTION"
             android:layout_weight="1"
@@ -49,6 +51,7 @@
             android:gravity="center|right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="#ADA4AC"
             android:text="수정날자"
             android:layout_weight="1"
             android:id="@+id/project_item_startTime"/>
@@ -57,6 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="알람주기"
+            android:textColor="#ADA4AC"
             android:layout_weight="1"
             android:id="@+id/project_item_alarmCycle"/>
     </LinearLayout>
