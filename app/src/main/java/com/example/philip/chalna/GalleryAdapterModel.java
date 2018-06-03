@@ -32,6 +32,7 @@ public class GalleryAdapterModel extends BaseAdapter {
 
     public static GalleryAdapterModel getInstance(Context c, String imagePath){
         if(instance==null) instance = new GalleryAdapterModel(c, imagePath);
+        instance.imagePath = imagePath;
         return instance;
     }
     public boolean saveGIF(){
@@ -60,7 +61,7 @@ public class GalleryAdapterModel extends BaseAdapter {
         // Array
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         AnimatedGifEncoder encoder = new AnimatedGifEncoder();
-        encoder.setDelay(delay);  // 500/ms
+        encoder.setDelay(delay);  // 100/ms
         encoder.setRepeat(0);   // 0 reapte
         encoder.start(bos);
         for(String imageFileName : imageFileNames){
@@ -75,6 +76,7 @@ public class GalleryAdapterModel extends BaseAdapter {
     public String[] getImageFileNames(){
         return imageFileNames;
     }
+
     public void UpdateGallery(){
         File imagePathAsFile = new File(imagePath);
         imageFileNames = imagePathAsFile.list(new ImageFileFilter());

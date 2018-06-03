@@ -5,23 +5,19 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Debug;
-import android.os.Environment;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.Surface;
+import android.view.OrientationEventListener;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
@@ -44,13 +40,16 @@ import org.opencv.core.Mat;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 public class CameraController extends AppCompatActivity
         implements CvCameraViewListener2 {
     private static final String TAG = "CameraController";
 
+    Activity activity = this;
     Context context = this;
     private CameraView mOpenCvCameraView;
 
@@ -77,6 +76,10 @@ public class CameraController extends AppCompatActivity
     //Data
     DBSQLiteModel myDB;
     ProjectData currentPorject;
+
+    //Camera Listener
+    public OrientationEventListener mOrientationEventListener;
+    public int currentOrientation= 0;
 
     // Library Load
     static {
@@ -115,11 +118,9 @@ public class CameraController extends AppCompatActivity
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
 
-
         //Model Initialization
         cameraModel = new CameraModel();
         fileIOModel = new FileManagementUtil(this);
-
 
         //UI GET
         guidedImageView = findViewById(R.id.guidedImageViewer);
@@ -150,7 +151,6 @@ public class CameraController extends AppCompatActivity
                 else
                     cameraModel.setGuidedMode(StaticInformation.GUIDED_SOBELFILTER);
 
-                Log.e("TEST_DEBUG", ""+cameraModel.getGuidedMode());
                 final String img_path = mOpenCvCameraView.getmPictureFileName();
                 if(img_path!=null){
                     setGuidedImageToView(img_path);
@@ -174,27 +174,18 @@ public class CameraController extends AppCompatActivity
         galleryAdapterModel = GalleryAdapterModel.getInstance(this, path_dir);
 
         myDB = DBSQLiteModel.getInstance(this);
-        currentPorject = myDB.getDataByName(project_name);
-
-        // WIDE MODE
-        if(currentPorject.wide==0){
-            //Vertical
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }else{
-            //Horizontal
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        }
+        currentPorject = myDB.getDataByNameFromPROJECT(project_name);
 
         mOpenCvCameraView = findViewById(R.id.activity_surface_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
         mOpenCvCameraView.setFocusable(true);
 
-        if(currentPorject.mode==0){
-            mOpenCvCameraView.setCameraIndex(0); // front-camera(1),  back-camera(0)
+        if(currentPorject.mode==StaticInformation.CAMERA_FRONT){
+            mOpenCvCameraView.setCameraIndex(StaticInformation.CAMERA_FRONT); // front-camera(1),  back-camera(0)
         }
         else{
-            mOpenCvCameraView.setCameraIndex(1); // front-camera(1),  back-camera(0)
+            mOpenCvCameraView.setCameraIndex(StaticInformation.CAMERA_REAR); // front-camera(1),  back-camera(0)
         }
 
         //OPTION SETTING CAMERA
@@ -223,10 +214,21 @@ public class CameraController extends AppCompatActivity
             public void onClick(View v) {
                 Log.d(TAG, "myCheck Camera Change");
                 mOpenCvCameraView.disableView();
-                mOpenCvCameraView.setCameraIndex(1); // front-camera(1),  back-camera(0)
+                if(currentPorject.mode == StaticInformation.CAMERA_REAR){
+                    currentPorject.mode = StaticInformation.CAMERA_FRONT;
+                }else{
+                    currentPorject.mode = StaticInformation.CAMERA_REAR;
+                }
+                 // front-camera(1),  back-camera(0)
+                mOpenCvCameraView.setCameraIndex(currentPorject.mode);
+                mOpenCvCameraView.setCameraMode(currentPorject.mode);
+                myDB.syncProjectData(currentPorject);
                 mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
             }
         });
+
+        // Camera Callback initialization
+        setupOrientationEventListener();
     }
 
     boolean firstCreate = false;
@@ -256,7 +258,7 @@ public class CameraController extends AppCompatActivity
             firstCreate = true;
         }
     }
-    public void setGuidedImageToView(String fileName){
+    public void setGuidedImageToView(final String fileName){
         Log.d(TAG, "View Size " + guidedImageView.getWidth() + " " + guidedImageView.getHeight());
         Glide.with(context).load(fileName).asBitmap().override(guidedImageView.getWidth(), guidedImageView.getHeight()).into(new SimpleTarget<Bitmap>() {
             @Override
@@ -264,8 +266,7 @@ public class CameraController extends AppCompatActivity
                 Thread readyThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d(TAG, "image Size " + resource.getWidth() + " " + resource.getHeight());
-                        cameraModel.setGuidedImage(resource);
+                        cameraModel.setGuidedImage(resource, currentOrientation, currentPorject.mode);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -282,6 +283,8 @@ public class CameraController extends AppCompatActivity
     @Override
     public void onPause() {
         super.onPause();
+        mOrientationEventListener.disable();
+
         if (mOpenCvCameraView != null)
             mOpenCvCameraView.disableView();
     }
@@ -289,6 +292,8 @@ public class CameraController extends AppCompatActivity
     @Override
     public void onResume() {
         super.onResume();
+
+        mOrientationEventListener.enable();
 
         if (!OpenCVLoader.initDebug()) {
             Log.d(TAG, "onResume :: Internal OpenCV library not found.");
@@ -423,6 +428,61 @@ public class CameraController extends AppCompatActivity
                 default:
                     break;
             }
+        }
+    }
+
+    /***
+     *          CALL BACK
+     */
+
+    public void setupOrientationEventListener() {
+        mOrientationEventListener = new OrientationEventListener(this){
+            @Override
+            public void onOrientationChanged(int orientation) {
+                Log.d("Orientation_Test", "Current " + orientation);
+                if(activity.isFinishing()){
+                    mOrientationEventListener.disable();
+                    return;
+                }
+
+                int newOrientation;
+                if(orientation >=75 && orientation < 134){
+                    newOrientation = StaticInformation.CAMERA_ORIENTATION_RIGHT;
+                }else if(orientation >= 225 && orientation <289){
+                    newOrientation = StaticInformation.CAMERA_ORIENTATION_LEFT;
+                }else{
+                    newOrientation = StaticInformation.CAMERA_ORIENTATION_PORTARATE;
+                }
+
+                if(newOrientation!=currentOrientation){
+                    int degree = 0;
+
+                    if(newOrientation==StaticInformation.CAMERA_ORIENTATION_RIGHT){
+                        degree = -180;
+                    }else if(newOrientation==StaticInformation.CAMERA_ORIENTATION_LEFT){
+                        degree = 0;
+                    }else{
+                        degree = -90;
+                    }
+
+                    animateViews(degree);
+                    currentOrientation = newOrientation;
+                }
+            }
+        };
+        mOrientationEventListener.enable();
+    }
+
+    private  void animateViews(int degrees) {
+        List<View> views = new ArrayList<View>(){
+            {
+                add(btnImageLoad);
+                add(changeGuidedModeBtn);
+                add(changeViewBtn);
+            }
+        };
+        for (View view : views) {
+            view.animate().rotation(Float.valueOf(degrees)).start();
         }
     }
 }
