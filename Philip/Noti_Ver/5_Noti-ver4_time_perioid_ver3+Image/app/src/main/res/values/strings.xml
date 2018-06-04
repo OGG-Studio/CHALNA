@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">NotiSetting</string>
+    <string name="edittext_hint"><font size="15">프로젝트 이름을 입력해주세요!</font></string>
+    <string name="edit_hint"><font size="12">프로젝트 이름을 입력해주세요!</font></string>
+</resources>

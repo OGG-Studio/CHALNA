@@ -4,8 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
-import android.nfc.Tag;
-import android.os.Debug;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -72,7 +70,7 @@ public class CameraModel {
     public Bitmap rotateLandScape(Bitmap img, int display_orientation, int camera_mode) {
         if (display_orientation == StaticInformation.CAMERA_ORIENTATION_LEFT) {
             return img;
-        } else if (display_orientation == StaticInformation.CAMERA_ORIENTATION_PORTARATE) {
+        } else if (display_orientation == StaticInformation.CAMERA_ORIENTATION_PORTRAIT) {
             return rotate(img, -90);
         } else {
             return rotate(img, -180);

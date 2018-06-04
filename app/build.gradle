@@ -39,4 +39,5 @@ dependencies {
     implementation project(':openCVLibrary341')
 
     implementation 'com.github.bumptech.glide:glide:3.6.0'
+    implementation 'com.android.support:design:23.1.1'
 }

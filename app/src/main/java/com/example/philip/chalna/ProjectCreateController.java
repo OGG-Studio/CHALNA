@@ -16,7 +16,6 @@ public class ProjectCreateController extends AppCompatActivity {
     DBSQLiteModel myDB;
 
     // UI
-
     Button ok;
     RadioGroup setting_wide;
     RadioGroup setting_mode;
@@ -30,20 +29,14 @@ public class ProjectCreateController extends AppCompatActivity {
         myDB = DBSQLiteModel.getInstance(this);
         ok = findViewById(R.id.create_ok);
         setting_mode = findViewById(R.id.create_mode);
-        setting_wide = findViewById(R.id.create_wide);
         setting_name = findViewById(R.id.create_name);
 
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String name = setting_name.getText().toString();
-                RadioButton wideButton = findViewById(setting_wide.getCheckedRadioButtonId());
                 int wide;
-                if(wideButton.getText().toString().equals("vertical")){
-                    wide = 0;
-                }else{
-                    wide = 1;
-                }
+                wide = StaticInformation.DISPLAY_ORIENTATION_DEFAULT;
 
                 RadioButton modeButton = findViewById(setting_mode.getCheckedRadioButtonId());
                 int mode;
@@ -60,8 +53,11 @@ public class ProjectCreateController extends AppCompatActivity {
                         Log.d("DEBUG_TEST", StaticInformation.CHALNA_PATH+"/"+name  + " Success");
                     }
                 }
-                myDB.dbInsertionIntoPROJECT(name,wide,mode,StaticInformation.CHALNA_PATH+"/"+name,0);
+                ProjectData projectData = new ProjectData(-1,name, mode, wide, StaticInformation.CHALNA_PATH+"/"+name,0,0,
+                        DescriptionManager.getNewDescription(),System.currentTimeMillis(),System.currentTimeMillis());
+                myDB.dbInsertionIntoPROJECT(projectData);
                 setResult(RESULT_OK);
+
                 finish();
             }
         });

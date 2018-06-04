@@ -2,6 +2,13 @@ package com.example.philip.chalna;
 
 import org.junit.Test;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
+import javax.crypto.spec.DESedeKeySpec;
+
 import static org.junit.Assert.*;
 
 /**
@@ -13,5 +20,7 @@ public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() {
         assertEquals(4, 2 + 2);
+
+        System.out.println(DescriptionManager.getCompleteDescription(4, 300, 512,228));
     }
 }
