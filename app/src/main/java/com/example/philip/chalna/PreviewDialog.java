@@ -25,6 +25,7 @@ public class PreviewDialog {
         if(activity==null || activity.isFinishing()){
             return;
         }
+
         progressDialog = new AppCompatDialog(activity);
         progressDialog.setCancelable(true);
         progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT)); // Transparency
