@@ -54,10 +54,10 @@ public class ProjectCreateController extends AppCompatActivity {
                     }
                 }
                 ProjectData projectData = new ProjectData(-1,name, mode, wide, StaticInformation.CHALNA_PATH+"/"+name,0,0,
-                        "Default_Description",System.currentTimeMillis(),System.currentTimeMillis());
+                        DescriptionManager.getNewDescription(),System.currentTimeMillis(),System.currentTimeMillis());
                 myDB.dbInsertionIntoPROJECT(projectData);
-
                 setResult(RESULT_OK);
+
                 finish();
             }
         });

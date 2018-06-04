@@ -23,6 +23,7 @@ public class StaticInformation {
     public static final int CAMERA_FRONT = 1;
 
     public static final int DISPLAY_ORIENTATION_DEFAULT = 0;
-    public static final int DISPLAY_ORIENTATION_PORTRAIT = 1;
-    public static final int DISPLAY_ORIENTATION_LANDSCAPE = 2;
+    public static final int DISPLAY_ORIENTATION_RIGHT= 1;
+    public static final int DISPLAY_ORIENTATION_LEFT = 2;
+    public static final int DISPLAY_ORIENTATION_PORTRAIT = 3;
 }

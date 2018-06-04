@@ -61,12 +61,14 @@ public class CameraController extends AppCompatActivity
     // Model
     CameraModel cameraModel;
     FileManagementUtil fileIOModel;
+    boolean isTakingPicture = false;
 
     // Button
     ImageView btnImageLoad;
     ImageView changeViewBtn;
     ImageView changeGuidedModeBtn;
     ImageView takePictureBtn;
+    ImageView settingBtn;
 
     // UI
     ImageView guidedImageView;
@@ -74,7 +76,6 @@ public class CameraController extends AppCompatActivity
 
     // C++
 //    public native void ConvertRGBtoGray(long matAddrInput, long matAddrResult);
-
 
     //Data
     DBSQLiteModel myDB;
@@ -165,6 +166,9 @@ public class CameraController extends AppCompatActivity
         takePictureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(isTakingPicture == true) return;
+                isTakingPicture = true;
+
                 Log.d(TAG, "onTouch event");
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
                 String currentDateandTime = sdf.format(new Date());
@@ -179,16 +183,19 @@ public class CameraController extends AppCompatActivity
                 context.sendBroadcast(mediaScanIntent);
 
                 if(currentPorject.wide == StaticInformation.DISPLAY_ORIENTATION_DEFAULT){
-                    currentPorject.wide = currentOrientation==StaticInformation.CAMERA_ORIENTATION_PORTRAIT?
-                            StaticInformation.DISPLAY_ORIENTATION_PORTRAIT:
-                            StaticInformation.DISPLAY_ORIENTATION_LANDSCAPE;
-                    myDB.syncProjectData(currentPorject);
+                    currentPorject.wide = currentOrientation;
                 }
 
                 //UPDATE MODIFICATION DATE
                 Date currentTime = new Date();
+                String[] date = TimeClass.getDate();
+
+                galleryAdapterModel.UpdateGallery();
+                currentPorject.description = DescriptionManager.getAddDescription(date[0],date[1], date[2], galleryAdapterModel.getCount());
                 currentPorject.modificationDate = currentTime.getTime();
                 myDB.syncProjectData(currentPorject);
+
+                isTakingPicture = false;
             }
         });
         //INFORMATION
@@ -251,6 +258,8 @@ public class CameraController extends AppCompatActivity
             }
         });
 
+        settingBtn = findViewById(R.id.setting_btn);
+
         // Camera Callback initialization
         setupOrientationEventListener();
     }
@@ -295,17 +304,8 @@ public class CameraController extends AppCompatActivity
                     @Override
                     public void run() {
                         int disp_orientation = currentOrientation;
-                        switch (currentPorject.wide){
-                            case StaticInformation.DISPLAY_ORIENTATION_LANDSCAPE:
-                                if(currentOrientation==StaticInformation.CAMERA_ORIENTATION_PORTRAIT){
-                                    disp_orientation = StaticInformation.CAMERA_ORIENTATION_LEFT;
-                                }
-                                break;
-                            case StaticInformation.DISPLAY_ORIENTATION_PORTRAIT:
-                                if(currentOrientation!=StaticInformation.CAMERA_ORIENTATION_PORTRAIT){
-                                    disp_orientation = StaticInformation.CAMERA_ORIENTATION_PORTRAIT;
-                                }
-                                break;
+                        if(currentPorject.wide!=StaticInformation.DISPLAY_ORIENTATION_DEFAULT){
+                            disp_orientation = currentPorject.wide;
                         }
                         cameraModel.setGuidedImage(resource, disp_orientation, currentPorject.mode);
                         runOnUiThread(new Runnable() {
@@ -348,7 +348,6 @@ public class CameraController extends AppCompatActivity
 
     public void onDestroy() {
         super.onDestroy();
-
         if (mOpenCvCameraView != null)
             mOpenCvCameraView.disableView();
     }
@@ -356,6 +355,7 @@ public class CameraController extends AppCompatActivity
     @Override
     public void onCameraViewStarted(int width, int height) {
     }
+
 
     @Override
     public void onCameraViewStopped() {
@@ -503,6 +503,7 @@ public class CameraController extends AppCompatActivity
                 add(changeViewBtn);
                 add(btnImageLoad);
                 add(takePictureBtn);
+                add(settingBtn);
             }
         };
         for (View view : views) {

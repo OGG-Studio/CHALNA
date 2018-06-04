@@ -30,6 +30,10 @@ public class GalleryAdapterModel extends BaseAdapter {
     private int delay;
     private int sizeWidth;
 
+    public void setGIFSetting(int delay, int sizeWidth){
+        this.delay = delay;
+        this.sizeWidth = sizeWidth;
+    }
     public static GalleryAdapterModel getInstance(Context c, String imagePath){
         if(instance==null) instance = new GalleryAdapterModel(c, imagePath);
         instance.imagePath = imagePath;
@@ -48,9 +52,17 @@ public class GalleryAdapterModel extends BaseAdapter {
         return true;
     }
     static public Bitmap resizeBitmap(Bitmap original, int resizeWidth) {
-        double aspectRatio = (double) original.getHeight() / (double) original.getWidth();
-        int targetHeight = (int) (resizeWidth * aspectRatio);
-        Bitmap result = Bitmap.createScaledBitmap(original, resizeWidth, targetHeight, false);
+        double aspectRatio = 0;
+        Bitmap result;
+        if(original.getHeight() > original.getWidth()){
+            aspectRatio = (double) original.getHeight() / (double) original.getWidth();
+            int targetHeight = (int) (resizeWidth * aspectRatio);
+            result = Bitmap.createScaledBitmap(original, resizeWidth, targetHeight, false);
+        }else{
+            aspectRatio = (double) original.getWidth() / (double) original.getHeight();
+            int targetWidth = (int) (resizeWidth * aspectRatio);
+            result = Bitmap.createScaledBitmap(original, targetWidth, resizeWidth, false);
+        }
         if (result != original) {
             original.recycle();
         }

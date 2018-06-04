@@ -10,11 +10,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class PreviewItem extends LinearLayout {
-
     public ImageView imageView;
     public TextView name;
     public TextView description;
-    public TextView startTime;
+    public TextView startTime; // 알람시작시간....
     public TextView alarmCycle;
 
     public PreviewItem(Context context)

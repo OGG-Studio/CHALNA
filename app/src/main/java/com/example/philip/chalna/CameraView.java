@@ -7,9 +7,16 @@ import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import org.opencv.android.JavaCameraView;
@@ -33,7 +40,6 @@ public class CameraView extends JavaCameraView implements PictureCallback {
 
     boolean double_touch_start;
 
-
     public void setmPictureFileName(String mPictureFileName) {
         this.mPictureFileName = mPictureFileName;
     }
@@ -54,7 +60,6 @@ public class CameraView extends JavaCameraView implements PictureCallback {
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent){
-
         int pointer_count = motionEvent.getPointerCount();
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK){
 
@@ -153,8 +158,16 @@ public class CameraView extends JavaCameraView implements PictureCallback {
         // Postview and jpeg are sent in the same buffers if the queue is not empty when performing a capture.
         // Clear up buffers to avoid mCamera.takePicture to be stuck because of a memory issue
         mCamera.setPreviewCallback(null);
+        Camera.ShutterCallback myShutterCallback = new Camera.ShutterCallback() {
+            @Override
+            public void onShutter() {
+                AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+                mgr.playSoundEffect(AudioManager.FLAG_PLAY_SOUND);
+            }
+        };
+
         // PictureCallback is implemented by the current class
-        mCamera.takePicture(null, null, this);
+        mCamera.takePicture(myShutterCallback, null, this);
     }
 
 
@@ -175,30 +188,45 @@ public class CameraView extends JavaCameraView implements PictureCallback {
 
             if(camera_mode==StaticInformation.CAMERA_FRONT){
                 Log.i(TAG, "Rotation CAMERA");
-                if(cameraController.currentOrientation==StaticInformation.CAMERA_ORIENTATION_PORTRAIT){
-                    m.postRotate(-90);
-                }else if(cameraController.currentOrientation==StaticInformation.CAMERA_ORIENTATION_RIGHT){
-                    m.postRotate(-180);
+
+                if(cameraController.currentPorject.wide == StaticInformation.DISPLAY_ORIENTATION_DEFAULT){
+                    if(cameraController.currentOrientation==StaticInformation.CAMERA_ORIENTATION_PORTRAIT){
+                        m.postRotate(-90);
+                    }else if(cameraController.currentOrientation==StaticInformation.CAMERA_ORIENTATION_RIGHT){
+                        m.postRotate(-180);
+                    }
+                }else{
+                    if(cameraController.currentPorject.wide==StaticInformation.CAMERA_ORIENTATION_PORTRAIT){
+                        m.postRotate(-90);
+                    }else if(cameraController.currentPorject.wide==StaticInformation.CAMERA_ORIENTATION_RIGHT){
+                        m.postRotate(-180);
+                    }
                 }
                 m.postScale(-1, 1);
 
                 Bitmap rotateBitmap = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), m, false);
-                bmp.recycle();
-
                 data = ImageProcessingIO.bitmapToByteArray(rotateBitmap);
-            }else if(camera_mode==StaticInformation.CAMERA_REAR && cameraController.currentOrientation!=StaticInformation.CAMERA_ORIENTATION_LEFT){
-                if(cameraController.currentOrientation==StaticInformation.CAMERA_ORIENTATION_PORTRAIT){
-                    m.postRotate(90);
-                }else if(cameraController.currentOrientation==StaticInformation.CAMERA_ORIENTATION_RIGHT){
-                    m.postRotate(180);
+                bmp.recycle();
+            }else if(camera_mode==StaticInformation.CAMERA_REAR){
+                if(cameraController.currentPorject.wide==StaticInformation.DISPLAY_ORIENTATION_DEFAULT){
+                    if(cameraController.currentOrientation==StaticInformation.CAMERA_ORIENTATION_PORTRAIT){
+                        m.postRotate(90);
+                    }else if(cameraController.currentOrientation==StaticInformation.CAMERA_ORIENTATION_RIGHT){
+                        m.postRotate(180);
+                    }
+                }else{
+                    if(cameraController.currentPorject.wide==StaticInformation.CAMERA_ORIENTATION_PORTRAIT){
+                        m.postRotate(90);
+                    }else if(cameraController.currentPorject.wide==StaticInformation.CAMERA_ORIENTATION_RIGHT){
+                        m.postRotate(180);
+                    }
                 }
                 Bitmap rotateBitmap = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), m, false);
-                bmp.recycle();
                 data = ImageProcessingIO.bitmapToByteArray(rotateBitmap);
+                bmp.recycle();
             }
             fos.write(data);
             fos.close();
-
             cameraController.setGuidedImageToView(mPictureFileName);
         } catch (java.io.IOException e) {
             Log.e("PictureDemo", "Exception in photoCallback", e);

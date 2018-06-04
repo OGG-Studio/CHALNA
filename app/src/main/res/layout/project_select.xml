@@ -1,63 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="new_project"
-        android:id="@+id/select_createProject_btn"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="#ff0000ff">
-    </View>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="진행중인 프로젝트"/>
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:id="@+id/select_playing_container">
-            </LinearLayout>
-        </ScrollView>
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="#ff0000ff">
-    </View>
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent" android:layout_width="match_parent">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom|right"
+        android:id="@+id/floating_setting_btn"
+        android:layout_height="wrap_content">
         <TextView
             android:layout_width="wrap_content"
+            android:layout_marginRight="-7dp"
+            android:background="@drawable/round_view"
+            android:paddingTop="5dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp"
+            android:text="Setting"
+            android:paddingLeft="5dp"
+            android:textStyle="bold"
+            android:textColor="#FAFAFA"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floating_setting_btn_item"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="완료된 프로젝트"/>
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:id="@+id/select_complete_container">
-            </LinearLayout>
-        </ScrollView>
+            android:layout_gravity="bottom|end"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            app:backgroundTint="#827987"
+            android:src="@drawable/mini_setting"
+            android:scaleType="center"
+            app:fabSize="normal"/>
     </LinearLayout>
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom|right"
+        android:id="@+id/select_createProject_btn"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_marginRight="-18dp"
+            android:background="@drawable/round_view"
+            android:paddingTop="5dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="5dp"
+            android:text="New Project"
+            android:paddingLeft="5dp"
+            android:textStyle="bold"
+            android:textColor="#FAFAFA"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/select_createProject_btn_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            app:backgroundTint="#827987"
+            android:src="@drawable/action_plus_floating"
+            android:scaleType="fitCenter"
+            app:fabSize="normal"/>
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/select_floating_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        app:backgroundTint="#827987"
+        android:src="@drawable/action_plus_floating"
+        android:scaleType="fitCenter"
+        app:fabSize="normal" />
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#FFAAAC">
+        </View>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="진행중인 프로젝트"/>
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:id="@+id/select_playing_container">
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#FFAAAC">
+        </View>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="완료된 프로젝트"/>
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:id="@+id/select_complete_container">
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

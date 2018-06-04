@@ -1,0 +1,20 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".ProjectPreviewController">
+    <item android:id="@+id/action_button_share"
+        android:icon="@drawable/action_share2"
+        app:showAsAction="always"
+        android:title=""/>
+    <item android:id="@+id/action_button_modify"
+        android:icon="@drawable/action_eraser2"
+        app:showAsAction="always"
+        android:title=""/>
+    <item android:id="@+id/action_button_delete"
+        android:icon="@drawable/action_garbage2"
+        app:showAsAction="always"
+        android:title=""/>
+    <item android:id="@+id/action_button_complete"
+        android:icon="@drawable/action_complete"
+        app:showAsAction="always"
+        android:title="" />
+</menu>

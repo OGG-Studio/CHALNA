@@ -21,5 +21,4 @@
     <item android:drawable="@drawable/sprite_0017" android:duration="30"/>
     <item android:drawable="@drawable/sprite_0018" android:duration="30"/>
     <item android:drawable="@drawable/sprite_0019" android:duration="30"/>
-    <item android:drawable="@drawable/sprite_0020" android:duration="30"/>
 </animation-list>
