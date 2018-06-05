@@ -11,6 +11,8 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <supports-screens
         android:anyDensity="true"
@@ -42,12 +44,25 @@
             android:theme="@style/AppTheme"/>
         <activity android:name=".ProjectCreateController"
             android:theme="@style/AppTheme"/>
-
+        <activity android:name=".SettingController"
+            android:theme="@style/AppTheme"/>
+        <activity android:name=".IntroductionController"
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".CameraController"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="landscape"
             android:theme="@style/AppCamera" />
+
+        <receiver android:name=".AlarmBootBroadcastReceiver"
+            android:enabled="true"
+            android:exported="false"
+            android:label="AlarmBootBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".AlarmBroadcastController"></receiver>
     </application>
 
 </manifest>

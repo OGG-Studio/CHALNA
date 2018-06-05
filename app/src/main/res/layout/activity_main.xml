@@ -94,9 +94,9 @@
     </com.example.philip.chalna.VerticalSeekbar>
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#ffffff"
-        android:visibility="invisible"
-        android:id="@+id/flash_image"/>
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:src="@drawable/loading_anim2"
+        android:id="@+id/loading_image"/>
 </FrameLayout>

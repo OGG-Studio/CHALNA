@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">CHALNA</string>
     <string name="title_activity_project_create_controller">ProjectCreateController</string>
+    <string name="edit_hint">당신의 찰나에 이름을 지어주세요!</string>
 </resources>

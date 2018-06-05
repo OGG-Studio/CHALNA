@@ -3,48 +3,177 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Project_Name"/>
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:textSize="20dp"
+            android:padding="10dp"
+            android:layout_marginLeft="5dp"
+            android:text="기록할 순간"/>
+
         <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/create_name"/>
+            android:id="@+id/project_create_name"
+            android:layout_width="230dp"
+            android:layout_height="50dp"
+            android:textCursorDrawable="@null"
+            android:hint="@string/edit_hint"
+            android:textSize="15dp"
+            />
     </LinearLayout>
+
+
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        >
+
+
+
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:textSize="20dp"
+            android:padding="10dp"
+            android:layout_marginLeft="10dp"
+            android:text="알람 주기"/>
+
+        <Spinner
+            android:id="@+id/project_create_period"
+            android:layout_width="110dp"
+            android:layout_height="50dp"
+            android:paddingLeft="20dp"
+            />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Front/Real Camera Using"/>
-        <RadioGroup
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/create_mode">
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="rear"/>
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="front"/>
-        </RadioGroup>
+            android:textSize="20dp"
+            android:text="일"/>
+
+
     </LinearLayout>
-    <Button
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Go"
-        android:id="@+id/create_ok"/>
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:textSize="20dp"
+            android:layout_marginLeft="10dp"
+            android:padding="10dp"
+            android:text="알람 시간"/>
+
+        <TimePicker
+            android:id="@+id/project_create_time_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner"
+            />
+    </LinearLayout>
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="115dp"
+                android:layout_height="60dp"
+                android:textSize="20dp"
+                android:padding="10dp"
+                android:layout_marginLeft="10dp"
+                android:text="알람 설정"/>
+
+            <ToggleButton
+                android:id="@+id/toggle"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:background="@drawable/alarm_toggle"
+                android:textOff=""
+                android:textOn="" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_marginTop="10dp"
+            android:id="@+id/resultView"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:gravity="center"
+            android:text="주기와 시간을 선택 후, 등록하기 버튼을 눌러주세요."
+            />
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="right">
+            <ImageButton
+                android:id="@+id/registerBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:layout_gravity="right"
+
+                android:layout_marginTop="30dp"
+                android:background="#00000000"
+                android:src="@drawable/register_btn" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <!--
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#000000"
+        />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        >
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="선택된 주기 : "
+            />
+        <TextView
+            android:id="@+id/period_view"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            />
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="선택된 시간 : "
+            />
+        <TextView
+            android:id="@+id/time_view"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            />
+
+    </LinearLayout>
+    -->
 </LinearLayout>

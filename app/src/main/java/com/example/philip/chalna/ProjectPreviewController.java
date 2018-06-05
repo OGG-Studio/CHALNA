@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -33,6 +34,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.io.File;
+import java.util.Date;
 
 public class ProjectPreviewController extends AppCompatActivity {
     Context context = this;
@@ -84,11 +86,18 @@ public class ProjectPreviewController extends AppCompatActivity {
 
         Intent intent = getIntent();
         final String project_name = intent.getStringExtra("PROJECT_NAME");
+        Log.d("ALARM",intent.getExtras().containsKey("PROJECT_NAME")+" ");
+
+        //Target 24>= inflict
+
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
 
         context = this;
         myDB = DBSQLiteModel.getInstance(context);
-        project_meta = myDB.getDataByNameFromPROJECT(project_name);
+        Log.d(TAG,"ALARM : Project Name : " + project_name);
 
+        project_meta = myDB.getDataByNameFromPROJECT(project_name);
 //        dir_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + "/Test";
         dir_path = project_meta.dir;
 
@@ -142,20 +151,20 @@ public class ProjectPreviewController extends AppCompatActivity {
         showBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loading.loadingOn(activity, "Preview Ready...");
+                final String forware_message = "Preview Ready... ";
+                loading.loadingOn(activity, forware_message);
                 new Thread() {
                     @Override
                     public void run() {
-                        final byte[] anim = galleryAdapterModel.generateGIF();
+                        galleryAdapterModel.setGIFSetting(gif_duration, 256);
+                        final byte[] anim = galleryAdapterModel.generateGIF(loading.tv_progress_message, forware_message);
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-
                                 loading.loadingOff();
                                 previewDialog.previewOn(activity, anim);
                             }
                         });
-
                     }
                 }.start();
             }
@@ -257,13 +266,55 @@ public class ProjectPreviewController extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.preview_menu, menu);
         return true;
     }
+    void DeleteDir(String path)
+    {
+        File file = new File(path);
+        File[] childFileList = file.listFiles();
+        for(File childFile : childFileList)
+        {
+            if(childFile.isDirectory()) {
+                DeleteDir(childFile.getAbsolutePath());     //하위 디렉토리 루프
+            }
+            else {
+                childFile.delete();    //하위 파일삭제
+            }
+        }
+        file.delete();    //root 삭제
+    }
+    public void delete(){
+        AlertDialog.Builder alert_confirm = new AlertDialog.Builder(this);
+        alert_confirm.setMessage("당신의 찰나를 지울까요?").setCancelable(false).setPositiveButton("확인",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            DeleteDir(project_meta.dir);
+                            Thread.sleep(500);
+                            Toast.makeText(context, "굿바이!", Toast.LENGTH_LONG).show();
+                            Thread.sleep(500);
+                            finish();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).setNegativeButton("취소",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 'No'
+                        return;
+                    }
+                });
+        AlertDialog alert = alert_confirm.create();
+        alert.show();
+    }
     public void share(String image_path){
         File file = new File(image_path);
-        Uri mSaveImageUri = Uri.fromFile(file); //file의 경로를 uri로 변경합니다.
-        Intent intent = new Intent(Intent.ACTION_SEND); //전송 메소드를 호출합니다. Intent.ACTION_SEND
-        intent.setType("image/gif"); //jpg 이미지를 공유 하기 위해 Type을 정의합니다.
-        intent.putExtra(Intent.EXTRA_STREAM, mSaveImageUri); //사진의 Uri를 가지고 옵니다.
-        startActivity(Intent.createChooser(intent, "Choose")); //Activity를 이용하여 호출 합니다.
+        Uri mSaveImageUri = Uri.fromFile(file);
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("image/gif");
+        intent.putExtra(Intent.EXTRA_STREAM, mSaveImageUri);
+        startActivity(Intent.createChooser(intent, "Choose"));
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
@@ -273,8 +324,11 @@ public class ProjectPreviewController extends AppCompatActivity {
             if(file.exists()){
                 share(project_meta.dir+"/result.gif");
             }else{
-                Toast.makeText(context, "이미지를 공유하기 위해서는 '저장하기'를 먼저 눌러주세요.", Toast.LENGTH_SHORT);
+                Toast.makeText(context, "이미지를 공유하기 위해서는 '저장하기'를 먼저 눌러주세요.", Toast.LENGTH_SHORT).show();
             }
+        }
+        if(id==R.id.action_button_delete){
+            delete();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -289,6 +343,7 @@ public class ProjectPreviewController extends AppCompatActivity {
 
         final EditText frameTimeEditText = new EditText(context);
         frameTimeEditText.setText("512");
+        frameTimeEditText.setSelection(frameTimeEditText.length());
         frameTimeEditText.setGravity(Gravity.CENTER);
         frameTimeEditText.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL);
         alert.setView(frameTimeEditText);
@@ -304,16 +359,22 @@ public class ProjectPreviewController extends AppCompatActivity {
                     Toast.makeText(context, "이미지가 너무 큽니다.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                loading.loadingOn(activity, "loading...");
+                final String forware_message = "loading... ";
+                loading.loadingOn(activity, forware_message);
                 new Thread() {
                     @Override
                     public void run() {
                         galleryAdapterModel.setGIFSetting(gif_duration, width);
-                        if (galleryAdapterModel.saveGIF()) {
+                        if (galleryAdapterModel.saveGIF(loading.tv_progress_message, forware_message)) {
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
                                     loading.loadingOff();
+                                    project_meta.description = DescriptionManager.getSaveDescription();
+                                    Date currentTime = new Date();
+                                    project_meta.modificationDate =currentTime.getTime();
+
+                                    myDB.syncProjectData(project_meta);
                                 }
                             });
                         };
@@ -337,6 +398,7 @@ public class ProjectPreviewController extends AppCompatActivity {
 
         final EditText frameTimeEditText = new EditText(context);
         frameTimeEditText.setText("100");
+        frameTimeEditText.setSelection(frameTimeEditText.length());
         frameTimeEditText.setGravity(Gravity.CENTER);
         frameTimeEditText.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL);
         alert.setView(frameTimeEditText);
@@ -345,8 +407,8 @@ public class ProjectPreviewController extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int whichButton) {
                 String frame = frameTimeEditText.getText().toString();
                 int duration = Integer.parseInt(frame);
-                if(duration<80 || duration > 1000){
-                    Toast.makeText(context, "유효하지 않은 입력입니다. [80ms~1000ms]", Toast.LENGTH_SHORT).show();
+                if(duration<50 || duration > 1000){
+                    Toast.makeText(context, "유효하지 않은 입력입니다. [50ms~1000ms]", Toast.LENGTH_SHORT).show();
                 }else{
                     gif_duration = duration;
                     resolutionDialog();

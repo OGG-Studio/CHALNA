@@ -21,6 +21,6 @@ public class ExampleUnitTest {
     public void addition_isCorrect() {
         assertEquals(4, 2 + 2);
 
-        System.out.println(DescriptionManager.getCompleteDescription(4, 300, 512,228));
+        System.out.println(ProjectCreateController.isValidFileName("WHY DONT?"));
     }
 }

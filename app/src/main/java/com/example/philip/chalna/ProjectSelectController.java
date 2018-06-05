@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.opengl.Visibility;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -47,6 +48,45 @@ public class ProjectSelectController extends AppCompatActivity {
         }
     }//onActivityResult
 
+    public void closeMenuOption(){
+        isOpen = false;
+        menuOpenBtn.animate().rotation(0).start();
+
+        settingBtn.animate().translationY(0).setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if(isOpen==false)
+                    settingBtn.setVisibility(View.GONE);
+            }
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        }).start();
+
+        newProjectBtn.animate().translationY(0).setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if(isOpen==false)
+                    newProjectBtn.setVisibility(View.GONE);
+            }
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        }).start();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,48 +113,19 @@ public class ProjectSelectController extends AppCompatActivity {
                     settingBtn.animate().translationY(-200).start();
                     newProjectBtn.animate().translationY(-400).start();
                 }else{
-                    isOpen = false;
-                    menuOpenBtn.animate().rotation(0).start();
-
-                    settingBtn.animate().translationY(0).setListener(new Animator.AnimatorListener() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-
-                        }
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            if(isOpen==false)
-                                settingBtn.setVisibility(View.GONE);
-                        }
-                        @Override
-                        public void onAnimationCancel(Animator animation) {
-                        }
-                        @Override
-                        public void onAnimationRepeat(Animator animation) {
-                        }
-                    }).start();
-
-                    newProjectBtn.animate().translationY(0).setListener(new Animator.AnimatorListener() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-                        }
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            if(isOpen==false)
-                                newProjectBtn.setVisibility(View.GONE);
-                        }
-                        @Override
-                        public void onAnimationCancel(Animator animation) {
-                        }
-                        @Override
-                        public void onAnimationRepeat(Animator animation) {
-                        }
-                    }).start();
+                    closeMenuOption();
                 }
             }
         });
 
         newProjectBtn = findViewById(R.id.select_createProject_btn);
+        newProjectBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ProjectCreateController.class);
+                startActivityForResult(intent, StaticInformation.REQUEST_CREATE_CONTROL);
+            }
+        });
         newProjectBtnItem = findViewById(R.id.select_createProject_btn_item);
         newProjectBtnItem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,8 +136,16 @@ public class ProjectSelectController extends AppCompatActivity {
         });
         newProjectBtn.setVisibility(View.GONE);
 
+
         settingBtn = findViewById(R.id.floating_setting_btn);
         settingBtn.setVisibility(View.GONE);
+        settingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, SettingController.class);
+                startActivity(intent);
+            }
+        });
     }
     @Override
     protected void onResume() {
@@ -135,10 +154,13 @@ public class ProjectSelectController extends AppCompatActivity {
         drawCurrentProject();
         super.onResume();
     }
-
-
-
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (isOpen) {
+            closeMenuOption();
+        }
+    }
 
     void drawCurrentProject(){
         myDB.projectSanityCheck();
@@ -159,6 +181,9 @@ public class ProjectSelectController extends AppCompatActivity {
         });
 
         for(final ProjectData project : pList){
+
+            //Sanity Check
+
             final PreviewItem previewItem = new PreviewItem(this);
             previewItem.name.setText(project.name);
             previewItem.description.setText(project.description);

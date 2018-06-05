@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="8dp"
+    android:stretchColumns="0.1"
+    >
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_height="70dp"
+            android:layout_width="70dp"
+            android:src="@drawable/seabear"
+            android:id="@+id/seabear"/>
+        <TextView
+            android:padding="7dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Jang, Hea-woong"/>
+    </TableRow>
+    <TableRow
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@drawable/moon"
+            android:id="@+id/moon" />
+        <TextView
+            android:padding="7dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Moon, Ji-hwan"/>
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@drawable/yun"
+            android:id="@+id/yun"/>
+        <TextView
+            android:padding="7dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Yun, Ji-eun"/>
+    </TableRow>
+</TableLayout>
