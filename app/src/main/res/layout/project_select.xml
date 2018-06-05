@@ -5,81 +5,6 @@
     android:layout_height="match_parent" android:layout_width="match_parent">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="bottom|right"
-        android:id="@+id/floating_setting_btn"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_marginRight="-7dp"
-            android:background="@drawable/round_view"
-            android:paddingTop="5dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="5dp"
-            android:text="Setting"
-            android:paddingLeft="5dp"
-            android:textStyle="bold"
-            android:textColor="#FAFAFA"
-            android:layout_gravity="center_vertical"
-            android:layout_height="wrap_content" />
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/floating_setting_btn_item"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
-            app:backgroundTint="#827987"
-            android:src="@drawable/mini_setting"
-            android:scaleType="center"
-            app:fabSize="normal"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="bottom|right"
-        android:id="@+id/select_createProject_btn"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_marginRight="-18dp"
-            android:background="@drawable/round_view"
-            android:paddingTop="5dp"
-            android:paddingRight="20dp"
-            android:paddingBottom="5dp"
-            android:text="New Project"
-            android:paddingLeft="5dp"
-            android:textStyle="bold"
-            android:textColor="#FAFAFA"
-            android:layout_gravity="center_vertical"
-            android:layout_height="wrap_content" />
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/select_createProject_btn_item"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
-            app:backgroundTint="#827987"
-            android:src="@drawable/action_plus_floating"
-            android:scaleType="fitCenter"
-            app:fabSize="normal"/>
-    </LinearLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/select_floating_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        app:backgroundTint="#827987"
-        android:src="@drawable/action_plus_floating"
-        android:scaleType="fitCenter"
-        app:fabSize="normal" />
-
-    <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -135,4 +60,86 @@
             </ScrollView>
         </LinearLayout>
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom|right"
+        android:id="@+id/floating_setting_btn"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_marginRight="-7dp"
+            android:background="@drawable/round_view"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp"
+            android:text="Setting"
+            android:paddingTop="5dp"
+            android:textColor="#FAFAFA"
+
+            android:paddingLeft="5dp"
+
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginBottom="5dp"/>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floating_setting_btn_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:duplicateParentState="true"
+            app:backgroundTint="#827987"
+            android:src="@drawable/mini_setting"
+            android:scaleType="center"
+            app:fabSize="normal"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom|right"
+        android:id="@+id/select_createProject_btn"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_marginRight="-18dp"
+            android:background="@drawable/round_view"
+            android:paddingTop="5dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="5dp"
+            android:text="New Project"
+            android:paddingLeft="5dp"
+            android:textStyle="bold"
+            android:textColor="#FAFAFA"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginBottom="5dp" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/select_createProject_btn_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            app:backgroundTint="#827987"
+            android:duplicateParentState="true"
+            android:src="@drawable/action_plus_floating"
+            android:scaleType="fitCenter"
+            app:fabSize="normal"/>
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/select_floating_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        app:backgroundTint="#827987"
+        android:src="@drawable/action_plus_floating"
+        android:scaleType="fitCenter"
+        app:fabSize="normal" />
 </android.support.design.widget.CoordinatorLayout>

@@ -10,14 +10,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+
+import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.logging.Handler;
 
 public class GalleryAdapterModel extends BaseAdapter {
     private static final String TAG = "GalleryAdapterModel";
@@ -29,6 +33,8 @@ public class GalleryAdapterModel extends BaseAdapter {
 
     private int delay;
     private int sizeWidth;
+
+    private static int progress = 0;
 
     public void setGIFSetting(int delay, int sizeWidth){
         this.delay = delay;
@@ -44,6 +50,18 @@ public class GalleryAdapterModel extends BaseAdapter {
         try{
             outStream = new FileOutputStream(imagePath+"/result.gif");
             outStream.write(generateGIF());
+            outStream.close();
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    public boolean saveGIF(TextView tv, String text){
+        FileOutputStream outStream = null;
+        try{
+            outStream = new FileOutputStream(imagePath+"/result.gif");
+            outStream.write(generateGIF(tv, text));
             outStream.close();
         }catch(Exception e){
             e.printStackTrace();
@@ -80,6 +98,34 @@ public class GalleryAdapterModel extends BaseAdapter {
             File imgFile = new File(imagePath+"/"+imageFileName);
             Bitmap myBitmap = resizeBitmap(BitmapFactory.decodeFile(imgFile.getAbsolutePath()), sizeWidth);
             encoder.addFrame(myBitmap);
+        }
+        encoder.finish();
+        return bos.toByteArray();
+    }
+    public byte[] generateGIF(final TextView textView, final String forwardString) {
+        // Transform this function to thread-based function to later
+        // Array
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        AnimatedGifEncoder encoder = new AnimatedGifEncoder();
+        encoder.setDelay(delay);  // 100/ms
+        encoder.setRepeat(0);   // 0 reapte
+        encoder.start(bos);
+        progress = 0;
+
+        final int imageNum = imageFileNames.length;
+        for(String imageFileName : imageFileNames){
+            File imgFile = new File(imagePath+"/"+imageFileName);
+            Bitmap myBitmap = resizeBitmap(BitmapFactory.decodeFile(imgFile.getAbsolutePath()), sizeWidth);
+            encoder.addFrame(myBitmap);
+            progress++;
+            textView.post(new Runnable() {
+                @Override
+                public void run() {
+                    textView.setText(
+                            forwardString +" (" + progress+"/" + imageNum +")"
+                    );
+                }
+            });
         }
         encoder.finish();
         return bos.toByteArray();

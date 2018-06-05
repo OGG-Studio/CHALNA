@@ -26,4 +26,6 @@ public class StaticInformation {
     public static final int DISPLAY_ORIENTATION_RIGHT= 1;
     public static final int DISPLAY_ORIENTATION_LEFT = 2;
     public static final int DISPLAY_ORIENTATION_PORTRAIT = 3;
+
+    static final String ILLEGAL_EXP = "[:\\\\/%*?:|\"<>]";
 }

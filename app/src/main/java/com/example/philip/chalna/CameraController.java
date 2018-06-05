@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.AnimationDrawable;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Build;
@@ -22,6 +23,8 @@ import android.view.OrientationEventListener;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -74,6 +77,7 @@ public class CameraController extends AppCompatActivity
     ImageView guidedImageView;
     SeekBar seekBar;
 
+    ImageView loadingImageView;
     // C++
 //    public native void ConvertRGBtoGray(long matAddrInput, long matAddrResult);
 
@@ -173,6 +177,16 @@ public class CameraController extends AppCompatActivity
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
                 String currentDateandTime = sdf.format(new Date());
                 String fileName = path_dir + "/CHALNA_" + currentDateandTime + ".jpg";
+
+                loadingImageView.setVisibility(View.VISIBLE);
+                Animation ad = AnimationUtils.loadAnimation(context, R.anim.rotation_anim);
+                loadingImageView.startAnimation(ad);
+
+                galleryAdapterModel.UpdateGallery();
+                //UPDATE MODIFICATION DATE
+                Date currentTime = new Date();
+                String[] date = TimeClass.getDate();
+                currentPorject.description = DescriptionManager.getAddDescription(date[0],date[1], date[2], galleryAdapterModel.getCount()+1);
                 mOpenCvCameraView.takePicture(fileName);
                 Toast.makeText(context, fileName + " saved", Toast.LENGTH_SHORT).show();
 
@@ -186,16 +200,8 @@ public class CameraController extends AppCompatActivity
                     currentPorject.wide = currentOrientation;
                 }
 
-                //UPDATE MODIFICATION DATE
-                Date currentTime = new Date();
-                String[] date = TimeClass.getDate();
-
-                galleryAdapterModel.UpdateGallery();
-                currentPorject.description = DescriptionManager.getAddDescription(date[0],date[1], date[2], galleryAdapterModel.getCount());
                 currentPorject.modificationDate = currentTime.getTime();
                 myDB.syncProjectData(currentPorject);
-
-                isTakingPicture = false;
             }
         });
         //INFORMATION
@@ -260,6 +266,8 @@ public class CameraController extends AppCompatActivity
 
         settingBtn = findViewById(R.id.setting_btn);
 
+        loadingImageView = findViewById(R.id.loading_image);
+        loadingImageView.setVisibility(View.GONE);
         // Camera Callback initialization
         setupOrientationEventListener();
     }
@@ -314,6 +322,14 @@ public class CameraController extends AppCompatActivity
                                 guidedImageView.setImageBitmap(cameraModel.guidedImage);
                             }
                         });
+
+                        loadingImageView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                loadingImageView.setVisibility(View.GONE);
+                            }
+                        });
+                        isTakingPicture = false;
                     }
                 });
                 readyThread.start();

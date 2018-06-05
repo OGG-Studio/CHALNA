@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 public class LoadingClass {
     AppCompatDialog progressDialog;
-
+    TextView tv_progress_message;
     public void loadingOn(Activity activity, String message){
         if(activity==null || activity.isFinishing()){
             return;
@@ -36,7 +36,7 @@ public class LoadingClass {
         final AnimationDrawable frameAnimation = (AnimationDrawable) img_loading_frame.getBackground();
         img_loading_frame.post(new Runnable() { @Override public void run() { frameAnimation.start(); } });
 
-        TextView tv_progress_message = (TextView) progressDialog.findViewById(R.id.tv_progress_message);
+        tv_progress_message = (TextView) progressDialog.findViewById(R.id.tv_progress_message);
         if (!TextUtils.isEmpty(message)) {
             tv_progress_message.setText(message);
         }

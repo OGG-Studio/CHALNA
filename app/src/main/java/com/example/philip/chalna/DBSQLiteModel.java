@@ -111,6 +111,30 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
         }
         return result;
     }
+    public ProjectData getDataByIdFromPROJECT(String project_id){
+        String sql = "select * from PROJECT where "+PROJECT_ID+" = '" + project_id+"';";
+        Cursor c = db.rawQuery(sql, null);
+
+        ProjectData result = null;
+        // result(Cursor 객체)가 비어 있으면 false 리턴
+        if(c.moveToFirst()){
+            int _id = c.getInt(c.getColumnIndex(PROJECT_ID));
+            String name = c.getString(c.getColumnIndex(PROJECT_NAME));
+            int camera_wide = c.getInt(c.getColumnIndex(PROJECT_WIDE));
+            int camera_mode = c.getInt(c.getColumnIndex(PROJECT_MODE));
+            String dir = c.getString(c.getColumnIndex(PROJECT_DIR));
+            int level = c.getInt(c.getColumnIndex(PROJECT_LEVEL));
+            int zoom = c.getInt(c.getColumnIndex(PROJECT_ZOOM_FACTOR));
+
+            String description = c.getString(c.getColumnIndex(PROJECT_DESCRIPTION));
+            long modificationDate = c.getLong(c.getColumnIndex(PROJECT_MODIFICATION_DATE));
+            long startDate = c.getLong(c.getColumnIndex(PROJECT_START_DATE));
+            result = new ProjectData(_id, name,camera_mode, camera_wide, dir, level, zoom,description,modificationDate,startDate);
+        }else{
+            Log.d(TAG,"Search Faile Error");
+        }
+        return result;
+    }
     public long syncProjectData(ProjectData p){
         ContentValues updateValues = new ContentValues();
         updateValues.put(PROJECT_MODE, p.mode);
@@ -125,8 +149,17 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
         updateValues.put(PROJECT_START_DATE, p.startDate);
         return db.update(PROJECT, updateValues, PROJECT_ID + "=?", new String[]{String.valueOf(p.id)});
     }
-    public AlarmData getDataByNameFromALARM(String _alarm_id){
-        String sql = "select * from "+ALARM+" where "+ALARM_ID+" = '" + _alarm_id+"';";
+    public long syncAlarmData(AlarmData p){
+        ContentValues updateValues = new ContentValues();
+        updateValues.put(ALARM_CYCLE, p.alarm_cycle);
+        updateValues.put(ALARM_NEXT_TIME, p.alram_next_time);
+        updateValues.put(ALARM_TIME, p.alarm_time);
+        updateValues.put(PROJECT_ID, p.project_id);
+
+        return db.update(ALARM, updateValues, ALARM_ID + "=?", new String[]{String.valueOf(p.id)});
+    }
+    public AlarmData getDataByNameFromALARM(String project_id){
+        String sql = "select * from "+ALARM+" where "+PROJECT_ID+" = '" + project_id+"';";
         Cursor c = db.rawQuery(sql, null);
 
         AlarmData result = null;
@@ -172,6 +205,9 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
     public void dbDeleteFromPROJECT(String[] name){
         db.delete(PROJECT,"Project_Name=?", name);
     }
+    public void dbDeleteFromALARM(String[] id){
+        db.delete(ALARM,PROJECT_ID+"=?", id);
+    }
     public void projectSanityCheck(){
         ArrayList<ProjectData> projectList = selectAllFromPROJECT();
         //Sanity Check
@@ -180,6 +216,7 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
             if(!pDir.isDirectory()){
                 Log.d(TAG, "DEBUG_TEST : PAth: " + p.dir + " is Deleted");
                 dbDeleteFromPROJECT(new String[] {p.name});
+                dbDeleteFromALARM(new String[] {Integer.toString(p.id)});
             }
         }
     }
