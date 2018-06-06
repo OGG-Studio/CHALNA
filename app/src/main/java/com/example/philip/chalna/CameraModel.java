@@ -116,10 +116,11 @@ public class CameraModel {
                     (float) bitmap.getHeight() / 2);
 
             try {
+                Log.d("Bitmap : ", bitmap + " " + bitmap.isRecycled());
                 Bitmap converted = Bitmap.createBitmap(bitmap, 0, 0,
                         bitmap.getWidth(), bitmap.getHeight(), m, true);
                 if (bitmap != converted) {
-                    bitmap.recycle();
+//                    bitmap.recycle();
                     bitmap = converted;
                 }
             } catch (OutOfMemoryError ex) {

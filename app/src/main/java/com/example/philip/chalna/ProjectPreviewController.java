@@ -89,7 +89,6 @@ public class ProjectPreviewController extends AppCompatActivity {
         Log.d("ALARM",intent.getExtras().containsKey("PROJECT_NAME")+" ");
 
         //Target 24>= inflict
-
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
 
@@ -266,21 +265,6 @@ public class ProjectPreviewController extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.preview_menu, menu);
         return true;
     }
-    void DeleteDir(String path)
-    {
-        File file = new File(path);
-        File[] childFileList = file.listFiles();
-        for(File childFile : childFileList)
-        {
-            if(childFile.isDirectory()) {
-                DeleteDir(childFile.getAbsolutePath());     //하위 디렉토리 루프
-            }
-            else {
-                childFile.delete();    //하위 파일삭제
-            }
-        }
-        file.delete();    //root 삭제
-    }
     public void delete(){
         AlertDialog.Builder alert_confirm = new AlertDialog.Builder(this);
         alert_confirm.setMessage("당신의 찰나를 지울까요?").setCancelable(false).setPositiveButton("확인",
@@ -288,8 +272,8 @@ public class ProjectPreviewController extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         try {
-                            DeleteDir(project_meta.dir);
-                            Thread.sleep(500);
+                            FileManagementUtil.deleteDirectory(project_meta.dir);
+                            Thread.sleep(200);
                             Toast.makeText(context, "굿바이!", Toast.LENGTH_LONG).show();
                             Thread.sleep(500);
                             finish();
@@ -329,6 +313,12 @@ public class ProjectPreviewController extends AppCompatActivity {
         }
         if(id==R.id.action_button_delete){
             delete();
+        }
+        if(id==R.id.action_button_modify){
+            Intent intent = new Intent(context, ProjectCreateController.class);
+            intent.putExtra("MODIFY_MODE", true);
+            intent.putExtra(DBSQLiteModel.PROJECT_ID, project_meta.id);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

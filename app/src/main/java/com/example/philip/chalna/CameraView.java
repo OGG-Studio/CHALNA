@@ -206,7 +206,9 @@ public class CameraView extends JavaCameraView implements PictureCallback {
 
                 Bitmap rotateBitmap = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), m, false);
                 data = ImageProcessingIO.bitmapToByteArray(rotateBitmap);
-                bmp.recycle();
+//                if (bmp != null && !bmp.isRecycled()) {
+//                    bmp.recycle();
+//                }
             }else if(camera_mode==StaticInformation.CAMERA_REAR){
                 if(cameraController.currentPorject.wide==StaticInformation.DISPLAY_ORIENTATION_DEFAULT){
                     if(cameraController.currentOrientation==StaticInformation.CAMERA_ORIENTATION_PORTRAIT){
@@ -223,7 +225,9 @@ public class CameraView extends JavaCameraView implements PictureCallback {
                 }
                 Bitmap rotateBitmap = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), m, false);
                 data = ImageProcessingIO.bitmapToByteArray(rotateBitmap);
-                bmp.recycle();
+//                if (bmp != null && !bmp.isRecycled()) {
+//                    bmp.recycle();
+//                }
             }
             fos.write(data);
             fos.close();

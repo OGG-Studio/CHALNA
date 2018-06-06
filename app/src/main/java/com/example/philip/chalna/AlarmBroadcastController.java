@@ -15,7 +15,7 @@ public class AlarmBroadcastController extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) { //알람시간이 되었을 때 onReceive를 호출함
         //NotificationManager 안드로이드 상태바에 메시지를 던지기 위한 서비스를 불러오고
-        Log.d("ALARM", "START ALARM");
+        Log.d("ALARM", "START ALARM : ");
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         DBSQLiteModel myDB = DBSQLiteModel.getInstance(context);
@@ -23,6 +23,8 @@ public class AlarmBroadcastController extends BroadcastReceiver {
 
         ProjectData currentPorject = myDB.getDataByIdFromPROJECT(Integer.toString(project_id));
         AlarmData alarmData = myDB.getDataByNameFromALARM(Integer.toString(project_id));
+
+        Log.d("ALARM", "START ALARM : " + project_id);
 
         if(currentPorject==null || alarmData==null){
             AlarmManager alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
@@ -32,6 +34,7 @@ public class AlarmBroadcastController extends BroadcastReceiver {
             //아래 알람 울리는거 repeat으로 바꿔야해!
             return;
         }
+        Log.d("ALARM", "START ALARM : " + project_id + " " + currentPorject.name);
 
         Notification notification = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
@@ -54,7 +57,7 @@ public class AlarmBroadcastController extends BroadcastReceiver {
             notification.defaults |= Notification.DEFAULT_VIBRATE;  // 진동
             notificationManager.notify(project_id, notification);
 
-            alarmData.alram_next_time = alarmData.alram_next_time + alarmData.alarm_cycle;
+            alarmData.alram_next_time = alarmData.alram_next_time + alarmData.alarm_cycle * TimeClass.oneDay;
             currentPorject.description = DescriptionManager.getAlarmDescription();
             Date currentTime = new Date();
             currentPorject.modificationDate = currentTime.getTime();
