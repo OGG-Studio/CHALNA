@@ -7,6 +7,7 @@ public class DescriptionManager {
     public static final String DISCRIPTION_4 = "새로운 찰나를 기록할 시간이에요!"; // New
     public static final String DISCRIPTION_5 = "[ 총 이미지 : %d, 초당 프레임 : %.2f, 해상도 %dx%d ]"; // Complete
     public static final String DISCRIPTION_6 = "새로운 찰나가 기록되었습니다!"; // SAVE
+    public static final String DISCRIPTION_7 = "찰나의 정보가 변경되었어요!"; // SAVE
 
     public static String getNewDescription() {
         return DISCRIPTION_1;
@@ -25,5 +26,8 @@ public class DescriptionManager {
     }
     public static String getSaveDescription() {
         return DISCRIPTION_6;
+    }
+    public static String getModifyDescription() {
+        return DISCRIPTION_7;
     }
 }

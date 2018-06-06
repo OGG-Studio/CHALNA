@@ -12,6 +12,7 @@ import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -26,6 +27,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Toast;
@@ -77,7 +79,8 @@ public class CameraController extends AppCompatActivity
     ImageView guidedImageView;
     SeekBar seekBar;
 
-    ImageView loadingImageView;
+    Handler handler = new Handler();
+    FrameLayout loadingImageView;
     // C++
 //    public native void ConvertRGBtoGray(long matAddrInput, long matAddrResult);
 
@@ -154,6 +157,8 @@ public class CameraController extends AppCompatActivity
         changeGuidedModeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(isTakingPicture==true) return;
+
                 if(cameraModel.getGuidedMode()==StaticInformation.GUIDED_SOBELFILTER)
                     cameraModel.setGuidedMode(StaticInformation.GUIDED_TRANSPARENCY);
                 else
@@ -177,10 +182,6 @@ public class CameraController extends AppCompatActivity
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
                 String currentDateandTime = sdf.format(new Date());
                 String fileName = path_dir + "/CHALNA_" + currentDateandTime + ".jpg";
-
-                loadingImageView.setVisibility(View.VISIBLE);
-                Animation ad = AnimationUtils.loadAnimation(context, R.anim.rotation_anim);
-                loadingImageView.startAnimation(ad);
 
                 galleryAdapterModel.UpdateGallery();
                 //UPDATE MODIFICATION DATE
@@ -305,6 +306,11 @@ public class CameraController extends AppCompatActivity
         Log.d(TAG, "View Size " + guidedImageView.getWidth() + " " + guidedImageView.getHeight());
         Log.d(TAG, "GUIDED POSITION TEST current_wide : " + currentPorject.wide);
         Log.d(TAG, "GUIDED ORIENTATION : " + currentOrientation);
+
+        loadingImageView.setVisibility(View.VISIBLE);
+        Animation ad = AnimationUtils.loadAnimation(context, R.anim.rotation_anim);
+        loadingImageView.startAnimation(ad);
+
         Glide.with(context).load(fileName).asBitmap().override(guidedImageView.getWidth(), guidedImageView.getHeight()).into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(final Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
@@ -322,10 +328,10 @@ public class CameraController extends AppCompatActivity
                                 guidedImageView.setImageBitmap(cameraModel.guidedImage);
                             }
                         });
-
-                        loadingImageView.post(new Runnable() {
+                        handler.post(new Runnable() {
                             @Override
                             public void run() {
+                                loadingImageView.clearAnimation();
                                 loadingImageView.setVisibility(View.GONE);
                             }
                         });
@@ -502,7 +508,6 @@ public class CameraController extends AppCompatActivity
                     }else{
                         degree = -90;
                     }
-
                     animateViews(degree);
                     currentOrientation = newOrientation;
                 }

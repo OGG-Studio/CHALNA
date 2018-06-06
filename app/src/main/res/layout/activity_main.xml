@@ -93,10 +93,21 @@
         android:progress="50">
     </com.example.philip.chalna.VerticalSeekbar>
 
-    <ImageView
+    <FrameLayout
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
-        android:src="@drawable/loading_anim2"
-        android:id="@+id/loading_image"/>
+        android:id="@+id/loading_image">
+        <ImageView
+            android:layout_width="match_parent"
+            android:src="@drawable/mini_setting"
+            android:layout_height="match_parent"
+            android:tint="#4f0000ff">
+        </ImageView>
+        <ImageView
+            android:layout_width="match_parent"
+            android:src="@drawable/loading_anim2"
+            android:layout_height="match_parent">
+        </ImageView>
+    </FrameLayout>
 </FrameLayout>
