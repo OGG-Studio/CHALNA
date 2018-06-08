@@ -26,43 +26,54 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
         android:screenOrientation="portrait"
+        android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".Project.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppCamera" >
+            android:theme="@style/AppCamera">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ProjectPreviewController" android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
-        <activity android:name=".ProjectSelectController"
-            android:theme="@style/AppTheme"/>
-        <activity android:name=".ProjectCreateController"
-            android:theme="@style/AppTheme"/>
-        <activity android:name=".SettingController"
-            android:theme="@style/AppTheme"/>
-        <activity android:name=".IntroductionController"
-            android:theme="@style/AppTheme"/>
         <activity
-            android:name=".CameraController"
+            android:name=".Project.ProjectPreviewController"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Project.ProjectSelectController"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Project.ProjectCreateController"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Project.SettingController"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Project.IntroductionController"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Camera.CameraController"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="landscape"
             android:theme="@style/AppCamera" />
 
-        <receiver android:name=".AlarmBootBroadcastReceiver"
+        <receiver
+            android:name=".AlarmReceiver.AlarmBootBroadcastReceiver"
             android:enabled="true"
             android:exported="false"
-            android:label="AlarmBootBroadcastReceiver" >
+            android:label="AlarmBootBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".AlarmBroadcastController"></receiver>
+        <receiver android:name=".AlarmReceiver.AlarmBroadcastController" />
+
+        <activity android:name=".Project.ProjectSaveController" />
+        <activity android:name=".Project.ProjectCompleteController"></activity>
     </application>
 
 </manifest>

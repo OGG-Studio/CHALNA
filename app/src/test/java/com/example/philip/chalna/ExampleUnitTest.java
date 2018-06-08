@@ -1,13 +1,8 @@
 package com.example.philip.chalna;
 
+import com.example.philip.chalna.Project.ProjectCreateController;
+
 import org.junit.Test;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-
-import javax.crypto.spec.DESedeKeySpec;
 
 import static org.junit.Assert.*;
 

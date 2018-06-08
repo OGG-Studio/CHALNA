@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".Project.ProjectPreviewController">
+    <item android:id="@+id/complete_share"
+        android:icon="@drawable/action_share2"
+        app:showAsAction="always"
+        android:title=""/>
+    <item android:id="@+id/complete_delete"
+        android:icon="@drawable/action_garbage2"
+        app:showAsAction="always"
+        android:title=""/>
+    <item android:id="@+id/complete_callback"
+        android:icon="@drawable/action_call_back"
+        app:showAsAction="always"
+        android:title="" />
+</menu>

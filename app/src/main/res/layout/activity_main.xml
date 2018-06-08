@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-    <com.example.philip.chalna.CameraView
+    <com.example.philip.chalna.Camera.CameraView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
@@ -84,30 +84,12 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <com.example.philip.chalna.VerticalSeekbar
+    <com.example.philip.chalna.Camera.VerticalSeekbar
         android:layout_width="30dp"
         android:layout_height="250dp"
         android:layout_gravity="left|center"
         android:id="@+id/seek_bar"
         android:max="100"
         android:progress="50">
-    </com.example.philip.chalna.VerticalSeekbar>
-
-    <FrameLayout
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:id="@+id/loading_image">
-        <ImageView
-            android:layout_width="match_parent"
-            android:src="@drawable/mini_setting"
-            android:layout_height="match_parent"
-            android:tint="#4f0000ff">
-        </ImageView>
-        <ImageView
-            android:layout_width="match_parent"
-            android:src="@drawable/loading_anim2"
-            android:layout_height="match_parent">
-        </ImageView>
-    </FrameLayout>
+    </com.example.philip.chalna.Camera.VerticalSeekbar>
 </FrameLayout>

@@ -28,9 +28,8 @@ Java_com_example_philip_chalna_MainActivity_ConvertRGBtoGray(JNIEnv *env,
 }
 }extern "C"
 JNIEXPORT void JNICALL
-Java_com_example_philip_chalna_CameraModel_sobel_1filter(JNIEnv *env, jobject instance,
+Java_com_example_philip_chalna_Camera_CameraModel_sobel_1filter(JNIEnv *env, jobject instance,
                                                          jlong matAddrInput, jlong matAddrResult) {
-
     // TODO
     //TODO
     Mat &matInput = *(Mat *) matAddrInput;
