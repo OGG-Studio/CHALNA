@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,8 +20,6 @@ import com.example.philip.chalna.R;
 import com.example.philip.chalna.Utils.FileManagementUtil;
 import com.example.philip.chalna.Utils.GalleryAdapterModel;
 import com.example.philip.chalna.Utils.LoadingClass;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 
@@ -65,7 +62,7 @@ public class ProjectCompleteController extends AppCompatActivity {
 
         galleryAdapterModel = GalleryAdapterModel.getInstance(this, dir_path);
         fileImageResultPath = project_meta.dir + "/"+ project_name +"_result.gif";
-        if(!FileManagementUtil.isFile(fileImageResultPath)){
+        if(!FileManagementUtil.existFile(fileImageResultPath)){
             Log.e("DEBUG_TEST","PROJECT VALID CHECL FAIL");
             return false;
         }
