@@ -395,7 +395,29 @@ public class ProjectPreviewController extends AppCompatActivity {
             final String filePath = project_meta.dir + "/" + project_meta.name + "_result.gif";
             File file = new File(filePath);
             if (file.exists()) {
-                projectPreviewModel.share(project_meta, filePath);
+                if(project_meta.is_modify==1){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                            .setTitle("공유하기")
+                            .setMessage("결과가 수정되었습니다. 새로 저장하시겠습니까?")
+                            .setPositiveButton("새로 저장", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dlg, int value) {
+                                    ProjectSaveController.projectData = project_meta;
+                                    ProjectSaveController.galleryAdapterModel = galleryAdapterModel;
+                                    Intent intent = new Intent(context, ProjectSaveController.class);
+                                    startActivityForResult(intent, StaticInformation.SAVE_AND_SHARE);
+                                }
+                            })
+                            .setNegativeButton("이전결과", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    projectPreviewModel.share(project_meta, filePath);
+                                }
+                            });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }else{
+                    projectPreviewModel.share(project_meta, filePath);
+                }
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context)
                         .setTitle("공유하기")
@@ -420,11 +442,33 @@ public class ProjectPreviewController extends AppCompatActivity {
             final String filePath = project_meta.dir + "/" + project_meta.name + "_result.gif";
             File file = new File(filePath);
             if (file.exists()) {
-                projectPreviewModel.complete(project_meta);
+                if(project_meta.is_modify==1){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                            .setTitle("완료하기")
+                            .setMessage("결과가 수정되었습니다. 새로 저장하시겠습니까?")
+                            .setPositiveButton("새로 저장", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dlg, int value) {
+                                    ProjectSaveController.projectData = project_meta;
+                                    ProjectSaveController.galleryAdapterModel = galleryAdapterModel;
+                                    Intent intent = new Intent(context, ProjectSaveController.class);
+                                    startActivityForResult(intent, StaticInformation.SAVE_AND_COMPLETE);
+                                }
+                            })
+                            .setNegativeButton("이전결과로 완성", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    projectPreviewModel.complete(project_meta);
+                                }
+                            });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }else{
+                    projectPreviewModel.complete(project_meta);
+                }
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context)
                         .setTitle("완료하기")
-                        .setMessage("완료를 위해 파일을 우선 파일을 저장해야 합니다.")
+                        .setMessage("완료를 위해 파일을 저장해야 합니다.")
                         .setPositiveButton("저장 후 완료", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dlg, int value) {
                                 ProjectSaveController.projectData = project_meta;

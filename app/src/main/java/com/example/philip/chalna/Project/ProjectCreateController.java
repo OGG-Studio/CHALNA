@@ -83,15 +83,21 @@ public class ProjectCreateController extends AppCompatActivity implements TimePi
             }
         }
         if(_projectData.dir.compareTo(newDir)!=0){
+            final String preResultPath = newDir +"/"+_projectData.name+"_result.gif";
+            final String newResultPath = newDir + "/" + name +"_result.gif";
+
+
             File preFile = new File(_projectData.dir);
+
+            File preResultFile = new File(preResultPath);
+            File newResultFile = new File(newResultPath);
 
             try {
                 FileManagementUtil.copyDirectory(preFile, file);
-
                 // result
-                File 
-                if(FileManagementUtil.isFile())
-
+                if(FileManagementUtil.existFile(preResultPath)){
+                    FileManagementUtil.fileNameChange(preResultFile, newResultFile);
+                }
                 FileManagementUtil.deleteDirectory(_projectData.dir);
             } catch (IOException e) {
                 Toast.makeText(getApplicationContext(), "오류가 발생하였습니다.",Toast.LENGTH_SHORT).show();

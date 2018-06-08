@@ -36,9 +36,9 @@ public class FileManagementUtil {
 
         return options.outHeight;
     }
-    public static boolean isFile(String fileName) {
+    public static boolean existFile(String fileName) {
         File f = new File(fileName);
-        return f.isFile();
+        return f.exists();
     }
     public static void deleteDirectory(String path)
     {
