@@ -49,7 +49,7 @@
         android:layout_marginRight="3dp">
         <TextView
             android:gravity="center|right"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#ADA4AC"
             android:text="수정날자"
@@ -57,7 +57,7 @@
             android:id="@+id/project_item_startTime"/>
         <TextView
             android:gravity="center|right"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="알람주기"
             android:textColor="#ADA4AC"

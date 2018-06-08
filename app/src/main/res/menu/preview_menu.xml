@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" tools:context=".ProjectPreviewController">
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".Project.ProjectPreviewController">
     <item android:id="@+id/action_button_share"
         android:icon="@drawable/action_share2"
         app:showAsAction="always"
