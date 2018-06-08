@@ -14,8 +14,11 @@ public class ProjectData {
     public long modificationDate;
     public long startDate;
 
+    public int is_modify; // 0 is playing, 1 is complete
+    public int guided_mode;
+
     public ProjectData(int _id, String _name, int _mode, int _wide, String _dir, int _project_level, int _zoom
-                        ,String _description, long _modificationDate, long _startDate){
+                        ,String _description, long _modificationDate, long _startDate, int _is_modify, int _guided_mode){
         id = _id;
         name = _name;
         mode = _mode;
@@ -27,5 +30,8 @@ public class ProjectData {
         description = _description;
         modificationDate = _modificationDate;
         startDate = _startDate;
+
+        is_modify = _is_modify;
+        guided_mode = _guided_mode;
     }
 }

@@ -83,9 +83,6 @@ public class ProjectPreviewController extends AppCompatActivity {
     /**
      * Animation test
      */
-    int gif_duration = 0;
-    int gif_width = 0;
-    int gif_height = 0;
     private FileManagementUtil fileIOModel = new FileManagementUtil(context);
 
 

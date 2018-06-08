@@ -87,6 +87,11 @@ public class ProjectCreateController extends AppCompatActivity implements TimePi
 
             try {
                 FileManagementUtil.copyDirectory(preFile, file);
+
+                // result
+                File 
+                if(FileManagementUtil.isFile())
+
                 FileManagementUtil.deleteDirectory(_projectData.dir);
             } catch (IOException e) {
                 Toast.makeText(getApplicationContext(), "오류가 발생하였습니다.",Toast.LENGTH_SHORT).show();
@@ -160,7 +165,8 @@ public class ProjectCreateController extends AppCompatActivity implements TimePi
             }
         }
         ProjectData projectData = new ProjectData(-1,name, mode, wide, StaticInformation.CHALNA_PATH+"/"+name,0,0,
-                DescriptionManager.getNewDescription(),System.currentTimeMillis(),System.currentTimeMillis());
+                DescriptionManager.getNewDescription(),System.currentTimeMillis(),System.currentTimeMillis(),
+                0,0);
         myDB.dbInsertionIntoPROJECT(projectData);
         projectData = myDB.getDataByNameFromPROJECT(projectData.name);
 

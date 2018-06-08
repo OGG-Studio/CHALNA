@@ -56,6 +56,13 @@ public class FileManagementUtil {
         file.delete();    //root 삭제
     }
 
+    public static boolean fileNameChange(File source, File dst){
+        if(source.renameTo(dst)){
+            return true;
+        }else{
+            return false;
+        }
+    }
     // If targetLocation does not exist, it will be created.
     public static void copyDirectory(File sourceLocation , File targetLocation)
             throws IOException {
