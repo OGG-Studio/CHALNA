@@ -123,6 +123,7 @@ public class ProjectCompleteController extends AppCompatActivity {
         }
         else if(id==R.id.complete_delete){
             projectPreviewModel.delete(project_meta);
+
         }
         else if(id==R.id.complete_callback){
             projectPreviewModel.cancleComplete(project_meta);
