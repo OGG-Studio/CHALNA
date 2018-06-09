@@ -32,6 +32,7 @@ import com.example.philip.chalna.Utils.DescriptionManager;
 import com.example.philip.chalna.Utils.FileManagementUtil;
 import com.example.philip.chalna.Utils.GalleryAdapterModel;
 import com.example.philip.chalna.Utils.LoadingClass;
+import com.example.philip.chalna.Utils.StaticInformation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -233,6 +234,7 @@ public class ProjectSaveController extends AppCompatActivity {
                             projectData.description = DescriptionManager.getSaveDescription();
                             Date currentTime = new Date();
                             projectData.modificationDate = currentTime.getTime();
+                            projectData.is_modify = StaticInformation.FALSE;
                             myDB.syncProjectData(projectData);
                             Toast.makeText(context,"기록되었습니다!",Toast.LENGTH_SHORT).show();
                             setResult(RESULT_OK);

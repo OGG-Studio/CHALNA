@@ -79,6 +79,7 @@ public class ProjectPreviewController extends AppCompatActivity {
 
     TextView project_name_tv;
 
+
     AlertDialog alertDialog;
     /**
      * Animation test
@@ -291,7 +292,10 @@ public class ProjectPreviewController extends AppCompatActivity {
 
     public void updateGallaryImage() {
         galleryAdapterModel = GalleryAdapterModel.getInstance(this, dir_path);
-        galleryAdapterModel.UpdateGallery();
+        if(galleryAdapterModel.UpdateGallery()){
+            project_meta.is_modify = StaticInformation.TRUE;
+            myDB.syncProjectData(project_meta);
+        }
         if (galleryAdapterModel.getCount() > 0) {
             if (galleryAdapterModel.getCount() == 1) {
                 previewDraw(0);

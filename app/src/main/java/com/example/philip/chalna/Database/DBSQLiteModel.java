@@ -7,8 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.example.philip.chalna.Utils.StaticInformation;
-
 import java.io.File;
 import java.util.ArrayList;
 
@@ -39,8 +37,8 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
     public static final String PROJECT_MODIFICATION_DATE = "Project_ModDate";
     public static final String PROJECT_START_DATE = "Project_StartDate";
 
-    public static final String PROJECT_IS_MODIFYED = "Project_Modify";
-    public static final String PROJECT_GUIDED_FILTER_MODE = "Project_Modify";
+    public static final String PROJECT_IS_MODIFIED = "Project_Modify";
+    public static final String PROJECT_GUIDED_FILTER_MODE = "Project_Guided_Mode";
 
     //ADD FEATURE
 
@@ -74,7 +72,7 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
         // Project_level = step ( 0 -> create 1 -> Complete )
         String sql = String.format("create table "+ PROJECT +" ("+PROJECT_ID+" integer primary key autoincrement, Project_Name text, Project_Wide integer, Project_Mode integer, Project_dir text, Project_Level integer, "+PROJECT_ZOOM_FACTOR+" integer, "
                 +PROJECT_DESCRIPTION+" text, "+PROJECT_MODIFICATION_DATE+" integer, "+PROJECT_START_DATE+" integer, "+
-                PROJECT_IS_MODIFYED+" integer, "+ PROJECT_GUIDED_FILTER_MODE +" integer);");
+                PROJECT_IS_MODIFIED +" integer, "+ PROJECT_GUIDED_FILTER_MODE +" integer);");
         db.execSQL(sql);
 
         // alarm
@@ -116,7 +114,7 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
             long modificationDate = c.getLong(c.getColumnIndex(PROJECT_MODIFICATION_DATE));
             long startDate = c.getLong(c.getColumnIndex(PROJECT_START_DATE));
 
-            int is_modify = c.getInt(c.getColumnIndex(PROJECT_IS_MODIFYED));
+            int is_modify = c.getInt(c.getColumnIndex(PROJECT_IS_MODIFIED));
             int guided_mode = c.getInt(c.getColumnIndex(PROJECT_GUIDED_FILTER_MODE));
 
             result = new ProjectData(_id, name,camera_mode, camera_wide, dir, level, zoom,description,modificationDate,startDate, is_modify, guided_mode);
@@ -144,7 +142,7 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
             long modificationDate = c.getLong(c.getColumnIndex(PROJECT_MODIFICATION_DATE));
             long startDate = c.getLong(c.getColumnIndex(PROJECT_START_DATE));
 
-            int is_modify = c.getInt(c.getColumnIndex(PROJECT_IS_MODIFYED));
+            int is_modify = c.getInt(c.getColumnIndex(PROJECT_IS_MODIFIED));
             int guided_mode = c.getInt(c.getColumnIndex(PROJECT_GUIDED_FILTER_MODE));
 
             result = new ProjectData(_id, name,camera_mode, camera_wide, dir, level, zoom,description,modificationDate,startDate, is_modify, guided_mode);
@@ -166,7 +164,7 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
         updateValues.put(PROJECT_MODIFICATION_DATE, p.modificationDate);
         updateValues.put(PROJECT_START_DATE, p.startDate);
 
-        updateValues.put(PROJECT_IS_MODIFYED, p.is_modify);
+        updateValues.put(PROJECT_IS_MODIFIED, p.is_modify);
         updateValues.put(PROJECT_GUIDED_FILTER_MODE, p.guided_mode);
 
         return db.update(PROJECT, updateValues, PROJECT_ID + "=?", new String[]{String.valueOf(p.id)});
@@ -215,7 +213,7 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
         values.put(PROJECT_START_DATE, p.startDate);
         values.put(PROJECT_MODIFICATION_DATE, p.modificationDate);
 
-        values.put(PROJECT_IS_MODIFYED, p.is_modify);
+        values.put(PROJECT_IS_MODIFIED, p.is_modify);
         values.put(PROJECT_GUIDED_FILTER_MODE, p.guided_mode);
 
         db.insert(PROJECT, null, values);
@@ -279,7 +277,7 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
             long modificationDate = c.getLong(c.getColumnIndex(PROJECT_MODIFICATION_DATE));
             long startDate = c.getLong(c.getColumnIndex(PROJECT_START_DATE));
 
-            int is_modify = c.getInt(c.getColumnIndex(PROJECT_IS_MODIFYED));
+            int is_modify = c.getInt(c.getColumnIndex(PROJECT_IS_MODIFIED));
             int guided_mode = c.getInt(c.getColumnIndex(PROJECT_GUIDED_FILTER_MODE));
 
             list.add(new ProjectData(_id, name,camera_mode, camera_wide, dir, level, zoom,description,modificationDate,startDate, is_modify, guided_mode));

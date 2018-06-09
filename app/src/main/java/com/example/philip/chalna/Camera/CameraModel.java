@@ -7,6 +7,7 @@ import android.media.ExifInterface;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.philip.chalna.Database.DBSQLiteModel;
 import com.example.philip.chalna.Utils.StaticInformation;
 
 import org.opencv.android.Utils;

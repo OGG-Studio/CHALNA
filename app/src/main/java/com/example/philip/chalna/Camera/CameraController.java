@@ -22,12 +22,8 @@ import android.view.OrientationEventListener;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.SeekBar;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -93,7 +89,7 @@ public class CameraController extends AppCompatActivity
 
     //Data
     DBSQLiteModel myDB;
-    ProjectData currentPorject;
+    ProjectData currentProject;
 
     //Camera Listener
     public OrientationEventListener mOrientationEventListener;
@@ -174,6 +170,9 @@ public class CameraController extends AppCompatActivity
                 else
                     cameraModel.setGuidedMode(StaticInformation.GUIDED_SOBELFILTER);
 
+                currentProject.guided_mode = cameraModel.guidedMode;
+                myDB.syncProjectData(currentProject);
+
                 final String img_path = mOpenCvCameraView.getmPictureFileName();
                 if(img_path!=null){
                     setGuidedImageToView(img_path);
@@ -212,7 +211,7 @@ public class CameraController extends AppCompatActivity
                 //UPDATE MODIFICATION DATE
                 Date currentTime = new Date();
                 String[] date = TimeClass.getDate();
-                currentPorject.description = DescriptionManager.getAddDescription(date[0],date[1], date[2], galleryAdapterModel.getCount()+1);
+                currentProject.description = DescriptionManager.getAddDescription(date[0],date[1], date[2], galleryAdapterModel.getCount()+1);
                 mOpenCvCameraView.takePicture(fileName);
 //                Toast.makeText(context, fileName + " saved", Toast.LENGTH_SHORT).show();
 
@@ -222,12 +221,13 @@ public class CameraController extends AppCompatActivity
                 mediaScanIntent.setData(contentUri);
                 context.sendBroadcast(mediaScanIntent);
 
-                if(currentPorject.wide == StaticInformation.DISPLAY_ORIENTATION_DEFAULT){
-                    currentPorject.wide = currentOrientation;
+                if(currentProject.wide == StaticInformation.DISPLAY_ORIENTATION_DEFAULT){
+                    currentProject.wide = currentOrientation;
                 }
 
-                currentPorject.modificationDate = currentTime.getTime();
-                myDB.syncProjectData(currentPorject);
+                currentProject.modificationDate = currentTime.getTime();
+                currentProject.is_modify = StaticInformation.TRUE;
+                myDB.syncProjectData(currentProject);
             }
         });
         //INFORMATION
@@ -237,14 +237,14 @@ public class CameraController extends AppCompatActivity
         galleryAdapterModel = GalleryAdapterModel.getInstance(this, path_dir);
 
         myDB = DBSQLiteModel.getInstance(this);
-        currentPorject = myDB.getDataByNameFromPROJECT(project_name);
+        currentProject = myDB.getDataByNameFromPROJECT(project_name);
 
         mOpenCvCameraView = findViewById(R.id.activity_surface_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
         mOpenCvCameraView.setFocusable(true);
 
-        if(currentPorject.mode==StaticInformation.CAMERA_FRONT){
+        if(currentProject.mode==StaticInformation.CAMERA_FRONT){
             mOpenCvCameraView.setCameraIndex(StaticInformation.CAMERA_FRONT); // front-camera(1),  back-camera(0)
         }
         else{
@@ -253,7 +253,7 @@ public class CameraController extends AppCompatActivity
 
         //OPTION SETTING CAMERA
         mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
-        mOpenCvCameraView.setCameraMode(currentPorject.mode);
+        mOpenCvCameraView.setCameraMode(currentProject.mode);
         mOpenCvCameraView.cameraController = this;
 
         //UI Access
@@ -277,15 +277,15 @@ public class CameraController extends AppCompatActivity
             public void onClick(View v) {
                 Log.d(TAG, "myCheck Camera Change");
                 mOpenCvCameraView.disableView();
-                if(currentPorject.mode == StaticInformation.CAMERA_REAR){
-                    currentPorject.mode = StaticInformation.CAMERA_FRONT;
+                if(currentProject.mode == StaticInformation.CAMERA_REAR){
+                    currentProject.mode = StaticInformation.CAMERA_FRONT;
                 }else{
-                    currentPorject.mode = StaticInformation.CAMERA_REAR;
+                    currentProject.mode = StaticInformation.CAMERA_REAR;
                 }
                  // front-camera(1),  back-camera(0)
-                mOpenCvCameraView.setCameraIndex(currentPorject.mode);
-                mOpenCvCameraView.setCameraMode(currentPorject.mode);
-                myDB.syncProjectData(currentPorject);
+                mOpenCvCameraView.setCameraIndex(currentProject.mode);
+                mOpenCvCameraView.setCameraMode(currentProject.mode);
+                myDB.syncProjectData(currentProject);
                 mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
                 firstCreate = false;
                 onWindowFocusChanged(true);
@@ -296,6 +296,7 @@ public class CameraController extends AppCompatActivity
 
         // Camera Callback initialization
         setupOrientationEventListener();
+        cameraModel.guidedMode = currentProject.guided_mode;
     }
 
     boolean firstCreate = false;
@@ -329,7 +330,7 @@ public class CameraController extends AppCompatActivity
     }
     public void setGuidedImageToView(final String fileName){
         Log.d(TAG, "View Size " + guidedImageView.getWidth() + " " + guidedImageView.getHeight());
-        Log.d(TAG, "GUIDED POSITION TEST current_wide : " + currentPorject.wide);
+        Log.d(TAG, "GUIDED POSITION TEST current_wide : " + currentProject.wide);
         Log.d(TAG, "GUIDED ORIENTATION : " + currentOrientation);
 
         Glide.with(context).load(fileName).asBitmap().override(guidedImageView.getWidth(), guidedImageView.getHeight()).into(new SimpleTarget<Bitmap>() {
@@ -339,10 +340,10 @@ public class CameraController extends AppCompatActivity
                     @Override
                     public void run() {
                         int disp_orientation = currentOrientation;
-                        if(currentPorject.wide!=StaticInformation.DISPLAY_ORIENTATION_DEFAULT){
-                            disp_orientation = currentPorject.wide;
+                        if(currentProject.wide!=StaticInformation.DISPLAY_ORIENTATION_DEFAULT){
+                            disp_orientation = currentProject.wide;
                         }
-                        cameraModel.setGuidedImage(resource, disp_orientation, currentPorject.mode);
+                        cameraModel.setGuidedImage(resource, disp_orientation, currentProject.mode);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -357,7 +358,47 @@ public class CameraController extends AppCompatActivity
             }
         });
     }
+    public void setFetchedImageGuided(final String fileName){
+        Log.d(TAG, "View Size " + guidedImageView.getWidth() + " " + guidedImageView.getHeight());
+        Log.d(TAG, "GUIDED POSITION TEST current_wide : " + currentProject.wide);
+        Log.d(TAG, "GUIDED ORIENTATION : " + currentOrientation);
 
+        int width = FileManagementUtil.getBitmapImgWidth(fileName);
+        int height = FileManagementUtil.getBitmapImgHeight(fileName);
+
+        final int current_display_mode;
+        if(width> height){
+            //landscape
+            current_display_mode = StaticInformation.DISPLAY_ORIENTATION_PORTRAIT;
+        }else{
+            //portrait
+            current_display_mode = StaticInformation.DISPLAY_ORIENTATION_LEFT;
+        }
+        Glide.with(context).load(fileName).asBitmap().override(guidedImageView.getWidth(), guidedImageView.getHeight()).into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(final Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                Thread readyThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        int disp_orientation = current_display_mode;
+                        if(currentProject.wide==StaticInformation.CAMERA_ORIENTATION_RIGHT){
+                            disp_orientation = StaticInformation.CAMERA_ORIENTATION_RIGHT;
+                        }
+                        cameraModel.setGuidedImage(resource, disp_orientation, currentProject.mode);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                guidedImageView.setImageBitmap(cameraModel.guidedImage);
+                                loading.loadingOff();
+                                isTakingPicture = false;
+                            }
+                        });
+                    }
+                });
+                readyThread.start();
+            }
+        });
+    }
     @Override
     public void onPause() {
         super.onPause();
@@ -403,7 +444,7 @@ public class CameraController extends AppCompatActivity
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         matInput = inputFrame.rgba();
 
-        if(currentPorject.mode==1){
+        if(currentProject.mode==1){
             Core.flip(matInput, matInput, 1);
         }
         return matInput;
@@ -477,6 +518,8 @@ public class CameraController extends AppCompatActivity
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case StaticInformation.GALLERY_CODE:
+                    loading.loadingOn(activity, "");
+
 //                    Bitmap bm = fileIOModel.getGuidedImageFromRealPath(data.getData()); //Deprecated
 //                    cameraModel.setGuidedImage(bm);
 //                    guidedImageView.setImageBitmap(cameraModel.guidedImage);

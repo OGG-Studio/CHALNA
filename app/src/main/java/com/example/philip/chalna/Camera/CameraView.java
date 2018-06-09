@@ -72,8 +72,8 @@ public class CameraView extends JavaCameraView implements PictureCallback {
             case MotionEvent.ACTION_POINTER_UP:
                 double_touch_start = false;
                 // UPDATE
-                cameraController.currentPorject.zoom_factor = zoom_factor;
-                cameraController.myDB.syncProjectData(cameraController.currentPorject);
+                cameraController.currentProject.zoom_factor = zoom_factor;
+                cameraController.myDB.syncProjectData(cameraController.currentProject);
                 break;
             case MotionEvent.ACTION_MOVE:
                 if(pointer_count==2 && double_touch_start == true){
@@ -101,7 +101,7 @@ public class CameraView extends JavaCameraView implements PictureCallback {
     }
     public void setCameraZoomSetting(){
         Camera.Parameters params = mCamera.getParameters();
-        zoom_factor = cameraController.currentPorject.zoom_factor;
+        zoom_factor = cameraController.currentProject.zoom_factor;
 
         Log.d(TAG, "MAX ZOOM : "+params.getMaxZoom());
         max_camera_zoom = params.getMaxZoom();
@@ -186,16 +186,16 @@ public class CameraView extends JavaCameraView implements PictureCallback {
             if(camera_mode==StaticInformation.CAMERA_FRONT){
                 Log.i(TAG, "Rotation CAMERA");
 
-                if(cameraController.currentPorject.wide == StaticInformation.DISPLAY_ORIENTATION_DEFAULT){
+                if(cameraController.currentProject.wide == StaticInformation.DISPLAY_ORIENTATION_DEFAULT){
                     if(cameraController.currentOrientation==StaticInformation.CAMERA_ORIENTATION_PORTRAIT){
                         m.postRotate(-90);
                     }else if(cameraController.currentOrientation==StaticInformation.CAMERA_ORIENTATION_RIGHT){
                         m.postRotate(-180);
                     }
                 }else{
-                    if(cameraController.currentPorject.wide==StaticInformation.CAMERA_ORIENTATION_PORTRAIT){
+                    if(cameraController.currentProject.wide==StaticInformation.CAMERA_ORIENTATION_PORTRAIT){
                         m.postRotate(-90);
-                    }else if(cameraController.currentPorject.wide==StaticInformation.CAMERA_ORIENTATION_RIGHT){
+                    }else if(cameraController.currentProject.wide==StaticInformation.CAMERA_ORIENTATION_RIGHT){
                         m.postRotate(-180);
                     }
                 }
@@ -203,20 +203,17 @@ public class CameraView extends JavaCameraView implements PictureCallback {
 
                 Bitmap rotateBitmap = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), m, false);
                 data = ImageProcessingIO.bitmapToByteArray(rotateBitmap);
-//                if (bmp != null && !bmp.isRecycled()) {
-//                    bmp.recycle();
-//                }
             }else if(camera_mode==StaticInformation.CAMERA_REAR){
-                if(cameraController.currentPorject.wide==StaticInformation.DISPLAY_ORIENTATION_DEFAULT){
+                if(cameraController.currentProject.wide==StaticInformation.DISPLAY_ORIENTATION_DEFAULT){
                     if(cameraController.currentOrientation==StaticInformation.CAMERA_ORIENTATION_PORTRAIT){
                         m.postRotate(90);
                     }else if(cameraController.currentOrientation==StaticInformation.CAMERA_ORIENTATION_RIGHT){
                         m.postRotate(180);
                     }
                 }else{
-                    if(cameraController.currentPorject.wide==StaticInformation.CAMERA_ORIENTATION_PORTRAIT){
+                    if(cameraController.currentProject.wide==StaticInformation.CAMERA_ORIENTATION_PORTRAIT){
                         m.postRotate(90);
-                    }else if(cameraController.currentPorject.wide==StaticInformation.CAMERA_ORIENTATION_RIGHT){
+                    }else if(cameraController.currentProject.wide==StaticInformation.CAMERA_ORIENTATION_RIGHT){
                         m.postRotate(180);
                     }
                 }
