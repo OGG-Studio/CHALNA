@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
@@ -24,6 +25,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -121,6 +123,8 @@ public class CameraController extends AppCompatActivity
             }
         }
     };
+    private SharedPreferences sh_pref;
+    private SharedPreferences .Editor sh_edit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -294,13 +298,16 @@ public class CameraController extends AppCompatActivity
         });
 
         settingBtn = findViewById(R.id.setting_btn);
+        settingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context,"준비중입니다.",Toast.LENGTH_SHORT);
+            }
+        });
 
         // Camera Callback initialization
         setupOrientationEventListener();
         cameraModel.guidedMode = currentProject.guided_mode;
-
-        CameraTuto psc = new CameraTuto(this);
-        psc.tutorial_start();
     }
 
     boolean firstCreate = false;
@@ -330,6 +337,16 @@ public class CameraController extends AppCompatActivity
             Log.d("DEBUG_TEST","GUIDED_SIZE = " +guidedImageView.getWidth() + " " + guidedImageView.getHeight());
             Log.d("DEBUG_TEST","CameraView = " +mOpenCvCameraView.getWidth() + " " + mOpenCvCameraView.getHeight());
             Log.d("DEBUG_TEST","Res = " +mOpenCvCameraView.getResolution().width + " " + mOpenCvCameraView.getResolution().height);
+
+            sh_pref = getSharedPreferences(StaticInformation.TUTORIAL_PROJECT, MODE_PRIVATE);
+            if(sh_pref.getInt(StaticInformation.TUTORIAL_PROJECT_CAMERA, 0)==0) {
+                sh_edit = sh_pref.edit();
+                sh_edit.putInt(StaticInformation.TUTORIAL_PROJECT_CAMERA, 1);
+                sh_edit.commit();
+
+                CameraTuto psc = new CameraTuto(this);
+                psc.tutorial_start();
+            }
         }
     }
     public void setGuidedImageToView(final String fileName){
@@ -578,7 +595,7 @@ public class CameraController extends AppCompatActivity
         mOrientationEventListener.enable();
     }
 
-    private  void animateViews(int degrees) {
+    public void animateViews(int degrees) {
         List<View> views = new ArrayList<View>(){
             {
                 add(btnImageLoad);

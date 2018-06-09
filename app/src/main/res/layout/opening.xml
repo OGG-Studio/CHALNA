@@ -5,6 +5,6 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/default_image_2"
+        android:src="@drawable/default_image_3"
         android:scaleType="fitXY"/>
 </android.support.constraint.ConstraintLayout>

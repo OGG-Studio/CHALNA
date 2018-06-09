@@ -17,6 +17,9 @@ public class CameraTuto {
 
     //셋팅버튼
     public void tutorial_start(){
+        activity_class.animateViews(0);
+        activity_class.mOrientationEventListener.disable();
+
         new MaterialShowcaseView.Builder(activity_class) // instantiate the material showcase view using Builder
                 .setTarget(activity_class.settingBtn) // set what view will be pointed or highlighted
                 .setTitleText("정보") // set the title of the tutorial
@@ -138,7 +141,12 @@ public class CameraTuto {
                     }
                     @Override
                     public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
-
+                        activity_class.handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                activity_class.mOrientationEventListener.enable();
+                            }
+                        });
                     }
                 })
                 .setDelay(millis) // set delay in milliseconds to show the tutor
