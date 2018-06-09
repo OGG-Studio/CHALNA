@@ -15,6 +15,7 @@
             <!--android:background="#FFAAAC">-->
         <!--</View>-->
         <LinearLayout
+            android:id="@+id/playing_area"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -47,6 +48,7 @@
             <!--android:background="#FFAAAC">-->
         <!--</View>-->
         <LinearLayout
+            android:id="@+id/finish_area"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -75,6 +77,7 @@
     </LinearLayout>
 
     <LinearLayout
+
         android:layout_width="wrap_content"
         android:orientation="horizontal"
         android:layout_gravity="bottom|right"

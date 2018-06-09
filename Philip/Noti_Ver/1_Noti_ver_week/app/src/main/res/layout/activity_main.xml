@@ -1,0 +1,85 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onRegist"
+        android:text="등록" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onUnregist"
+        android:text="해지" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <ToggleButton
+            android:id="@+id/toggle_sun"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textOff="일"
+            android:textOn="일" />
+
+        <ToggleButton
+            android:id="@+id/toggle_mon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textOff="월"
+            android:textOn="월" />
+
+        <ToggleButton
+            android:id="@+id/toggle_tue"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textOff="화"
+            android:textOn="화" />
+
+        <ToggleButton
+            android:id="@+id/toggle_wed"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textOff="수"
+            android:textOn="수" />
+
+        <ToggleButton
+            android:id="@+id/toggle_thu"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textOff="목"
+            android:textOn="목" />
+
+        <ToggleButton
+            android:id="@+id/toggle_fri"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textOff="금"
+            android:textOn="금" />
+
+        <ToggleButton
+            android:id="@+id/toggle_sat"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textOff="토"
+            android:textOn="토" />
+    </LinearLayout>
+
+</LinearLayout>
