@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.example.philip.chalna.Database.AlarmData;
@@ -15,6 +16,7 @@ import com.example.philip.chalna.Project.MainActivity;
 import com.example.philip.chalna.Database.ProjectData;
 import com.example.philip.chalna.Project.ProjectPreviewController;
 import com.example.philip.chalna.R;
+import com.example.philip.chalna.Utils.StaticInformation;
 import com.example.philip.chalna.Utils.TimeClass;
 
 import java.util.Date;
@@ -42,6 +44,13 @@ public class AlarmBroadcastController extends BroadcastReceiver {
             //아래 알람 울리는거 repeat으로 바꿔야해!
             return;
         }
+
+        SharedPreferences sh_pre = context.getSharedPreferences(StaticInformation.GLOBAL_SETTING, context.MODE_PRIVATE);
+        if(sh_pre.getInt(StaticInformation.GLOBAL_SETTING_NOTI, 0)==0){
+            return;
+        }
+
+
         Log.d("ALARM", "START ALARM : " + project_id + " " + currentPorject.name);
 
         Notification notification = null;

@@ -15,11 +15,28 @@
             android:layout_width="70dp"
             android:src="@drawable/seabear"
             android:id="@+id/seabear"/>
-        <TextView
-            android:padding="7dp"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="Jang, Hea-woong"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:padding="11dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="Jang, Hea-woong"/>
+            <TextView
+                android:paddingLeft="6dp"
+                android:textSize="10sp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="leap1568@gmail.com "/>
+            <TextView
+                android:paddingLeft="6dp"
+                android:textSize="10sp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="https://github.com/Longseabear"/>
+        </LinearLayout>
     </TableRow>
     <TableRow
         android:layout_height="wrap_content"
@@ -31,11 +48,28 @@
             android:layout_height="70dp"
             android:src="@drawable/moon"
             android:id="@+id/moon" />
-        <TextView
-            android:padding="7dp"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Moon, Ji-hwan"/>
+            android:orientation="vertical">
+            <TextView
+                android:padding="11dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Moon, Ji-hwan"/>
+            <TextView
+                android:paddingLeft="6dp"
+                android:textSize="10sp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="jihwanla17@naver.com"/>
+            <TextView
+                android:paddingLeft="6dp"
+                android:textSize="10sp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="https://github.com/PhilipBox"/>
+        </LinearLayout>
     </TableRow>
 
     <TableRow
@@ -48,10 +82,28 @@
             android:layout_height="70dp"
             android:src="@drawable/yun"
             android:id="@+id/yun"/>
-        <TextView
-            android:padding="7dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="Yun, Ji-eun"/>
+            android:orientation="vertical">
+
+            <TextView
+                android:padding="11dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="Yun, Ji-eun"/>
+            <TextView
+                android:paddingLeft="6dp"
+                android:textSize="10sp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="wonwoowon21@gmail.com"/>
+            <TextView
+                android:paddingLeft="6dp"
+                android:textSize="10sp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="https://github.com/wonwoowon"/>
+        </LinearLayout>
     </TableRow>
 </TableLayout>

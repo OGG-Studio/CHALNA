@@ -5,6 +5,9 @@ import android.os.Environment;
 public class StaticInformation {
     public static final int GALLERY_CODE = 1001;
 
+    // NORMAL
+    public static final int TRUE = 1;
+    public static final int FALSE = 0;
     // GUIDED MODE
     public static final int GUIDED_TRANSPARENCY = 0;
     public static final int GUIDED_SOBELFILTER = 1;
@@ -35,4 +38,7 @@ public class StaticInformation {
     public static final int SAVE_ONLY = 111;
     public static final int SAVE_AND_SHARE = 112;
     public static final int SAVE_AND_COMPLETE = 113;
+
+    public static final String GLOBAL_SETTING = "global_setting";
+    public static final String GLOBAL_SETTING_NOTI = "global_notification";
 }

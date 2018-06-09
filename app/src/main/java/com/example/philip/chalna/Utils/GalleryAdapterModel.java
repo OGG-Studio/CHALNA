@@ -132,9 +132,17 @@ public class GalleryAdapterModel extends BaseAdapter {
         return imageFileNames;
     }
 
-    public void UpdateGallery(){
+    public boolean UpdateGallery(){
+        int changedCheck = 0;
         File imagePathAsFile = new File(imagePath);
+        if(imageFileNames!=null){
+            changedCheck = imageFileNames.length;
+        }
         imageFileNames = imagePathAsFile.list(new ImageFileFilter());
+        if(imageFileNames.length!=changedCheck){
+            return true;
+        }
+        return false;
     }
     public GalleryAdapterModel(Context context, String imagePath) {
         this.context = context;

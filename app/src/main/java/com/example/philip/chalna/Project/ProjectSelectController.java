@@ -233,7 +233,6 @@ public class ProjectSelectController extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
-
                 completeContainer.addView(previewItem);
             }
         }
