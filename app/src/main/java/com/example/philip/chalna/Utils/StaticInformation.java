@@ -44,4 +44,5 @@ public class StaticInformation {
 
     public static final String TUTORIAL_PROJECT = "tuto_project";
     public static final String TUTORIAL_PROJECT_SELECTE = "tuto_project_selec";
+    public static final String TUTORIAL_PROJECT_CAMERA = "tuto_project_cam";
 }
