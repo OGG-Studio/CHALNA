@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -74,9 +75,9 @@ public class ProjectSaveController extends AppCompatActivity {
     Context context = this;
 
     // Button
-    Button btn1;
-    Button btn2;
-    Button btn3;
+    ImageButton btn1;
+    ImageButton btn2;
+    ImageButton btn3;
 
     //CONSATNT
     public static final String SAVE_DB = "Save_Meta";
