@@ -24,7 +24,7 @@ public class IntroductionController extends AppCompatActivity{
         jang = findViewById(R.id.jang);
         yun = findViewById(R.id.yun);
         moon = findViewById(R.id.moon);
-
+        yun2 = findViewById(R.id.yun2);
 
         jang.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +61,6 @@ public class IntroductionController extends AppCompatActivity{
                         .setListener(new IShowcaseListener() {
                             @Override
                             public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
-
                             }
 
                             @Override
@@ -123,5 +122,4 @@ public class IntroductionController extends AppCompatActivity{
             }
         });
     }
-
 }
