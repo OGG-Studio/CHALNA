@@ -7,5 +7,6 @@
 .DS_Store
 /build
 /captures
+/app/CMakeLists.txt
 .externalNativeBuild
 ./app/CMakeLists
