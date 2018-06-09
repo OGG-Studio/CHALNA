@@ -1,11 +1,13 @@
 package com.example.philip.chalna.Project;
 
+import android.widget.Toast;
+
 import uk.co.deanwild.materialshowcaseview.IShowcaseListener;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 public class ProjectSelectTuto {
     ProjectSelectController activity_class;
-    final int millls = 100;
+    final int millls = 500;
     public ProjectSelectTuto(ProjectSelectController psc){
         activity_class = psc;
     }
@@ -23,7 +25,7 @@ public class ProjectSelectTuto {
 
                     @Override
                     public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
-                        Playing_area_tuto(100);
+                        Playing_area_tuto(millls);
                     }
                 })
                 .setDelay(millls) // set delay in milliseconds to show the tutor
@@ -46,7 +48,7 @@ public class ProjectSelectTuto {
 
                     @Override
                     public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
-                        Finish_area_tuto(100);
+                        Finish_area_tuto(millls);
                     }
                 })
                 .setDelay(millis) // set delay in milliseconds to show the tutor
@@ -69,7 +71,7 @@ public class ProjectSelectTuto {
 
                     @Override
                     public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
-
+                        Toast.makeText(activity_class, "찰나에 오신것을 환영합니다 !", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setDelay(millis) // set delay in milliseconds to show the tutor
