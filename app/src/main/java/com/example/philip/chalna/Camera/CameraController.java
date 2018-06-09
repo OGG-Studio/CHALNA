@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -297,6 +298,12 @@ public class CameraController extends AppCompatActivity
         });
 
         settingBtn = findViewById(R.id.setting_btn);
+        settingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context,"준비중입니다.",Toast.LENGTH_SHORT);
+            }
+        });
 
         // Camera Callback initialization
         setupOrientationEventListener();
@@ -588,7 +595,7 @@ public class CameraController extends AppCompatActivity
         mOrientationEventListener.enable();
     }
 
-    private  void animateViews(int degrees) {
+    public void animateViews(int degrees) {
         List<View> views = new ArrayList<View>(){
             {
                 add(btnImageLoad);
