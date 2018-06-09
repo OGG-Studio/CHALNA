@@ -104,29 +104,27 @@
         android:background="#F2F2EF"
         android:layout_height="35dp"
         android:layout_margin="10dp">
-        <Button
+        <ImageButton
             android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="취소"
+            android:src="@drawable/btn_effect_cancle"
             android:id="@+id/btn1"
             android:textSize="11dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"/>
-        <Button
+        <ImageButton
             android:layout_width="30dp"
             android:layout_height="wrap_content"
-            android:text="사용자 지정 크기"
-            android:textSize="11dp"
+            android:src="@drawable/btn_effect_resolution"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:id="@+id/btn2"
             android:layout_weight="1"/>
-        <Button
+        <ImageButton
             android:layout_width="30dp"
             android:layout_height="wrap_content"
-            android:textSize="11dp"
-            android:text="저장하기"
+            android:src="@drawable/btn_effect_save"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:id="@+id/btn3"
