@@ -4,7 +4,10 @@ import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.Preference;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -31,9 +34,12 @@ public class ProjectSelectController extends AppCompatActivity {
     Context context;
     DBSQLiteModel myDB;
 
+    Handler handler = new Handler();
     LinearLayout Playing_area;
     LinearLayout Finish_area;
 
+    SharedPreferences sh_pref;
+    SharedPreferences.Editor sh_edit;
     //UI
     LinearLayout playingContainer, completeContainer;
     private String TAG = "PROJECT_SELECT_CONTROLLER";
@@ -42,6 +48,7 @@ public class ProjectSelectController extends AppCompatActivity {
     LinearLayout settingBtn , newProjectBtn;
     boolean isOpen = false;
 
+    public boolean isFirstCreate = false;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == StaticInformation.REQUEST_CREATE_CONTROL) {
@@ -53,6 +60,15 @@ public class ProjectSelectController extends AppCompatActivity {
         }
     }//onActivityResult
 
+    public void openMenuOption(){
+        isOpen = true;
+        menuOpenBtn.animate().rotation(45).start();
+        settingBtn.setVisibility(View.VISIBLE);
+        newProjectBtn.setVisibility(View.VISIBLE);
+
+        settingBtn.animate().translationY(-200).start();
+        newProjectBtn.animate().translationY(-400).start();
+    }
     public void closeMenuOption(){
         isOpen = false;
         menuOpenBtn.animate().rotation(0).start();
@@ -97,8 +113,6 @@ public class ProjectSelectController extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.project_select);
 
-
-
         context = this;
 
         myDB = DBSQLiteModel.getInstance(this);
@@ -109,19 +123,12 @@ public class ProjectSelectController extends AppCompatActivity {
         playingContainer = findViewById(R.id.select_playing_container);
         completeContainer = findViewById(R.id.select_complete_container);
 
-
         menuOpenBtn = findViewById(R.id.select_floating_btn);
         menuOpenBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!isOpen){
-                    isOpen = true;
-                    menuOpenBtn.animate().rotation(45).start();
-                    settingBtn.setVisibility(View.VISIBLE);
-                    newProjectBtn.setVisibility(View.VISIBLE);
-
-                    settingBtn.animate().translationY(-200).start();
-                    newProjectBtn.animate().translationY(-400).start();
+                    openMenuOption();
                 }else{
                     closeMenuOption();
                 }
@@ -156,8 +163,6 @@ public class ProjectSelectController extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        ProjectSelectTuto psc = new ProjectSelectTuto(this);
-        psc.tutorial_start();
     }
     @Override
     protected void onResume() {
@@ -171,6 +176,25 @@ public class ProjectSelectController extends AppCompatActivity {
         super.onPause();
         if (isOpen) {
             closeMenuOption();
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        // do Something
+        if (isFirstCreate == false) {
+            isFirstCreate = true;
+            sh_pref = getSharedPreferences(StaticInformation.TUTORIAL_PROJECT, MODE_PRIVATE);
+            if(sh_pref.getInt(StaticInformation.TUTORIAL_PROJECT_SELECTE, 0)==0){
+                sh_edit = sh_pref.edit();
+                sh_edit.putInt(StaticInformation.TUTORIAL_PROJECT_SELECTE, 1);
+                sh_edit.commit();
+
+                ProjectSelectTuto psc = new ProjectSelectTuto(this);
+                psc.tutorial_start();
+            }
+
         }
     }
 

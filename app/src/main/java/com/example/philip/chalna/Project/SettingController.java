@@ -82,7 +82,7 @@ public class SettingController extends AppCompatActivity{
             public void onClick(View v) {
 
                 AlertDialog.Builder alert_confirm = new AlertDialog.Builder(context);
-                alert_confirm.setTitle("잠이 부족해");
+                alert_confirm.setTitle("개발자는 잠이 부족해");
                 alert_confirm.setMessage("SOS... 살려주세여...").setCancelable(false).setPositiveButton("확인",null);
                 AlertDialog alert = alert_confirm.create();
                 alert.show();

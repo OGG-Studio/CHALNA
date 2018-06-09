@@ -41,4 +41,7 @@ public class StaticInformation {
 
     public static final String GLOBAL_SETTING = "global_setting";
     public static final String GLOBAL_SETTING_NOTI = "global_notification";
+
+    public static final String TUTORIAL_PROJECT = "tuto_project";
+    public static final String TUTORIAL_PROJECT_SELECTE = "tuto_project_selec";
 }
