@@ -24,9 +24,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import uk.co.deanwild.materialshowcaseview.IShowcaseListener;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+
 public class ProjectSelectController extends AppCompatActivity {
     Context context;
     DBSQLiteModel myDB;
+
+    LinearLayout Playing_area;
+    LinearLayout Finish_area;
+
     //UI
     LinearLayout playingContainer, completeContainer;
     private String TAG = "PROJECT_SELECT_CONTROLLER";
@@ -90,9 +97,14 @@ public class ProjectSelectController extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.project_select);
 
+
+
         context = this;
 
         myDB = DBSQLiteModel.getInstance(this);
+
+        Playing_area = findViewById(R.id.playing_area);
+        Finish_area = findViewById(R.id.finish_area);
 
         playingContainer = findViewById(R.id.select_playing_container);
         completeContainer = findViewById(R.id.select_complete_container);
@@ -144,6 +156,8 @@ public class ProjectSelectController extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        ProjectSelectTuto psc = new ProjectSelectTuto(this);
+        psc.tutorial_start();
     }
     @Override
     protected void onResume() {
