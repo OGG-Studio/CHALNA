@@ -94,6 +94,12 @@ public class ProjectSaveController extends AppCompatActivity {
 
         if(galleryAdapterModel==null || projectData == null) return;
 
+        galleryAdapterModel.UpdateGallery();
+        if(galleryAdapterModel.getCount()==0){
+            finish();
+            return;
+        }
+
         myDB = DBSQLiteModel.getInstance(context);
 
         animView = new AnimationDrawable();
@@ -109,6 +115,10 @@ public class ProjectSaveController extends AppCompatActivity {
             @Override
             public void run() {
                 String[] str = galleryAdapterModel.getImageFileNames();
+                if(str==null){
+                    loadingClass.loadingOff();
+                    return;
+                }
                 if(str.length >= 100){
                     // 거대한 이미지 처리
                     Toast.makeText(context, "사진이 너무 많습니다.",Toast.LENGTH_SHORT).show();
