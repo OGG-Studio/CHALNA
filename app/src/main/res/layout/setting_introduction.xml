@@ -132,13 +132,13 @@
                 android:textSize="10sp"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text="yongrammer@gmail.com"/>
+                android:text="jme0508@naver.com"/>
             <TextView
                 android:paddingLeft="6dp"
                 android:textSize="10sp"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text="https://github.com/wonwoowon"/>
+                android:text="https://github.com/mingnuj"/>
         </LinearLayout>
     </TableRow>
 </TableLayout>

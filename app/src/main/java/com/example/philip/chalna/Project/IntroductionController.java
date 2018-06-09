@@ -98,6 +98,30 @@ public class IntroductionController extends AppCompatActivity{
                         .show();
             }
         });
+
+        yun2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new MaterialShowcaseView.Builder(activity_class) // instantiate the material showcase view using Builder
+                        .setTarget(moon) // set what view will be pointed or highlighted
+                        .setTitleText("조원 아님(I'm no Jowon)") // set the title of the tutorial
+                        .setContentText("잠만 자고 싶습니다.") // set the content or detail text
+                        .setDismissOnTouch(true)
+                        .setListener(new IShowcaseListener() {
+                            @Override
+                            public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
+                            }
+
+                            @Override
+                            public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
+                            }
+                        })
+                        .withCircleShape()
+                        .setDelay(500) // set delay in milliseconds to show the tutor
+                        //.singleUse(SHOWCASE_ID) // set the single use so it is shown only once using our create SHOWCASE_ID constant'
+                        .show();
+            }
+        });
     }
 
 }
