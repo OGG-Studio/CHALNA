@@ -274,7 +274,8 @@ public class ProjectSaveController extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(Integer.parseInt(width_tv.getText().toString())<=10 || Integer.parseInt(width_tv.getText().toString())>1000
-                        || Integer.parseInt(height_tv.getText().toString())<=10 || Integer.parseInt(height_tv.getText().toString())>1000 ){
+                        || Integer.parseInt(height_tv.getText().toString())<=10 || Integer.parseInt(height_tv.getText().toString())>1000
+                        || width_tv.getText().toString().matches("") || height_tv.getText().toString().matches("") ){
                     Toast.makeText(context, "유효하지 않은 해상도입니다.", Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
                     return;

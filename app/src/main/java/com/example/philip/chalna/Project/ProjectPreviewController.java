@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,6 +29,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.philip.chalna.Camera.CameraController;
+import com.example.philip.chalna.Camera.CameraModel;
 import com.example.philip.chalna.Database.DBSQLiteModel;
 import com.example.philip.chalna.Database.ProjectData;
 import com.example.philip.chalna.Utils.DescriptionManager;
@@ -53,7 +55,6 @@ public class ProjectPreviewController extends AppCompatActivity {
 
     String dir_path;
     GalleryAdapterModel galleryAdapterModel;
-
     ProjectPreviewModel projectPreviewModel;
     FrameLayout Image_View;
 
@@ -88,6 +89,9 @@ public class ProjectPreviewController extends AppCompatActivity {
      * Animation test
      */
     private FileManagementUtil fileIOModel = new FileManagementUtil(context);
+    private boolean isFirstCreate = false;
+    private SharedPreferences sh_pref;
+    private SharedPreferences.Editor sh_edit;
 
 
     public boolean projectInit(int project_id) {
@@ -215,6 +219,8 @@ public class ProjectPreviewController extends AppCompatActivity {
                 boolean deleted = file.delete();
                 if (deleted) {
                     Toast.makeText(context, "성공적으로 삭제하였습니다", Toast.LENGTH_SHORT).show();
+                    project_meta.is_modify = StaticInformation.TRUE;
+                    myDB.syncProjectData(project_meta);
                 } else {
                     Toast.makeText(context, "DELETE ERROR", Toast.LENGTH_SHORT).show();
                 }
@@ -247,9 +253,6 @@ public class ProjectPreviewController extends AppCompatActivity {
         project_name_tv.setText(project_meta.name);
 
         projectPreviewModel = new ProjectPreviewModel(this, this);
-
-        ProjectPreviewTuto ppt = new ProjectPreviewTuto(this);
-        ppt.tutorial_start();
     }
 
     private boolean project_valid_check() {
@@ -302,10 +305,7 @@ public class ProjectPreviewController extends AppCompatActivity {
 
     public void updateGallaryImage() {
         galleryAdapterModel = GalleryAdapterModel.getInstance(this, dir_path);
-        if(galleryAdapterModel.UpdateGallery()){
-            project_meta.is_modify = StaticInformation.TRUE;
-            myDB.syncProjectData(project_meta);
-        }
+        galleryAdapterModel.UpdateGallery();
         if (galleryAdapterModel.getCount() > 0) {
             if (galleryAdapterModel.getCount() == 1) {
                 previewDraw(0);
@@ -336,6 +336,19 @@ public class ProjectPreviewController extends AppCompatActivity {
             Log.d("DEBUG_TEST", project_meta.name + "  ");
             project_name_tv.setText(project_meta.name);
         }
+        // do Something
+        if (isFirstCreate == false) {
+            isFirstCreate = true;
+            sh_pref = getSharedPreferences(StaticInformation.TUTORIAL_PROJECT, MODE_PRIVATE);
+            if(sh_pref.getInt(StaticInformation.TUTORIAL_PROJECT_PREVIEW, 0)==0){
+                sh_edit = sh_pref.edit();
+                sh_edit.putInt(StaticInformation.TUTORIAL_PROJECT_PREVIEW, 1);
+                sh_edit.commit();
+
+                ProjectPreviewTuto ppt = new ProjectPreviewTuto(this);
+                ppt.tutorial_start();
+            }
+        }
     }
 
     @Override
@@ -356,10 +369,21 @@ public class ProjectPreviewController extends AppCompatActivity {
                     try {
                         FileManagementUtil.copyDirectory(srcFile, dstFile);
 
-                        if (galleryAdapterModel.getCount() == 0) {
-                            project_meta.wide = FileManagementUtil.getBitmapImgHeight(imagePath) > FileManagementUtil.getBitmapImgWidth(imagePath) ?
-                                    StaticInformation.DISPLAY_ORIENTATION_PORTRAIT :
-                                    StaticInformation.DISPLAY_ORIENTATION_LEFT;
+                        int imageRotation = CameraModel.getFileRotation(imagePath);
+                        if (galleryAdapterModel.getCount()  <= 0) {
+                            if(imageRotation == 0 || imageRotation==270){
+                                project_meta.wide = FileManagementUtil.getBitmapImgHeight(imagePath) > FileManagementUtil.getBitmapImgWidth(imagePath) ?
+                                        StaticInformation.DISPLAY_ORIENTATION_PORTRAIT :
+                                        StaticInformation.DISPLAY_ORIENTATION_LEFT;
+                            }else if ( imageRotation == 90){
+                                project_meta.wide = FileManagementUtil.getBitmapImgHeight(imagePath) > FileManagementUtil.getBitmapImgWidth(imagePath) ?
+                                        StaticInformation.DISPLAY_ORIENTATION_LEFT :
+                                        StaticInformation.DISPLAY_ORIENTATION_PORTRAIT;
+                            }else{
+                                project_meta.wide = FileManagementUtil.getBitmapImgHeight(imagePath) > FileManagementUtil.getBitmapImgWidth(imagePath) ?
+                                        StaticInformation.DISPLAY_ORIENTATION_RIGHT :
+                                        StaticInformation.DISPLAY_ORIENTATION_PORTRAIT;
+                            }
                         }
                         updateGallaryImage();
                         String[] date = TimeClass.getDate();
@@ -397,9 +421,6 @@ public class ProjectPreviewController extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.preview_menu, menu);
         return true;
-    }
-
-    public void complete() {
     }
 
     @Override

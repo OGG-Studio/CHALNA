@@ -151,7 +151,7 @@ public class ProjectCreateController extends AppCompatActivity implements TimePi
         finish();
     }
     public void nonModifyModeComplete(){
-        resultView.setText("당신의 '찰나'를 위해  "+rgs_period+ "일마다, "+rgs_hour+"시 "+rgs_min+"분에  알려드릴게요.");
+        Toast.makeText(getApplicationContext(), "찰나가 수정되었습니다!  "+ rgs_period + "일 마다 , " + rgs_hour +"시 " + rgs_min +"분에 알려드릴게요!",Toast.LENGTH_LONG).show();
 
         String name = project_name.getText().toString();
         if(!checkName(name) ){
@@ -175,7 +175,7 @@ public class ProjectCreateController extends AppCompatActivity implements TimePi
         }
         ProjectData projectData = new ProjectData(-1,name, mode, wide, StaticInformation.CHALNA_PATH+"/"+name,0,0,
                 DescriptionManager.getNewDescription(),System.currentTimeMillis(),System.currentTimeMillis(),
-                0,0);
+                0, StaticInformation.GUIDED_SOBELFILTER);
         myDB.dbInsertionIntoPROJECT(projectData);
         projectData = myDB.getDataByNameFromPROJECT(projectData.name);
 

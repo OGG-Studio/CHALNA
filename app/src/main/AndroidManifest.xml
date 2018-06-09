@@ -45,15 +45,19 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Project.ProjectSelectController"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Project.ProjectCreateController"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Project.SettingController"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Project.IntroductionController"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Camera.CameraController"
@@ -72,8 +76,10 @@
         </receiver>
         <receiver android:name=".AlarmReceiver.AlarmBroadcastController" />
 
-        <activity android:name=".Project.ProjectSaveController" />
-        <activity android:name=".Project.ProjectCompleteController"></activity>
+        <activity android:name=".Project.ProjectSaveController"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Project.ProjectCompleteController"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

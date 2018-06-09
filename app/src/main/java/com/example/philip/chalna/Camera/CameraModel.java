@@ -80,6 +80,20 @@ public class CameraModel {
         }
     }
 
+    public static int getFileRotation(String imagePath){
+        try {
+            ExifInterface exif = new ExifInterface(imagePath);
+            int exifOrientation = exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL
+            );
+            int exifDegree = exifOrientationToDegrees(exifOrientation);
+
+            return exifDegree;
+        } catch (IOException e) {
+        }
+        return 0;
+
+    }
     public void setGuidedImage(Bitmap img, int display_orientation, int camera_mode) {
         img = rotateLandScape(img, display_orientation, camera_mode);
         switch (guidedMode) {
@@ -101,7 +115,7 @@ public class CameraModel {
         }
     }
 
-    public int exifOrientationToDegrees(int exifOrientation) {
+    public static int exifOrientationToDegrees(int exifOrientation) {
         if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
             return 90;
         } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {

@@ -111,7 +111,7 @@ public class ProjectCompleteController extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         int id = item.getItemId();
-        if(id==R.id.action_button_share){
+        if(id==R.id.complete_share){
             final String filePath = project_meta.dir+"/"+project_meta.name+"_result.gif";
             File file = new File(filePath);
             if(file.exists()){

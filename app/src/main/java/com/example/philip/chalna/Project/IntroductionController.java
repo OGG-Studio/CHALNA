@@ -24,7 +24,7 @@ public class IntroductionController extends AppCompatActivity{
         jang = findViewById(R.id.jang);
         yun = findViewById(R.id.yun);
         moon = findViewById(R.id.moon);
-        yun2 = findViewById(R.id.yun2);
+//        yun2 = findViewById(R.id.yun2);
 
         jang.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,7 +37,6 @@ public class IntroductionController extends AppCompatActivity{
                         .setListener(new IShowcaseListener() {
                             @Override
                             public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
-
                             }
 
                             @Override
@@ -56,7 +55,7 @@ public class IntroductionController extends AppCompatActivity{
                 new MaterialShowcaseView.Builder(activity_class) // instantiate the material showcase view using Builder
                         .setTarget(yun) // set what view will be pointed or highlighted
                         .setTitleText("용그래머(Yongrammer)") // set the title of the tutorial
-                        .setContentText("꿀짐 8시간 자고 엄청 맛있는 초밥 먹고 싶당") // set the content or detail text
+                        .setContentText("꿀잠 8시간 자고 엄청 맛있는 초밥 먹고 싶당") // set the content or detail text
                         .setDismissOnTouch(true)
                         .setListener(new IShowcaseListener() {
                             @Override
@@ -98,28 +97,28 @@ public class IntroductionController extends AppCompatActivity{
             }
         });
 
-        yun2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new MaterialShowcaseView.Builder(activity_class) // instantiate the material showcase view using Builder
-                        .setTarget(moon) // set what view will be pointed or highlighted
-                        .setTitleText("조원 아님(I'm no Jowon)") // set the title of the tutorial
-                        .setContentText("잠만 자고 싶습니다.") // set the content or detail text
-                        .setDismissOnTouch(true)
-                        .setListener(new IShowcaseListener() {
-                            @Override
-                            public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
-                            }
-
-                            @Override
-                            public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
-                            }
-                        })
-                        .withCircleShape()
-                        .setDelay(500) // set delay in milliseconds to show the tutor
-                        //.singleUse(SHOWCASE_ID) // set the single use so it is shown only once using our create SHOWCASE_ID constant'
-                        .show();
-            }
-        });
+//        yun2.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                new MaterialShowcaseView.Builder(activity_class) // instantiate the material showcase view using Builder
+//                        .setTarget(moon) // set what view will be pointed or highlighted
+//                        .setTitleText("조원 아님(I'm no Jowon)") // set the title of the tutorial
+//                        .setContentText("잠만 자고 싶습니다.") // set the content or detail text
+//                        .setDismissOnTouch(true)
+//                        .setListener(new IShowcaseListener() {
+//                            @Override
+//                            public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
+//                            }
+//
+//                            @Override
+//                            public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
+//                            }
+//                        })
+//                        .withCircleShape()
+//                        .setDelay(500) // set delay in milliseconds to show the tutor
+//                        //.singleUse(SHOWCASE_ID) // set the single use so it is shown only once using our create SHOWCASE_ID constant'
+//                        .show();
+//            }
+//        });
     }
 }

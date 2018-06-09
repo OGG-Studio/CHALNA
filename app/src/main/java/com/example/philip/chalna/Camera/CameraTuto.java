@@ -90,7 +90,7 @@ public class CameraTuto {
         new MaterialShowcaseView.Builder(activity_class) // instantiate the material showcase view using Builder
                 .setTarget(activity_class.takePictureBtn) // set what view will be pointed or highlighted
                 .setTitleText("사진 촬영") // set the title of the tutorial
-                .setContentText("찰나의 순간을 찰-칵!") // set the content or detail text
+                .setContentText("찰나의 순간을 찰-칵! 촬영된 사진은 바로 가이드 사진으로 적용됩니다.") // set the content or detail text
                 .setDismissOnTouch(true)
                 .setListener(new IShowcaseListener() {
                     @Override
