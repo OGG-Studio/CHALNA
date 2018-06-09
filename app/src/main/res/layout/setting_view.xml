@@ -80,7 +80,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/copyright"
         android:layout_gravity="center"
-        android:text="copyright by sea bear studio"
+        android:text="copyright by OGG Studio"
         android:layout_marginTop="90dp"/>
     <Button
         android:layout_weight="1"
