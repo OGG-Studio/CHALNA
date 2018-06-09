@@ -38,7 +38,7 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
     public static final String PROJECT_START_DATE = "Project_StartDate";
 
 
-    public static final String PROJECT_IS_MODIFIED = "Project_Modify";
+    public static final String PROJECT_IS_MODIFIED  = "Project_Modify";
     public static final String PROJECT_GUIDED_FILTER_MODE = "Project_Guided_Mode";
 
     //ADD FEATURE
