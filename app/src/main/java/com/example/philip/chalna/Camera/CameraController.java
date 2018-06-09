@@ -301,7 +301,7 @@ public class CameraController extends AppCompatActivity
         settingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context,"준비중입니다.",Toast.LENGTH_SHORT);
+                Toast.makeText(context,"준비중입니다.",Toast.LENGTH_SHORT).show();
             }
         });
 

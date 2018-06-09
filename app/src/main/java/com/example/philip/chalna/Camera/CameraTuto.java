@@ -22,8 +22,8 @@ public class CameraTuto {
 
         new MaterialShowcaseView.Builder(activity_class) // instantiate the material showcase view using Builder
                 .setTarget(activity_class.settingBtn) // set what view will be pointed or highlighted
-                .setTitleText("정보") // set the title of the tutorial
-                .setContentText("촬영 ") // set the content or detail text
+                .setTitleText("설정 버튼") // set the title of the tutorial
+                .setContentText("카메라 환경설정을 할 수 있습니다. ") // set the content or detail text
                 .setDismissOnTouch(true)
                 .setListener(new IShowcaseListener() {
                     @Override
@@ -141,6 +141,7 @@ public class CameraTuto {
                     }
                     @Override
                     public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
+                        Toast.makeText(activity_class, "소중한 '찰나'를 기록해 보세요! 출발-!", Toast.LENGTH_SHORT).show();
                         activity_class.handler.post(new Runnable() {
                             @Override
                             public void run() {
