@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -54,6 +55,8 @@ public class ProjectPreviewController extends AppCompatActivity {
     GalleryAdapterModel galleryAdapterModel;
 
     ProjectPreviewModel projectPreviewModel;
+    FrameLayout Image_View;
+
     /**
      * Data
      */
@@ -124,6 +127,8 @@ public class ProjectPreviewController extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.project_preview2);
+
+        Image_View = (FrameLayout) findViewById(R.id.Image_view);
 
         Intent intent = getIntent();
         final String project_name = intent.getStringExtra("PROJECT_NAME");
@@ -242,6 +247,9 @@ public class ProjectPreviewController extends AppCompatActivity {
         project_name_tv.setText(project_meta.name);
 
         projectPreviewModel = new ProjectPreviewModel(this, this);
+
+        ProjectPreviewTuto ppt = new ProjectPreviewTuto(this);
+        ppt.tutorial_start();
     }
 
     private boolean project_valid_check() {
@@ -282,12 +290,14 @@ public class ProjectPreviewController extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         isOnResume = false;
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
         isOnResume = false;
+
     }
 
     public void updateGallaryImage() {

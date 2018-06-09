@@ -98,6 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="yongrammer@gmail.com"/>
+
             <TextView
                 android:paddingLeft="6dp"
                 android:textSize="10sp"
@@ -111,7 +112,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp">
-
+<!--
         <ImageView
             android:layout_width="70dp"
             android:layout_height="70dp"
@@ -132,7 +133,12 @@
                 android:textSize="10sp"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+<<<<<<< HEAD
                 android:text="jme0508@naver.com"/>
+=======
+                android:text="yongrammer@gmail.com"/>
+>>>>>>> e2a0d366303dcd7e279ed592e5d7e7de36021cbb
+>>>>>>> 6f706a85da3ba00d9496627db74adafdb50e923c
             <TextView
                 android:paddingLeft="6dp"
                 android:textSize="10sp"
@@ -140,5 +146,6 @@
                 android:layout_width="wrap_content"
                 android:text="https://github.com/mingnuj"/>
         </LinearLayout>
+        -->
     </TableRow>
 </TableLayout>

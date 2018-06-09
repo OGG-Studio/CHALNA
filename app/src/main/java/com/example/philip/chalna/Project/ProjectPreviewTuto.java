@@ -1,29 +1,27 @@
-package com.example.philip.chalna.Camera;
+package com.example.philip.chalna.Project;
 
 
 import android.widget.Toast;
 
+import com.example.philip.chalna.Camera.CameraController;
 import com.example.philip.chalna.Project.ProjectSelectController;
 
 import uk.co.deanwild.materialshowcaseview.IShowcaseListener;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
-public class CameraTuto {
-    CameraController activity_class;
+public class ProjectPreviewTuto {
+    ProjectPreviewController activity_class;
     final int millls = 500;
-    public CameraTuto(CameraController psc){
+    public ProjectPreviewTuto(ProjectPreviewController psc){
         activity_class = psc;
     }
 
-    //셋팅버튼
+    //기록하기
     public void tutorial_start(){
-        activity_class.animateViews(0);
-        activity_class.mOrientationEventListener.disable();
-
         new MaterialShowcaseView.Builder(activity_class) // instantiate the material showcase view using Builder
-                .setTarget(activity_class.settingBtn) // set what view will be pointed or highlighted
-                .setTitleText("설정 버튼") // set the title of the tutorial
-                .setContentText("카메라 환경설정을 할 수 있습니다. ") // set the content or detail text
+                .setTarget(activity_class.takePictureBtn) // set what view will be pointed or highlighted
+                .setTitleText("기록하기 : 촬영") // set the title of the tutorial
+                .setContentText("카메라를 실행시켜 사진을 촬영합니다.") // set the content or detail text
                 .setDismissOnTouch(true)
                 .setListener(new IShowcaseListener() {
                     @Override
@@ -41,12 +39,12 @@ public class CameraTuto {
                 .show();
     }
 
-    // 이미지 로드
+    // 가져오기
     private void one_tuto(int millis){
         new MaterialShowcaseView.Builder(activity_class) // instantiate the material showcase view using Builder
-                .setTarget(activity_class.btnImageLoad) // set what view will be pointed or highlighted
+                .setTarget(activity_class.fetchBtn) // set what view will be pointed or highlighted
                 .setTitleText("가져오기") // set the title of the tutorial
-                .setContentText("구도를 가이드해줄 사진을 갤러리에서 가져옵니다.") // set the content or detail text
+                .setContentText("촬영하지 않고, 갤러리에서 사진을 가져옵니다.") // set the content or detail text
                 .setDismissOnTouch(true)
                 .setListener(new IShowcaseListener() {
                     @Override
@@ -64,13 +62,14 @@ public class CameraTuto {
                 .show();
     }
 
-    // 가이드 모드 변경
+    // 이미지 목록
     private void two_tuto(final int millis){
         new MaterialShowcaseView.Builder(activity_class) // instantiate the material showcase view using Builder
-                .setTarget(activity_class.changeGuidedModeBtn) // set what view will be pointed or highlighted
-                .setTitleText("가이드 모드 변경") // set the title of the tutorial
-                .setContentText("두 가지 구도 가이드 모드를 변경하며 사용할 수 있습니다! (투명도/테두리)") // set the content or detail text
+                .setTarget(activity_class.Image_View) // set what view will be pointed or highlighted
+                .setTitleText("이미지 목록") // set the title of the tutorial
+                .setContentText("'찰나'프로젝트에 기록된 모든 사진들을 볼 수 있습니다.") // set the content or detail text
                 .setDismissOnTouch(true)
+                .withRectangleShape(true)
                 .setListener(new IShowcaseListener() {
                     @Override
                     public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
@@ -85,12 +84,13 @@ public class CameraTuto {
                 .show();
     }
 
-    // 사진찍기
+    // 식뷰 seek view
     private void three_tuto(int millis){
         new MaterialShowcaseView.Builder(activity_class) // instantiate the material showcase view using Builder
-                .setTarget(activity_class.takePictureBtn) // set what view will be pointed or highlighted
-                .setTitleText("사진 촬영") // set the title of the tutorial
-                .setContentText("찰나의 순간을 찰-칵!") // set the content or detail text
+                .setTarget(activity_class.seekBar) // set what view will be pointed or highlighted
+                .setTitleText("이미지 슬라이드 바") // set the title of the tutorial
+                .withRectangleShape(true)
+                .setContentText("슬라이드 바를 움직여, 사진들을 볼 수 있습니다.") // set the content or detail text
                 .setDismissOnTouch(true)
                 .setListener(new IShowcaseListener() {
                     @Override
@@ -106,12 +106,12 @@ public class CameraTuto {
                 .show();
     }
 
-    // 카메라 전/후 변경
+    // 사진 삭제
     private void four_tuto(int millis){
         new MaterialShowcaseView.Builder(activity_class) // instantiate the material showcase view using Builder
-                .setTarget(activity_class.changeViewBtn) // set what view will be pointed or highlighted
-                .setTitleText("카메라 전환") // set the title of the tutorial
-                .setContentText("전면/후면 카메라의 방향을 전환할 수 있습니다.") // set the content or detail text
+                .setTarget(activity_class.deleteBtn) // set what view will be pointed or highlighted
+                .setTitleText("사진 삭제") // set the title of the tutorial
+                .setContentText("이미지 목록에 나타난 현재 사진을 1장 삭제합니다.") // set the content or detail text
                 .setDismissOnTouch(true)
                 .setListener(new IShowcaseListener() {
                     @Override
@@ -127,12 +127,12 @@ public class CameraTuto {
                 .show();
     }
 
-    // SEEK bar  투명도 조절 버튼
+    // 미리보기 프리뷰
     private void five_tuto(int millis){
         new MaterialShowcaseView.Builder(activity_class) // instantiate the material showcase view using Builder
-                .setTarget(activity_class.seekBar) // set what view will be pointed or highlighted
-                .setTitleText("투명도 조절 버튼") // set the title of the tutorial
-                .setContentText("가이드해주는 사진의 투명도를 조절할 수 있습니다.") // set the content or detail text
+                .setTarget(activity_class.showBtn) // set what view will be pointed or highlighted
+                .setTitleText("미리보기 : Preview") // set the title of the tutorial
+                .setContentText("모든 찰나 사진들을 GIF 형식으로 볼 수 있습니다.") // set the content or detail text
                 .setDismissOnTouch(true)
                 .setListener(new IShowcaseListener() {
                     @Override
@@ -141,13 +141,28 @@ public class CameraTuto {
                     }
                     @Override
                     public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
-                        Toast.makeText(activity_class, "소중한 '찰나'를 기록해 보세요! 출발-!", Toast.LENGTH_SHORT).show();
-                        activity_class.handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                activity_class.mOrientationEventListener.enable();
-                            }
-                        });
+                        six_tuto(millls);
+                    }
+                })
+                .setDelay(millis) // set delay in milliseconds to show the tutor
+                .show();
+    }
+
+    // 저장하기
+    private void six_tuto(int millis){
+        new MaterialShowcaseView.Builder(activity_class) // instantiate the material showcase view using Builder
+                .setTarget(activity_class.saveBtn) // set what view will be pointed or highlighted
+                .setTitleText("저장하기") // set the title of the tutorial
+                .setContentText("소중한 '찰나'의 순간들을 GIF파일로 변환하기 위해, 설정화면으로 이동합니다.") // set the content or detail text
+                .setDismissOnTouch(true)
+                .setListener(new IShowcaseListener() {
+                    @Override
+                    public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
+
+                    }
+                    @Override
+                    public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
+                        Toast.makeText(activity_class, "이제 '찰나'를 이용해보세요! ", Toast.LENGTH_LONG).show();
                     }
                 })
                 .setDelay(millis) // set delay in milliseconds to show the tutor

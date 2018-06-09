@@ -55,8 +55,8 @@ public class IntroductionController extends AppCompatActivity{
             public void onClick(View v) {
                 new MaterialShowcaseView.Builder(activity_class) // instantiate the material showcase view using Builder
                         .setTarget(yun) // set what view will be pointed or highlighted
-                        .setTitleText("용 그래머(Yong grammer)") // set the title of the tutorial
-                        .setContentText("8시간 취침 소취") // set the content or detail text
+                        .setTitleText("용그래머(Yongrammer)") // set the title of the tutorial
+                        .setContentText("꿀짐 8시간 자고 엄청 맛있는 초밥 먹고 싶당") // set the content or detail text
                         .setDismissOnTouch(true)
                         .setListener(new IShowcaseListener() {
                             @Override
