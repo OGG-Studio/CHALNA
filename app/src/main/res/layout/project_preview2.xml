@@ -24,6 +24,7 @@
             android:orientation="vertical">
 
             <FrameLayout
+                android:id="@+id/Image_view"
                 android:layout_width="300dp"
                 android:layout_height="350dp"
                 android:layout_centerHorizontal="true"
