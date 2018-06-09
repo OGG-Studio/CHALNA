@@ -29,6 +29,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.example.philip.chalna.Database.DBSQLiteModel;
+import com.example.philip.chalna.Project.ProjectSelectTuto;
 import com.example.philip.chalna.Utils.DescriptionManager;
 import com.example.philip.chalna.Utils.FileManagementUtil;
 import com.example.philip.chalna.Utils.GalleryAdapterModel;
@@ -297,6 +298,9 @@ public class CameraController extends AppCompatActivity
         // Camera Callback initialization
         setupOrientationEventListener();
         cameraModel.guidedMode = currentProject.guided_mode;
+
+        CameraTuto psc = new CameraTuto(this);
+        psc.tutorial_start();
     }
 
     boolean firstCreate = false;
