@@ -1,4 +1,4 @@
-package com.example.leng.chalna_setting;
+package com.studioOgg.leng.chalna_setting;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

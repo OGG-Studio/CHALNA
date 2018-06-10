@@ -6,7 +6,7 @@ using namespace cv;
 
 extern "C" {
 JNIEXPORT void JNICALL
-Java_com_example_philip_chalna_MainActivity_ConvertRGBtoGray(JNIEnv *env,
+Java_com_studioOgg_philip_chalna_MainActivity_ConvertRGBtoGray(JNIEnv *env,
                                                              jobject Instance,
                                                              jlong matAddrInput,
                                                              jlong matAddrResult) {
@@ -28,9 +28,9 @@ Java_com_example_philip_chalna_MainActivity_ConvertRGBtoGray(JNIEnv *env,
 }
 }extern "C"
 JNIEXPORT void JNICALL
-Java_com_example_philip_chalna_Camera_CameraModel_sobel_1filter(JNIEnv *env, jobject instance,
-                                                         jlong matAddrInput, jlong matAddrResult) {
-    // TODO
+Java_com_studioOgg_philip_chalna_Camera_CameraModel_sobel_1filter(JNIEnv *env, jobject instance,
+                                                                  jlong matAddrInput,
+                                                                  jlong matAddrResult) {
     //TODO
     Mat &matInput = *(Mat *) matAddrInput;
     Mat &matResult = *(Mat *) matAddrResult;

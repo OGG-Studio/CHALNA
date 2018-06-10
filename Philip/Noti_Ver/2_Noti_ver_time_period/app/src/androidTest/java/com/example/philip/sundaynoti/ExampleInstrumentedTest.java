@@ -1,4 +1,4 @@
-package com.example.philip.sundaynoti;
+package com.studioOgg.philip.sundaynoti;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

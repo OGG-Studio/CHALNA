@@ -1,4 +1,4 @@
-package com.example.philip.sundaynoti;
+package com.studioOgg.philip.sundaynoti;
 
 import android.app.Fragment;
 import android.os.Build;
