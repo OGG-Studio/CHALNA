@@ -1,4 +1,4 @@
-package com.example.philip.notisetting;
+package com.studioOgg.philip.notisetting;
 
 import android.app.Notification;
 import android.app.NotificationManager;

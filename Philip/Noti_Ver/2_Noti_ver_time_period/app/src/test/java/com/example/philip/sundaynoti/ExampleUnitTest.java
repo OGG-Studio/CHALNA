@@ -1,4 +1,4 @@
-package com.example.philip.sundaynoti;
+package com.studioOgg.philip.sundaynoti;
 
 import org.junit.Test;
 

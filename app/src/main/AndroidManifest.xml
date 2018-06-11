@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.philip.chalna">
+    package="com.studioOgg.philip.chalna">
 
     <uses-permission android:name="android.permission.CAMERA" />
 
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
-    <uses-feature android:name="android.hardware.camera.front" />
-    <uses-feature android:name="android.hardware.camera.front.autofocus" />
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera.front" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera.front.autofocus" android:required="false"/>
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -45,15 +45,19 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Project.ProjectSelectController"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Project.ProjectCreateController"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Project.SettingController"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Project.IntroductionController"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Camera.CameraController"
@@ -72,8 +76,10 @@
         </receiver>
         <receiver android:name=".AlarmReceiver.AlarmBroadcastController" />
 
-        <activity android:name=".Project.ProjectSaveController" />
-        <activity android:name=".Project.ProjectCompleteController"></activity>
+        <activity android:name=".Project.ProjectSaveController"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Project.ProjectCompleteController"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

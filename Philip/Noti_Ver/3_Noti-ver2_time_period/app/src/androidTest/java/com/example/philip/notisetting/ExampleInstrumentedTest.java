@@ -1,4 +1,4 @@
-package com.example.philip.notisetting;
+package com.studioOgg.philip.notisetting;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

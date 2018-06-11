@@ -1,6 +1,6 @@
 //version 18-06-04
 //alarm update function using button
-package com.example.philip.notisetting;
+package com.studioOgg.philip.notisetting;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;

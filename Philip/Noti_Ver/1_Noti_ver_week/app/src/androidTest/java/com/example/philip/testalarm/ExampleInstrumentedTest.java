@@ -1,4 +1,4 @@
-package com.example.philip.testalarm;
+package com.studioOgg.philip.testalarm;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

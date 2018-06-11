@@ -1,4 +1,4 @@
-package com.example.philip.testalarm;
+package com.studioOgg.philip.testalarm;
 
 import android.app.Notification;
 import android.app.NotificationManager;

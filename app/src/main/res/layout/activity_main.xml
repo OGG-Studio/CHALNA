@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-    <com.example.philip.chalna.Camera.CameraView
+    <com.studioOgg.philip.chalna.Camera.CameraView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
@@ -84,12 +84,12 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <com.example.philip.chalna.Camera.VerticalSeekbar
+    <com.studioOgg.philip.chalna.Camera.VerticalSeekbar
         android:layout_width="30dp"
         android:layout_height="250dp"
         android:layout_gravity="left|center"
         android:id="@+id/seek_bar"
         android:max="100"
         android:progress="50">
-    </com.example.philip.chalna.Camera.VerticalSeekbar>
+    </com.studioOgg.philip.chalna.Camera.VerticalSeekbar>
 </FrameLayout>
