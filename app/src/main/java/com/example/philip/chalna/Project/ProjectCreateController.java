@@ -140,7 +140,7 @@ public class ProjectCreateController extends AppCompatActivity implements TimePi
             else
                 alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis()+rgs_period*TimeClass.oneDay, rgs_period*TimeClass.oneDay, pi);
 
-            Toast.makeText(getApplicationContext(), "찰나가 수정되었습니다! " + rgs_hour +"시 " + rgs_min +"분에 알려드릴게요!",Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "찰나가 수정되었습니다!  "+ rgs_period + "일 마다 , " + rgs_hour +"시 " + rgs_min +"분에 알려드릴게요!",Toast.LENGTH_LONG).show();
         }
         else{
             myDB.dbDeleteFromALARM(new String[]{Integer.toString(_projectData.id)});
