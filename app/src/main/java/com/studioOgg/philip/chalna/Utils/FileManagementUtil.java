@@ -22,6 +22,12 @@ import java.io.OutputStream;
 public class FileManagementUtil {
     private static final String TAG = "FILE_MANAGER_MODEL";
     Context context = null;
+
+    /**
+     * get width of bitmap image using absolute path
+     * @param fileName
+     * @return image width
+     */
     public static int getBitmapImgWidth(String fileName) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -29,6 +35,11 @@ public class FileManagementUtil {
 
         return options.outWidth;
     }
+    /**
+     * get height of bitmap image using absolute path
+     * @param fileName
+     * @return image height
+     */
     public static int getBitmapImgHeight(String fileName) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -36,10 +47,21 @@ public class FileManagementUtil {
 
         return options.outHeight;
     }
+
+    /**
+     * isFile
+     * @param fileName
+     * @return
+     */
     public static boolean existFile(String fileName) {
         File f = new File(fileName);
         return f.exists();
     }
+
+    /**
+     * delete directory and all child file
+     * @param path
+     */
     public static void deleteDirectory(String path)
     {
         File file = new File(path);
@@ -56,6 +78,12 @@ public class FileManagementUtil {
         file.delete();    //root 삭제
     }
 
+    /**
+     * change file name src -> dst
+     * @param source
+     * @param dst
+     * @return success/fail
+     */
     public static boolean fileNameChange(File source, File dst){
         if(source.renameTo(dst)){
             return true;
@@ -63,7 +91,11 @@ public class FileManagementUtil {
             return false;
         }
     }
-    // If targetLocation does not exist, it will be created.
+
+    /**
+     * If targetLocation does not exist, it will be created.
+     *
+     */
     public static void copyDirectory(File sourceLocation , File targetLocation)
             throws IOException {
         if (sourceLocation.isDirectory()) {
@@ -91,10 +123,15 @@ public class FileManagementUtil {
             out.close();
         }
     }
-
     public FileManagementUtil(Context c){
         context = c;
     }
+
+    /**
+     * transfer URI to Real Path
+     * @param contentUri
+     * @return Absolute Path
+     */
     public String getRealPathFromURI(Uri contentUri) {
         int column_index=0;
         String[] proj = {MediaStore.Images.Media.DATA};
@@ -105,6 +142,12 @@ public class FileManagementUtil {
         return cursor.getString(column_index);
     }
     // Direction Processing when do same taking picture
+
+    /**
+     * get exif Orientation dgree
+     * @param exifOrientation
+     * @return
+     */
     private int exifOrientationToDegrees(int exifOrientation) {
         if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
             return 90;
@@ -114,47 +157,5 @@ public class FileManagementUtil {
             return 270;
         }
         return 0;
-    }
-    public Bitmap rotate(Bitmap src, float degree) {
-        // Java graphics Matrix
-        Matrix matrix = new Matrix();
-        // Rotation Degree Setting
-        matrix.postRotate(degree);
-
-        // Return Bitmap
-        return Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), matrix, true);
-    }
-    public Bitmap getGuidedImageFromRealPath(Uri imgUri) {
-        String imagePath = getRealPathFromURI(imgUri);
-        ExifInterface exif = null;
-        try {
-            exif = new ExifInterface(imagePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // image rotation degree
-        int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-        int exifDegree = exifOrientationToDegrees(exifOrientation);
-        Log.d(TAG,"Degree Check : " + exifDegree);
-
-        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);// image read using path.
-//        return rotate(bitmap, exifDegree);
-        return bitmap;
-    }
-    public Bitmap getGuidedImageFromRealPath(String imagePath) {
-        ExifInterface exif = null;
-        try {
-            exif = new ExifInterface(imagePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // image rotation degree
-        int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-        int exifDegree = exifOrientationToDegrees(exifOrientation);
-        Log.d(TAG,"Degree Check : " + exifDegree);
-
-        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);// image read using path.
-//        return rotate(bitmap, exifDegree);
-        return bitmap;
     }
 }

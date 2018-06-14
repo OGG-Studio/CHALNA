@@ -46,4 +46,17 @@ public class StaticInformation {
     public static final String TUTORIAL_PROJECT_SELECTE = "tuto_project_selec";
     public static final String TUTORIAL_PROJECT_CAMERA = "tuto_project_cam";
     public static final String TUTORIAL_PROJECT_PREVIEW = "tuto_project_prev";
+
+    public static void allPrintStaticValue(){
+
+        System.out.println(StaticInformation.CAMERA_FRONT);
+        System.out.println(StaticInformation.CAMERA_ORIENTATION_LEFT);
+        System.out.println(StaticInformation.CAMERA_ORIENTATION_PORTRAIT);
+        System.out.println(StaticInformation.CAMERA_ORIENTATION_RIGHT);
+        System.out.println(StaticInformation.CAMERA_REAR);
+        System.out.println(StaticInformation.TUTORIAL_PROJECT);
+        System.out.println(StaticInformation.TUTORIAL_PROJECT_CAMERA);
+        System.out.println(StaticInformation.TUTORIAL_PROJECT_PREVIEW);
+        System.out.println(StaticInformation.TUTORIAL_PROJECT_SELECTE);
+    }
 }

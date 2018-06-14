@@ -17,6 +17,12 @@ public class LoadingClass {
     public RelativeLayout container;
 
 
+    /**
+     * loading processing
+     * @param activity
+     * @param message
+     * @param currentOrientation
+     */
     public void loadingOn(Activity activity, String message, int currentOrientation){
         if(activity==null || activity.isFinishing()){
             return;
@@ -52,6 +58,12 @@ public class LoadingClass {
             tv_progress_message.setText(message);
         }
     }
+
+    /**
+     * loading start
+     * @param activity
+     * @param message
+     */
     public void loadingOn(Activity activity, String message){
         if(activity==null || activity.isFinishing()){
             return;
@@ -79,6 +91,10 @@ public class LoadingClass {
         }
     }
 
+    /**
+     * change progress text
+     * @param message
+     */
     public void settingProgress(String message){
         if (progressDialog == null || !progressDialog.isShowing()) {
             return;
@@ -88,6 +104,10 @@ public class LoadingClass {
             tv_progress_message.setText(message);
         }
     }
+
+    /**
+     * loading stop.
+     */
     public void loadingOff(){
         if(progressDialog!=null && progressDialog.isShowing()){
             progressDialog.dismiss();

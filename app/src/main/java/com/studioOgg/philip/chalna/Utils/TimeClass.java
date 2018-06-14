@@ -17,9 +17,20 @@ public class TimeClass {
 
 
     public static long oneDay = 24*60*60*1000;
+
+    /**
+     * get current time to long
+     * @return long type current time
+     */
     public static Long getCurrentTime(){
         return new Date().getTime();
     }
+
+    /**
+     * get only time information ( not date )
+     * the return information compose hour, minute, second
+     * @return
+     */
     public static String[] getTime(){
         SimpleDateFormat formatter = new SimpleDateFormat( "HH/mm/ss", Locale.KOREA );
         Date currentTime = new Date ();
@@ -27,6 +38,11 @@ public class TimeClass {
 
         return dTime.split("/");
     }
+
+    /**
+     * get only date information
+     * @return 0 -> year 1-> month 2-> date
+     */
     public static String[] getDate() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd", Locale.KOREA);
         Date currentTime = new Date();
@@ -34,17 +50,31 @@ public class TimeClass {
 
         return dTime.split("/");
     }
+    /**
+     * generated transfer y/m/d/h/m/s
+     * @return
+     */
     public static String[] timeNumericToString(long time){
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd/HH/mm/ss", Locale.KOREA);
         Date settingTime = new Date (time);
         String dTime = formatter.format(settingTime);
         return dTime.split("/");
     }
+    /**
+     * generated transfer y/m/d/h/m/s
+     * @return
+     */
     public static String[] timeDateToNumeric(Date date){
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd/HH/mm/ss", Locale.KOREA);
         String dTime = formatter.format(date);
         return dTime.split("/");
     }
+    /**
+     * if today, return time
+     * if yesterday, return 'yesterday'
+     * else return date
+     * @return
+     */
     public static int differenceDay(Date a, Date b){
         String[] currentTimeInfo = timeDateToNumeric(a);
         String[] targetTimeInfo = timeDateToNumeric(b);
@@ -60,6 +90,12 @@ public class TimeClass {
 
         return (int)(Math.abs(aTime-bTime)/oneDay);
     }
+
+    /**
+     * return ate summary for chalna
+     * @param targetTime
+     * @return
+     */
     public static String dateSummary(long targetTime){
         Date currentTime = new Date();
         Date target = new Date(targetTime);
@@ -74,6 +110,12 @@ public class TimeClass {
             return currentTimeInfo[YEAR]+"-"+currentTimeInfo[MONTH]+"-"+currentTimeInfo[DAY];
         }
     }
+
+    /**
+     * return ampm information
+     * @param time
+     * @return
+     */
     public static String ampm(long time){
         Date date = new Date(time);
         String[] current = timeDateToNumeric(date);

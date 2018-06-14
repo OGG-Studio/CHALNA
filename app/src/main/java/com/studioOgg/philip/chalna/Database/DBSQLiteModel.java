@@ -49,13 +49,15 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
     public static final String ALARM_CYCLE = "Alarm_Cycle";
     public static final String ALARM_NEXT_TIME = "Alarm_Next_Time";
 
-    // 시작날짜 종료날짜 시간 요일
-    //
-
     public DBSQLiteModel(Context context, String name, SQLiteDatabase.CursorFactory factory, int version){
         super(context, name, factory, version);
     }
 
+    /**
+     * Single ton pattern get Intance
+     * @param context
+     * @return
+     */
     public static DBSQLiteModel getInstance(Context context) {
         if(instance==null) {
             instance = new DBSQLiteModel(context, DB_FILE_NAME, null, DB_VERSION);
@@ -96,6 +98,12 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
 
         onCreate(db);
     }
+
+    /**
+     * get db project data using project name
+     * @param project_name
+     * @return ProjectData Meta data
+     */
     public ProjectData getDataByNameFromPROJECT(String project_name){
         String sql = "select * from PROJECT where Project_Name = '" + project_name+"';";
         Cursor c = db.rawQuery(sql, null);
@@ -124,6 +132,12 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
         }
         return result;
     }
+
+    /**
+     * get project data using project id
+     * @param project_id
+     * @return Project Meta Data
+     */
     public ProjectData getDataByIdFromPROJECT(String project_id){
         String sql = "select * from PROJECT where "+PROJECT_ID+" = '" + project_id+"';";
         Cursor c = db.rawQuery(sql, null);
@@ -152,6 +166,12 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
         }
         return result;
     }
+
+    /**
+     * syncronize project db using project meta data
+     * @param p
+     * @return
+     */
     public long syncProjectData(ProjectData p){
         ContentValues updateValues = new ContentValues();
         updateValues.put(PROJECT_MODE, p.mode);
@@ -170,6 +190,12 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
 
         return db.update(PROJECT, updateValues, PROJECT_ID + "=?", new String[]{String.valueOf(p.id)});
     }
+
+    /**
+     * syncronized alarm data using Alarm meta data
+     * @param p
+     * @return
+     */
     public long syncAlarmData(AlarmData p){
         ContentValues updateValues = new ContentValues();
         updateValues.put(ALARM_CYCLE, p.alarm_cycle);
@@ -179,6 +205,12 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
 
         return db.update(ALARM, updateValues, ALARM_ID + "=?", new String[]{String.valueOf(p.id)});
     }
+
+    /**
+     * get data using the name of alarm
+     * @param project_id
+     * @return
+     */
     public AlarmData getDataByNameFromALARM(String project_id){
         String sql = "select * from "+ALARM+" where "+PROJECT_ID+" = '" + project_id+"';";
         Cursor c = db.rawQuery(sql, null);
@@ -198,10 +230,19 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
         }
         return result;
     }
+
+    /**
+     * init table
+     */
     public void initializationTable(){
         String sql = "drop table if exists PROJECT";
         db.execSQL(sql);
     }
+
+    /**
+     * insert data into project db using project meta data
+     * @param p
+     */
     public void dbInsertionIntoPROJECT(ProjectData p) {
         ContentValues values = new ContentValues();
         values.put(PROJECT_NAME, p.name);
@@ -219,6 +260,14 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
 
         db.insert(PROJECT, null, values);
     }
+
+    /**
+     * insert alarm data. need to all alarm data property
+     * @param project_id
+     * @param alarm_time
+     * @param alarm_cycle
+     * @param alarm_next_time
+     */
     public void dbInsertionIntoALARM(int project_id, long alarm_time, int alarm_cycle, long alarm_next_time) {
         ContentValues values = new ContentValues();
         values.put(PROJECT_ID, project_id);
@@ -227,12 +276,28 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
         values.put(ALARM_NEXT_TIME, alarm_next_time);
         db.insert(ALARM, null, values);
     }
+
+    /**
+     * delete data in project db
+     * @param name
+     */
     public void dbDeleteFromPROJECT(String[] name){
         db.delete(PROJECT,"Project_Name=?", name);
     }
+
+    /**
+     * delete data in alarm db
+     * @param id
+     */
     public void dbDeleteFromALARM(String[] id){
         db.delete(ALARM,PROJECT_ID+"=?", id);
     }
+
+    /**
+     * check project Sanity
+     * This function check folder structure in chalna.
+     * if there is not directory, that data is deleted
+     */
     public void projectSanityCheck(){
         ArrayList<ProjectData> projectList = selectAllFromPROJECT();
         //Sanity Check
@@ -245,6 +310,11 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
             }
         }
     }
+
+    /**
+     * Select * from Alarm;
+     * @return
+     */
     public ArrayList<AlarmData> selectAllFromALARM(){
         ArrayList<AlarmData> list = new ArrayList<>();
         Cursor c = db.query(ALARM, null, null, null,null,null,null);
@@ -261,6 +331,11 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
 
         return list;
     }
+
+    /**
+     * Select * from Project
+     * @return
+     */
     public ArrayList<ProjectData> selectAllFromPROJECT(){
         ArrayList<ProjectData> list = new ArrayList<>();
         Cursor c = db.query(PROJECT, null, null, null,null,null,null);
@@ -285,6 +360,10 @@ public class DBSQLiteModel extends SQLiteOpenHelper {
         }
         return list;
     }
+
+    /**
+     * using db test
+     */
     public void debug_db(){
         Cursor c = db.query("PROJECT", null, null, null,null,null,null);
 

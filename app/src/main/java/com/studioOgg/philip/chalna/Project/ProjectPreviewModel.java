@@ -25,6 +25,10 @@ public class ProjectPreviewModel {
         context = c;
         activity = a;
     }
+    /**
+     * delete
+     * @param project_meta
+     */
     public void delete(final ProjectData project_meta){
         AlertDialog.Builder alert_confirm = new AlertDialog.Builder(context);
         alert_confirm.setMessage("당신의 찰나를 지울까요?").setCancelable(false).setPositiveButton("확인",
@@ -55,12 +59,20 @@ public class ProjectPreviewModel {
         AlertDialog alert = alert_confirm.create();
         alert.show();
     }
+    /**
+     * modify prosessing
+     * @param project_meta
+     */
     public void modify(ProjectData project_meta){
         Intent intent = new Intent(context, ProjectCreateController.class);
         intent.putExtra("MODIFY_MODE", true);
         intent.putExtra(DBSQLiteModel.PROJECT_ID, project_meta.id);
         activity.startActivity(intent);
     }
+    /**
+     * share information
+     * @param project_meta
+     */
     public void share(ProjectData project_meta, String image_path){
         File file = new File(image_path);
         Uri mSaveImageUri = Uri.fromFile(file);
@@ -69,6 +81,10 @@ public class ProjectPreviewModel {
         intent.putExtra(Intent.EXTRA_STREAM, mSaveImageUri);
         activity.startActivity(Intent.createChooser(intent, "Choose"));
     }
+    /**
+     * complete prosessing
+     * @param project_meta
+     */
     public void complete(ProjectData project_meta){
         DBSQLiteModel myDB = DBSQLiteModel.getInstance(context);
         project_meta.project_level = StaticInformation.PROJECT_COMPLETE;
@@ -80,6 +96,11 @@ public class ProjectPreviewModel {
         Toast.makeText(context, "찰나가 완성되었습니다!", Toast.LENGTH_SHORT).show();
         activity.finish();
     }
+
+    /**
+     * cancle Complete function
+     * @param project_meta
+     */
     public void cancleComplete(ProjectData project_meta){
         DBSQLiteModel myDB = DBSQLiteModel.getInstance(context);
         project_meta.project_level = StaticInformation.PROJECT_PALYING;

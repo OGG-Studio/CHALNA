@@ -27,6 +27,12 @@ public class GalleryAdapterModel extends BaseAdapter {
 
     private static int progress = 0;
 
+    /**
+     * settong gallery adapter model parameter
+     * @param delay delay
+     * @param sizeWidth image width
+     * @param sizeHeight image height
+     */
     public void setGIFSetting(int delay, int sizeWidth, int sizeHeight){
         this.delay = delay;
         this.sizeWidth = sizeWidth;
@@ -37,6 +43,11 @@ public class GalleryAdapterModel extends BaseAdapter {
         instance.imagePath = imagePath;
         return instance;
     }
+
+    /**
+     * save GIF
+     * @return success/fail
+     */
     public boolean saveGIF(){
         FileOutputStream outStream = null;
         try{
@@ -49,6 +60,14 @@ public class GalleryAdapterModel extends BaseAdapter {
         }
         return true;
     }
+
+    /**
+     * save gif and show that progress
+     * @param tv progress textview
+     * @param text text view
+     * @param save_file_name save -> file name
+     * @return success / fail
+     */
     public boolean saveGIF(TextView tv, String text, String save_file_name){
         FileOutputStream outStream = null;
         try{
@@ -61,6 +80,13 @@ public class GalleryAdapterModel extends BaseAdapter {
         }
         return true;
     }
+
+    /**
+     * resize bitmap
+     * @param original
+     * @param resizeWidth
+     * @return
+     */
     static public Bitmap resizeBitmap(Bitmap original, int resizeWidth) {
         double aspectRatio = 0;
         Bitmap result;
@@ -79,6 +105,10 @@ public class GalleryAdapterModel extends BaseAdapter {
         return result;
     }
 
+    /**
+     * generated GIF. this function transfer image list to gif
+     * @return byte array gif information
+     */
     public byte[] generateGIF() {
         // Transform this function to thread-based function to later
         // Array
@@ -95,6 +125,12 @@ public class GalleryAdapterModel extends BaseAdapter {
         encoder.finish();
         return bos.toByteArray();
     }
+
+    /**
+     *     /**
+     * generated GIF. this function transfer image list to gif
+     * @return byte array gif information
+     */
     public byte[] generateGIF(final TextView textView, final String forwardString) {
         // Transform this function to thread-based function to later
         // Array
@@ -124,14 +160,27 @@ public class GalleryAdapterModel extends BaseAdapter {
         return bos.toByteArray();
     }
 
+    /**
+     * bitmap resize
+     * @param original src
+     * @return dst
+     */
     private Bitmap resizeBitmap(Bitmap original) {
         return Bitmap.createScaledBitmap(original, sizeWidth, sizeHeight, false);
     }
 
+    /**
+     * get image file names in gallery adeapter
+     * @return
+     */
     public String[] getImageFileNames(){
         return imageFileNames;
     }
 
+    /**
+     * syncronize current gallery adapter with folder directory structure
+     * @return
+     */
     public boolean UpdateGallery(){
         int changedCheck = 0;
         File imagePathAsFile = new File(imagePath);
@@ -175,6 +224,9 @@ public class GalleryAdapterModel extends BaseAdapter {
         return null;
     }
 
+    /**
+     * image filter filter, jpg, png, PNG, JPG and chalna
+     */
     private class ImageFileFilter implements FilenameFilter {
         @Override
         public boolean accept(File dir, String filename) {

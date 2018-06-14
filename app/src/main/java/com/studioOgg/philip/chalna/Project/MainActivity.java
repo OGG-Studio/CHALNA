@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
                                     PERMISSIONS_REQUEST_CODE, PERMISSIONS, grantResults);
                         }
                     });
+
                 }
             }
         }.start();
@@ -116,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, grantResults.length + " " + grantResults[0] + " " + grantResults[1] + " " + grantResults[2]);
         Log.d(TAG, permissions[0] + " " + permissions[1] + " " + permissions[2]);
+
         switch (requestCode) {
             case PERMISSIONS_REQUEST_CODE:
                 if (grantResults.length > 0) {
