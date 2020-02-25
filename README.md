@@ -1,5 +1,5 @@
 # CHALNA
-같은 구도에서 찍은 사진을 쉽게 이어 붙일 수 있는 어플, '찰나(CHALNA)'입니다.
+### &#128247; 같은 구도에서 찍은 사진을 쉽게 이어 붙일 수 있는 어플, '찰나(CHALNA)'입니다.
 
 
 ### You can easily make these GIF using 'CHALNA"
